@@ -4,11 +4,12 @@ cpanm: save 'provides' into local.json for proper indexing
 support CPAN distro only
 carton config / .carton/config
 check Makefile.PL/Build.PL mtime
--g, --global
-carton update
+-g, --global + local::lib (~/perl5)
 exec
 
 # 1.1
+carton update
+clean uninstall?
 carton bundle
 self-contained cpanm and carton
 

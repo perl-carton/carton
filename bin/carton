@@ -15,11 +15,12 @@ carton - Perl module dependency manager (aka Bundler for Perl)
 
   # During the development
   > carton install Plack
-  > git commit -m "add Plack" carton.json
+  > carton install Starman
+  > git commit -m "add Plack and Starman" carton.json
 
   # Then elsewhere (on a deployment machine)
   > carton install
-  > carton exec myscript.pl arg1 arg2
+  > carton exec starman -p 8080
 
 =head1 WARNING
 
