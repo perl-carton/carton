@@ -62,6 +62,12 @@ sub print {
     print $msg;
 }
 
+sub check {
+    my($self, $msg) = @_;
+    $self->print("✓ ", "SUCCESS");
+    $self->print($msg . "\n");
+}
+
 sub error {
     my($self, $msg) = @_;
     $self->print($msg, "ERROR");
@@ -162,7 +168,7 @@ sub check_cpanm_version {
     unless ($version && $version >= 1.5) {
         $self->error("carton needs cpanm version >= 1.5. You have " . ($version || "(not installed)") . "\n");
     }
-    $self->print("✔ You have cpanm $version\n", "SUCCESS");
+    $self->check("You have cpanm $version");
 }
 
 sub cmd_update {
