@@ -149,7 +149,20 @@ sub cmd_show {
 }
 
 sub cmd_check {
-    # check carton.json and extlib consistency
+    my $self = shift;
+
+    $self->check_cpanm_version;
+    # check carton.json and extlib?
+}
+
+sub check_cpanm_version {
+    my $self = shift;
+
+    my $version = (`$self->{cpanm} --version` =~ /version (\S+)/)[0];
+    unless ($version && $version >= 1.5) {
+        $self->error("carton needs cpanm version >= 1.5. You have " . ($version || "(not installed)") . "\n");
+    }
+    $self->print("✔ You have cpanm $version\n", "SUCCESS");
 }
 
 sub cmd_update {
