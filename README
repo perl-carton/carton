@@ -6,8 +6,14 @@ SYNOPSIS
       > carton install Plack
       > git commit -m "add Plack" carton.json
 
-      # Then on other machine
-      > carton install --deployment
+      # Then elsewhere (on a deployment machine)
+      > carton install
+      > carton exec myscript.pl arg1 arg2
+
+WARNING
+    This software is under the heavy development and considered alpha
+    quality till the version hits v1.0.0. Things might be broken, and APIs
+    will be likely to change. You have been warned.
 
 DESCRIPTION
     carton is a command line tool to track the Perl module dependencies for
@@ -26,13 +32,6 @@ TUTORIAL
     This will create an empty extlib directory and "carton.json" to start
     tracking your dependencies.
 
-    The extlib directory is compatible to local::lib. You can add:
-
-      use FindBin;
-      use lib "$FindBin::Bin/../extlib/lib/perl5";
-
-    to one of the scripts to add the directory to the @INC path.
-
   Tracking the dependencies
     You have two options to add and track your dependencies.
 
@@ -47,7 +46,7 @@ TUTORIAL
       use inc::Module::Install;
       name 'MyApp';
       requires 'DBD::mysql';
-      requires 'HTTP::Message';
+      requires 'HTTP::Message', 5.800;
       WriteAll;
 
     And then you can install these dependencies via:
@@ -65,7 +64,7 @@ TUTORIAL
     Once you've done installing all the dependencies, you can push your
     application directory to a remote machine and run the following:
 
-      > carton install --deployment
+      > carton install
 
     This will look at the "carton.json" and install the exact same versions
     of the dependencies into "extlib", and now your application is ready to
@@ -80,7 +79,7 @@ TUTORIAL
 
     will bundle these tarballs into "extlib/cache" directory, and
 
-      > carton install --local
+      > carton install --cached
 
     will install modules using this local cache. This way you can avoid a
     dependency on CPAN meta DB and search.cpan.org at a deploy time, or you
