@@ -2,7 +2,7 @@ package App::Carton;
 
 use strict;
 use 5.008_001;
-use version; our $VERSION = qv('v0.9.0');
+use version; our $VERSION = qv('v0.1.0');
 
 use Config;
 use Getopt::Long;
@@ -28,21 +28,24 @@ sub run {
     my($self, @args) = @_;
 
     local @ARGV = @args;
+    my @commands;
     my $p = Getopt::Long::Parser->new(
         config => [ "no_ignore_case", "pass_through" ],
     );
     $p->getoptions(
-        "h|help"    => sub { unshift @ARGV, 'help' },
-        "v|version" => sub { unshift @ARGV, 'version' },
+        "h|help"    => sub { unshift @commands, 'help' },
+        "v|version" => sub { unshift @commands, 'version' },
         "color!"    => \$self->{color},
         "verbose!"  => \$self->{verbose},
     );
 
-    my $cmd = shift @ARGV || 'help';
+    push @commands, @ARGV;
+
+    my $cmd = shift @commands || 'help';
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
-        $self->$call(@ARGV);
+        $self->$call(@commands);
     } else {
         die "Could not find command '$cmd'\n";
     }

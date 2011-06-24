@@ -14,19 +14,20 @@ carton - Perl module dependency manager (aka Bundler for Perl)
 =head1 SYNOPSIS
 
   # During the development
-  > carton install Plack
-  > carton install Starman
-  > git commit -m "add Plack and Starman" carton.json
+  > vim Makefile.PL
+  > carton install
+  > git commit -m "add Plack and Starman" Makefile.PL carton.json
 
   # Then elsewhere (on a deployment machine)
   > carton install
-  > carton exec starman -p 8080
+  > carton exec starman -p 8080 myapp.psgi
 
 =head1 WARNING
 
-B<This software is under the heavy development and considered alpha
-quality till the version hits v1.0.0. Things might be broken, and APIs
-will be likely to change. You have been warned.>
+B<This software is under the heavy development and considered ALPHA
+quality till the version hits v1.0.0. Things might be broken, not all
+features have been implemented, and APIs will be likely to change. YOU
+HAVE BEEN WARNED.>
 
 =head1 DESCRIPTION
 
@@ -35,52 +36,51 @@ for your Perl application.
 
 =head1 TUTORIAL
 
-=head2 Initializing your carton environment
+=head2 Initializing the environment
 
-First, you have to initialize your carton environment.
+carton will use C<.carton> folder for local configuration and
+C<extlib> to install modules. You're recommended to exclude these
+directories from the version control system.
 
-  > cd ~/devel/MyApp
-  > carton init
+  > carton check
+  > echo .carton >> .gitignore
   > echo extlib >> .gitignore
-  > git add .gitignore carton.json
-  > git commit -m "initialized carton"
-
-This will create an empty extlib directory and C<carton.json> to
-start tracking your dependencies.
+  > git add carton.json
+  > git commit -m "Start using carton"
 
 =head2 Tracking the dependencies
 
-You have two options to add and track your dependencies.
-
-First is just install dependencies to your application as you go.
-
-  > carton install Plack
-  > carton install AnyEvent::Redis
-
-Second is to manage it via the standard C<Makefile.PL> or C<Build.PL>.
+You can manage the dependencies of your application via the standard
+C<Makefile.PL> or C<Build.PL>.
 
   # Makefile.PL
   use inc::Module::Install;
-  name 'MyApp';
-  requires 'DBD::mysql';
-  requires 'HTTP::Message', 5.800;
+  name 'MyAwesomeApp';
+  requires 'Plack', 0.9980;
+  requires 'Starman', 0.2000;
   WriteAll;
 
 And then you can install these dependencies via:
 
   > carton install
 
-In either way, the modules are installed into your C<extlib> directory
-with the history information and C<carton.json> in your directory is
-updated.
+The modules are installed into your C<extlib> directory, and the
+dependencies tree and version information are analyzed and saved into
+C<carton.json> in your directory.
 
 Make sure you add C<carton.json> to your version controlled
 repository and commit changes as you update dependencies.
 
+  > git commit -m "Added Plack and Starman" Makefile.PL carton.json
+
+You'll alternatively be able to install modules from the command line,
+without managing the build file at all.
+
 =head2 Deploying your application
 
 Once you've done installing all the dependencies, you can push your
-application directory to a remote machine and run the following:
+application directory to a remote machine (excluding C<extlib> and
+C<.carton>) and run the following command:
 
   > carton install
 
