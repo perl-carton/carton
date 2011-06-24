@@ -90,7 +90,7 @@ sub cmd_install {
         $self->update_packages;
     } elsif (-e 'carton.json') {
         $self->print("Installing modules using carton.json\n");
-        $self->install_from_lock();
+        $self->install_from_spec();
     } else {
         $self->error("Can't locate build file or carton.json\n");
     }
@@ -129,7 +129,7 @@ sub install_modules {
     $self->run_cpanm(@args);
 }
 
-sub install_from_lock {
+sub install_from_spec {
     # build MIRROR index from carton.json and install with cpanm
 }
 
@@ -139,7 +139,7 @@ sub cmd_show {
     my($self, @args) = @_;
 
     my $data = $self->parse_json('carton.json')
-        or $self->error("carton.json: not found\n");
+        or $self->error("Can't find carton.json: Run `carton install` to rebuild the spec file.\n");
     for my $module (values %{$data->{modules} || {}}) {
         printf "$module->{dist}\n";
     }
