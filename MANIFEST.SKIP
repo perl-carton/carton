@@ -1,0 +1,17 @@
+\bRCS\b
+\bCVS\b
+\.svn/
+\.git/
+^MANIFEST\.
+^Makefile$
+~$
+\.old$
+^blib/
+^pm_to_blib
+^MakeMaker-\d
+\.gz$
+\.cvsignore
+\.shipit
+MYMETA
+extlib
+carton.json

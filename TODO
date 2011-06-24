@@ -1,0 +1,20 @@
+# 1.0
+Track what is the top-level installs and display build tree
+cpanm: save 'provides' into local.json for proper indexing
+support CPAN distro only
+carton config / .carton/config
+check Makefile.PL/Build.PL mtime
+-g, --global
+carton update
+exec
+
+# 1.1
+carton bundle
+self-contained cpanm and carton
+
+# 1.2
+Support DarkPAN/github etc
+dzil support
+
+# 1.3
+perlrocks multiple versions

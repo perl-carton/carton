@@ -1,0 +1,132 @@
+#!perl
+use strict;
+use 5.008001;
+use App::Carton;
+
+App::Carton->new->run(@ARGV);
+
+__END__
+
+=head1 NAME
+
+carton - Perl module dependency manager (aka Bundler for Perl)
+
+=head1 SYNOPSIS
+
+  # During the development
+  > carton install Plack
+  > git commit -m "add Plack" carton.json
+
+  # Then elsewhere (on a deployment machine)
+  > carton install
+  > carton exec myscript.pl arg1 arg2
+
+=head1 WARNING
+
+B<This software is under the heavy development and considered alpha
+quality till the version hits v1.0.0. Things might be broken, and APIs
+will be likely to change. You have been warned.>
+
+=head1 DESCRIPTION
+
+carton is a command line tool to track the Perl module dependencies
+for your Perl application.
+
+=head1 TUTORIAL
+
+=head2 Initializing your carton environment
+
+First, you have to initialize your carton environment.
+
+  > cd ~/devel/MyApp
+  > carton init
+  > echo extlib >> .gitignore
+  > git add .gitignore carton.json
+  > git commit -m "initialized carton"
+
+This will create an empty extlib directory and C<carton.json> to
+start tracking your dependencies.
+
+=head2 Tracking the dependencies
+
+You have two options to add and track your dependencies.
+
+First is just install dependencies to your application as you go.
+
+  > carton install Plack
+  > carton install AnyEvent::Redis
+
+Second is to manage it via the standard C<Makefile.PL> or C<Build.PL>.
+
+  # Makefile.PL
+  use inc::Module::Install;
+  name 'MyApp';
+  requires 'DBD::mysql';
+  requires 'HTTP::Message', 5.800;
+  WriteAll;
+
+And then you can install these dependencies via:
+
+  > carton install
+
+In either way, the modules are installed into your C<extlib> directory
+with the history information and C<carton.json> in your directory is
+updated.
+
+Make sure you add C<carton.json> to your version controlled
+repository and commit changes as you update dependencies.
+
+=head2 Deploying your application
+
+Once you've done installing all the dependencies, you can push your
+application directory to a remote machine and run the following:
+
+  > carton install
+
+This will look at the C<carton.json> and install the exact same
+versions of the dependencies into C<extlib>, and now your application
+is ready to run.
+
+=head2 Bundling modules
+
+carton can bundle all the tarballs for your dependencies into a
+directory so that you can even install dependencies that are not
+available on CPAN, such as internal distribution aka DarkPAN.
+
+  > carton bundle
+
+will bundle these tarballs into C<extlib/cache> directory, and
+
+  > carton install --cached
+
+will install modules using this local cache. This way you can avoid a
+dependency on CPAN meta DB and search.cpan.org at a deploy time, or
+you can have dependencies onto private CPAN modules aka DarkPAN.
+
+=head1 AUTHOR
+
+Tatsuhiko Miyagawa
+
+=head1 COPYRIGHT
+
+Tstsuhiko Miyagawa 2011-
+
+=head1 LICENSE
+
+This software is licensed under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<cpanm>
+
+L<Bundler|http://gembundler.com/>
+
+L<pip|http://pypi.python.org/pypi/pip>
+
+L<npm|http://npmjs.org/>
+
+L<perlrocks|https://github.com/gugod/perlrocks>
+
+L<only>
+
+=cut
