@@ -170,6 +170,22 @@ sub cmd_show {
     }
 }
 
+sub build_index {
+    my($self, $modules) = @_;
+
+    my $index;
+
+    for my $name (keys %$modules) {
+        my $module   = $modules->{$name};
+        my $provides = $module->{provides};
+        for my $mod (keys %$provides) {
+            $index->{$mod} = { version => $provides->{$mod}, module => $module };
+        }
+    }
+
+    return $index;
+}
+
 sub build_tree {
     my($self, $data) = @_;
 
@@ -177,22 +193,25 @@ sub build_tree {
     my %cached = ();
     my @children = keys %{$data->{roots}};
 
-    $self->_build_tree(\@children, $tree, $data->{modules}, \%cached);
+    my $index = $self->build_index($data->{modules});
+
+    $self->_build_tree(\@children, $tree, $index, \%cached);
 
     return $tree;
 }
 
 sub _build_tree {
-    my($self, $children, $node, $modules, $cached) = @_;
+    my($self, $children, $node, $index, $cached) = @_;
     require Module::CoreList;
     for my $child (@$children) {
         next if $child eq 'perl' or $cached->{$child}++;
-        if (my $mod = $modules->{$child}) {
+        if (my $mod = $index->{$child}) {
+            $mod = $mod->{module};
             push @$node, [ $mod, [] ];
             my %deps = (%{$mod->{requires}{configure}}, %{$mod->{requires}{build}});
-            $self->_build_tree([ keys %deps ], $node->[-1][-1], $modules, $cached);
+            $self->_build_tree([ keys %deps ], $node->[-1][-1], $index, $cached);
         } elsif (!$Module::CoreList::version{$]+0}{$child}) {
-            warn "Can't find $child" if $self->{verbose};
+            warn "Can't find $child\n";
         }
     }
 }
