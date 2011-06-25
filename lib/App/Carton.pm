@@ -204,9 +204,10 @@ sub _build_tree {
     my($self, $children, $node, $index, $cached) = @_;
     require Module::CoreList;
     for my $child (@$children) {
-        next if $child eq 'perl' or $cached->{$child}++;
+        next if $child eq 'perl';
         if (my $mod = $index->{$child}) {
             $mod = $mod->{module};
+            next if $cached->{$mod->{name}}++;
             push @$node, [ $mod, [] ];
             my %deps = (%{$mod->{requires}{configure}}, %{$mod->{requires}{build}});
             $self->_build_tree([ keys %deps ], $node->[-1][-1], $index, $cached);
