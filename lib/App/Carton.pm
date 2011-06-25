@@ -52,8 +52,8 @@ sub run {
 }
 
 sub parse_options {
-    my($self, @opts) = @_;
-    Getopt::Long::GetOptionsFromArray(@opts);
+    my($self, $args, @spec) = @_;
+    Getopt::Long::GetOptionsFromArray($args, @spec);
 }
 
 sub print {
