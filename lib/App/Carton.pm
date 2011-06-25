@@ -131,12 +131,14 @@ sub mtime {
 
 sub install_from_build_file {
     my($self, $file) = @_;
-    $self->run_cpanm("--installdeps", ".");
+    $self->run_cpanm("--installdeps", ".")
+        or $self->error("Installing modules failed\n");
 }
 
 sub install_modules {
     my($self, @args) = @_;
-    $self->run_cpanm(@args);
+    $self->run_cpanm(@args)
+        or $self->error("Installing modules failed\n");
 }
 
 sub install_from_spec {
@@ -238,7 +240,7 @@ sub cmd_exec {
 
 sub run_cpanm {
     my($self, @args) = @_;
-    system $self->{cpanm}, "--notest", "--reinstall", "-L", $self->{path}, @args;
+    !system $self->{cpanm}, "--notest", "--reinstall", "-L", $self->{path}, @args;
 }
 
 sub parse_json {
