@@ -30,12 +30,12 @@ sub install_from_build_file {
         push @modules, map $_->spec, $tree->children;
     }
 
-    push @modules, $self->show_deps();
+    push @modules, $self->list_dependencies;
     $self->install_conservative(\@modules, 1)
         or die "Installing modules failed\n";
 }
 
-sub show_deps {
+sub list_dependencies {
     my $self = shift;
 
     my @deps = $self->run_cpanm_output("--showdeps", ".");
@@ -288,5 +288,26 @@ sub find_locals {
     return map { my $module = Carton::Util::parse_json($_); ($module->{name} => $module) } @locals;
 }
 
-1;
+sub check_satisfies {
+    my($self, $lock, $deps) = @_;
 
+    my @missing;
+    my $index = $self->build_index($lock->{modules});
+    for my $dep (@$deps) {
+        # TODO recurse to see all your dependencies are satisfied?
+        my($mod, $ver) = split /~/, $dep;
+        my $found = $index->{$mod};
+        unless ($found && (!$ver or version->new($found->{version}) >= version->new($ver))) {
+            push @missing, {
+                module => $mod,
+                version => $ver,
+                found => $found ? $found->{version} : undef,
+            };
+        }
+    }
+
+    return @missing;
+}
+
+
+1;

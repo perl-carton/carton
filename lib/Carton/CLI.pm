@@ -13,10 +13,13 @@ use Term::ANSIColor qw(colored);
 use Carton::Tree;
 use Try::Tiny;
 
+use constant { SUCCESS => 0, WARN => 1, INFO => 2, ERROR => 3 };
+
 our $Colors = {
-    SUCCESS => 'green',
-    INFO    => 'cyan',
-    ERROR   => 'red',
+    SUCCESS() => 'green',
+    WARN()    => 'yellow',
+    INFO()    => 'cyan',
+    ERROR()   => 'red',
 };
 
 sub new {
@@ -93,13 +96,13 @@ sub parse_options {
 
 sub print {
     my($self, $msg, $type) = @_;
-    $msg = colored $msg, $Colors->{$type} if $type && $self->{color};
+    $msg = colored $msg, $Colors->{$type} if defined $type && $self->{color};
     print $msg;
 }
 
 sub error {
     my($self, $msg) = @_;
-    $self->print($msg, "ERROR");
+    $self->print($msg, ERROR);
     exit(1);
 }
 
@@ -143,7 +146,7 @@ sub cmd_install {
         $self->error("Can't locate build file or carton.lock\n");
     }
 
-    $self->print("Complete! Modules were installed into $self->{path}\n", "SUCCESS");
+    $self->print("Complete! Modules were installed into $self->{path}\n", SUCCESS);
 }
 
 sub mirror_file {
@@ -185,8 +188,30 @@ sub cmd_show {
 }
 
 sub cmd_check {
-    my $self = shift;
-    # check if local directory has all the carton rquirements
+    my($self, @args) = @_;
+
+    my $file = $self->has_build_file
+        or $self->error("Can't find a build file: nothing to check.\n");
+
+    $self->parse_options(\@args, "p|path=s", \$self->{path});
+    $self->carton->configure(
+        path => $self->{path},
+    );
+
+    my $lock = $self->carton->build_lock;
+    my @deps = $self->carton->list_dependencies;
+
+    my @unsatisfied = $self->carton->check_satisfies($lock, \@deps);
+    if (@unsatisfied) {
+        $self->print("Following dependencies are not satisfied. Run `carton install` to install them.\n", WARN);
+        for my $dep (@unsatisfied) {
+            $self->print("$dep->{module} " .
+                         ($dep->{version} ? "($dep->{version}" . ($dep->{found} ? " > $dep->{found})" : ")") : "") .
+                         "\n");
+        }
+    } else {
+        $self->print("Dependencies specified in your $file are satisfied.\n", SUCCESS);
+    }
 }
 
 sub cmd_update {
