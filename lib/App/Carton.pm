@@ -8,6 +8,8 @@ use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
+use App::Carton::Tree;
+
 our $Colors = {
     SUCCESS => 'green',
     INFO    => 'cyan',
@@ -150,6 +152,8 @@ sub install_from_spec {
 sub cmd_show {
     my($self, @args) = @_;
 
+    require Module::CoreList;
+
     my $tree_mode;
     $self->parse_options(\@args, "tree!" => \$tree_mode);
 
@@ -157,12 +161,20 @@ sub cmd_show {
         or $self->error("Can't find carton.json: Run `carton install` to rebuild the spec file.\n");
 
     if ($tree_mode) {
-        my $tree = $self->build_tree($data);
-        $self->walk_down($tree, sub {
-            my($module, $depth) = @_;
-            print "  " x $depth;
-            print "$module->{dist}\n";
-        }, 1);
+        my %seen;
+        my $tree = $self->build_tree($data->{modules});
+        $tree->walk_down(sub {
+            my($node, $depth, $parent) = @_;
+
+            return $tree->abort if $seen{$node->key}++;
+
+            if ($node->metadata->{dist}) {
+                print "  " x $depth;
+                print $node->metadata->{dist}, "\n";
+            } elsif (!$Module::CoreList::version{$]+0}{$node->key}) {
+                warn "Couldn't find ", $node->key, "\n";
+            }
+        });
     } else {
         for my $module (values %{$data->{modules} || {}}) {
             printf "$module->{dist}\n";
@@ -176,10 +188,10 @@ sub build_index {
     my $index;
 
     for my $name (keys %$modules) {
-        my $module   = $modules->{$name};
-        my $provides = $module->{provides};
+        my $metadata = $modules->{$name};
+        my $provides = $metadata->{provides};
         for my $mod (keys %$provides) {
-            $index->{$mod} = { version => $provides->{$mod}, module => $module };
+            $index->{$mod} = { version => $provides->{$mod}, meta => $metadata };
         }
     }
 
@@ -187,49 +199,54 @@ sub build_index {
 }
 
 sub build_tree {
-    my($self, $data) = @_;
+    my($self, $modules) = @_;
 
-    my $tree = [];
-    my %cached = ();
-    my @children = keys %{$data->{roots}};
+    my $idx  = $self->build_index($modules);
+    my $pool = { %$modules }; # copy
 
-    my $index = $self->build_index($data->{modules});
+    my $tree = App::Carton::Tree->new;
 
-    $self->_build_tree(\@children, $tree, $index, \%cached);
+    while (my $pick = (keys %$pool)[0]) {
+        $self->_build_tree($pick, $tree, $tree, $pool, $idx);
+    }
+
+    $tree->finalize;
 
     return $tree;
 }
 
 sub _build_tree {
-    my($self, $children, $node, $index, $cached) = @_;
-    require Module::CoreList;
-    for my $child (@$children) {
-        next if $child eq 'perl';
-        if (my $mod = $index->{$child}) {
-            $mod = $mod->{module};
-            next if $cached->{$mod->{name}}++;
-            push @$node, [ $mod, [] ];
-            my %deps = (%{$mod->{requires}{configure}}, %{$mod->{requires}{build}});
-            $self->_build_tree([ keys %deps ], $node->[-1][-1], $index, $cached);
-        } elsif (!$Module::CoreList::version{$]+0}{$child}) {
-            warn "Can't find $child\n";
+    my($self, $elem, $tree, $curr_node, $pool, $idx) = @_;
+
+    if (my $cached = App::Carton::TreeNode->cached($elem)) {
+        $curr_node->add_child($cached);
+        return;
+    }
+
+    my $node = App::Carton::TreeNode->new($elem, $pool);
+    $curr_node->add_child($node);
+
+    for my $child ( $self->build_deps($node->metadata, $idx) ) {
+        $self->_build_tree($child, $tree, $node, $pool, $idx);
+    }
+}
+
+sub build_deps {
+    my($self, $meta, $idx) = @_;
+
+    my @deps;
+    for my $requires (values %{$meta->{requires}}) {
+        for my $module (keys %$requires) {
+            next if $module eq 'perl';
+            if (exists $idx->{$module}) {
+                push @deps, $idx->{$module}{meta}{name};
+            } else {
+                push @deps, $module;
+            }
         }
     }
-}
 
-sub walk_down {
-    my($self, $tree, $cb, $pre) = @_;
-    $self->_do_walk_down($tree, $cb, 0, $pre);
-}
-
-sub _do_walk_down {
-    my($self, $children, $cb, $depth, $pre) = @_;
-
-    for my $node (@$children) {
-        $cb->($node->[0], $depth) if $pre;
-        $self->_do_walk_down($node->[1], $cb, $depth + 1, $pre);
-        $cb->($node->[0], $depth) unless $pre;
-    }
+    return @deps;
 }
 
 sub cmd_check {
@@ -272,29 +289,13 @@ sub parse_json {
     JSON::decode_json(join '', <$fh>);
 }
 
-sub scan_root_deps {
-    my $self = shift;
-
-    my $deps = `$self->{cpanm} --showdeps .`;
-    my %deps;
-    for my $line (split /\n/, $deps) {
-        next unless $line;
-        my($mod, $ver) = split /\s+/, $line, 2;
-        $deps{$mod} = $ver || 0;
-    }
-
-    return %deps;
-}
-
 sub update_packages {
     my $self = shift;
 
     my %locals = $self->find_locals;
-    my %roots  = $self->scan_root_deps;
 
     my $spec = {
         modules => \%locals,
-        roots   => \%roots,
     };
 
     require JSON;
