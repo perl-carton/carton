@@ -68,7 +68,7 @@ sub dedupe_modules {
     my %seen;
     my @result;
     for my $spec (reverse @$modules) {
-        my($mod, $ver) = split /@/, $spec;
+        my($mod, $ver) = split /~/, $spec;
         next if $seen{$mod}++;
         push @result, $spec;
     }
