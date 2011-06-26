@@ -108,11 +108,11 @@ sub cmd_install {
         $self->print("Installing modules using $file\n");
         $self->install_from_build_file($file);
         $self->update_packages;
-    } elsif (-e 'carton.json') {
-        $self->print("Installing modules using carton.json\n");
+    } elsif (-e 'carton.lock') {
+        $self->print("Installing modules using carton.lock\n");
         $self->install_from_spec();
     } else {
-        $self->error("Can't locate build file or carton.json\n");
+        $self->error("Can't locate build file or carton.lock\n");
     }
 
     $self->print("Complete! Modules were installed into $self->{path}\n", "SUCCESS");
@@ -121,13 +121,13 @@ sub cmd_install {
 sub has_build_file {
     my $self = shift;
 
-    # deployment mode ignores build files and only uses carton.json
+    # deployment mode ignores build files and only uses carton.lock
     return if $self->{deployment};
 
     my $file = (grep -e, qw( Build.PL Makefile.PL ))[0]
         or return;
 
-    if ($self->mtime($file) > $self->mtime("carton.json")) {
+    if ($self->mtime($file) > $self->mtime("carton.lock")) {
         return $file;
     }
 
@@ -154,8 +154,8 @@ sub install_modules {
 sub install_from_spec {
     my $self = shift;
 
-    my $data = $self->parse_json('carton.json')
-        or $self->error("Couldn't parse carton.json: Remove the file and run `carton install` to rebuild it.\n");
+    my $data = $self->parse_json('carton.lock')
+        or $self->error("Couldn't parse carton.lock: Remove the file and run `carton install` to rebuild it.\n");
 
     my $index = $self->build_index($data->{modules});
     my $file = $self->build_mirror_file($index);
@@ -181,7 +181,7 @@ sub build_mirror_file {
     print $fh <<EOF;
 File:         02packages.details.txt
 URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
-Description:  Package names found in carton.json
+Description:  Package names found in carton.lock
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
 Written-By:   Carton $Carton::VERSION
@@ -228,8 +228,8 @@ sub cmd_show {
     my $tree_mode;
     $self->parse_options(\@args, "tree!" => \$tree_mode);
 
-    my $data = $self->parse_json('carton.json')
-        or $self->error("Can't find carton.json: Run `carton install` to rebuild the spec file.\n");
+    my $data = $self->parse_json('carton.lock')
+        or $self->error("Can't find carton.lock: Run `carton install` to rebuild the spec file.\n");
 
     if ($tree_mode) {
         my %seen;
@@ -324,7 +324,7 @@ sub cmd_check {
     my $self = shift;
 
     $self->check_cpanm_version;
-    # check carton.json and extlib?
+    # check carton.lock and extlib?
 }
 
 sub check_cpanm_version {
@@ -371,7 +371,7 @@ sub update_packages {
     };
 
     require JSON;
-    open my $fh, ">", "carton.json" or die $!;
+    open my $fh, ">", "carton.lock" or die $!;
     print $fh JSON->new->pretty->encode($spec);
 
     return 1;

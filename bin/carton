@@ -21,7 +21,7 @@ carton - Perl module dependency manager (aka Bundler for Perl)
   ...
   
   > carton install
-  > git commit -m "add Plack and Starman" Makefile.PL carton.json
+  > git commit -m "add Plack and Starman" Makefile.PL carton.lock
 
   # Then elsewhere (on a deployment machine)
   > carton install
@@ -50,7 +50,7 @@ directories from the version control system.
   > carton check
   > echo .carton >> .gitignore
   > echo local/ >> .gitignore
-  > git add carton.json
+  > git add carton.lock
   > git commit -m "Start using carton"
 
 =head2 Tracking the dependencies
@@ -71,12 +71,12 @@ And then you can install these dependencies via:
 
 The modules are installed into your C<local> directory, and the
 dependencies tree and version information are analyzed and saved into
-C<carton.json> in your directory.
+C<carton.lock> in your directory.
 
-Make sure you add C<carton.json> to your version controlled
+Make sure you add C<carton.lock> to your version controlled
 repository and commit changes as you update dependencies.
 
-  > git commit -m "Added Plack and Starman" Makefile.PL carton.json
+  > git commit -m "Added Plack and Starman" Makefile.PL carton.lock
 
 You'll alternatively be able to install modules from the command line,
 without managing the build file at all.
@@ -89,7 +89,7 @@ C<.carton>) and run the following command:
 
   > carton install
 
-This will look at the C<carton.json> and install the exact same
+This will look at the C<carton.lock> and install the exact same
 versions of the dependencies into C<local>, and now your application
 is ready to run.
 
