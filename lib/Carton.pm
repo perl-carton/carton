@@ -3,7 +3,7 @@ package Carton;
 use strict;
 use warnings;
 use 5.008_001;
-use version; our $VERSION = qv('v0.1.0');
+use version; our $VERSION = qv('v0.1_0');
 
 use Carton::Util;
 
