@@ -23,7 +23,7 @@ install the modules given as arguments.
 =item carton install (no arguments)
 
 If you run C<carton install> for the first itme, or your build file
-(C<Makefile.PL or C<Build.PL>) is updated (i.e. its modification time
+(C<Makefile.PL> or C<Build.PL>) is updated (i.e. its modification time
 is newer than C<carton.lock> file), carton will fetch all the
 dependencies specified in your build file, resolve dependencies and
 install all required modules.
@@ -42,8 +42,6 @@ If you specify the C<--deployment> command line option or your
 C<carton.lock> exists and is newer than your build file, carton will
 fetch all remote modules and use the dependencies specified in the
 C<carton.lock> instead of resolving dependencies.
-
-=back
 
 =head1 OPTIONS
 
