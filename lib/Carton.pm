@@ -23,19 +23,16 @@ sub install_from_build_file {
     my($self, $file) = @_;
 
     my @modules = $self->show_deps();
-    $self->run_cpanm(@modules)
+    $self->run_cpanm("--skip-satisfied", @modules)
         or die "Installing modules failed\n";
 }
 
 sub show_deps {
     my $self = shift;
 
-    my @output = $self->run_cpanm_output("--showdeps", ".");
-    my @deps;
-    for my $line (@output) {
+    my @deps = $self->run_cpanm_output("--showdeps", ".");
+    for my $line (@deps) {
         chomp $line;
-        my($mod, $ver) = split / /, $line, 2;
-        push @deps, $mod;
     }
 
     return @deps;
@@ -43,7 +40,7 @@ sub show_deps {
 
 sub install_modules {
     my($self, $modules) = @_;
-    $self->run_cpanm(@$modules)
+    $self->run_cpanm("--skip-satisfied", @$modules)
         or die "Installing modules failed\n";
 }
 
@@ -57,6 +54,7 @@ sub install_from_lock {
     my @root = map $_->key, $tree->children;
 
     $self->run_cpanm(
+        "--skip-satisfied",
         "--mirror", "http://backpan.perl.org/",
         "--mirror", "http://cpan.cpantesters.org/",
         "--index", $mirror_file, @root,
