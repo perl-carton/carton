@@ -1,0 +1,35 @@
+=head1 NAME
+
+carton-list - List dependencies tracked in the carton.lock file
+
+=head1 SYNOPSIS
+
+  carton list [--tree]
+
+=head1 DESCRIPTION
+
+List the dependencies and version information tracked in the
+C<carton.lock> file. This command by default displays the name of the
+distribution (e.g. I<Foo-Bar-0.01>) in a flat list.
+
+=head1 OPTIONS
+
+=over 4
+
+=item --tree
+
+Displays the dependencies as a nicely formatted tree structure, for example:
+
+  $ carton list --tree
+  Params-Validate-1.00
+    Module-Build-0.3800
+      Module-Metadata-1.000004
+        version-0.91
+      CPAN-Meta-2.110930
+        Parse-CPAN-Meta-1.4401
+          JSON-PP-2.27200
+          CPAN-Meta-YAML-0.003
+        Version-Requirements-0.101020
+      Perl-OSType-1.002
+
+=back
