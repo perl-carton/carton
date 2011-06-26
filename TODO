@@ -3,6 +3,7 @@ support CPAN distro only
 carton config / .carton/config
 -g, --global + local::lib (~/perl5)
 exec
+cpanm Module@Version
 
 # 1.1
 carton update

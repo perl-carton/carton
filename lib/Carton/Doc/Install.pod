@@ -1,0 +1,60 @@
+=head1 NAME
+
+carton-install - Install the dependencies
+
+=head1 SYNOPSIS
+
+  carton install [--deployment] [--path=PATH] [modules...]
+
+=head1 DESCRIPTION
+
+Install the dependencies for your application. This command has two
+modes and the behavior is slightly different.
+
+=head2 DEVELOPMENT MODE
+
+=over 4
+
+=item carton install <name>
+
+If you run C<carton install> with the arguments, carton will fetch and
+install the modules given as arguments.
+
+=item carton install (no arguments)
+
+If you run C<carton install> for the first itme, or your build file
+(C<Makefile.PL or C<Build.PL>) is updated (i.e. its modification time
+is newer than C<carton.lock> file), carton will fetch all the
+dependencies specified in your build file, resolve dependencies and
+install all required modules.
+
+=back
+
+In the development mode, carton will analyze all the dependencies and
+their version information, and it is saved into C<carton.lock>
+file. It is important to add C<carton.lock> file into a version
+controlled repository and commit the changes as you update your
+dependencies.
+
+=head2 DEPLOYMENT MODE
+
+If you specify the C<--deployment> command line option or your
+C<carton.lock> exists and is newer than your build file, carton will
+fetch all remote modules and use the dependencies specified in the
+C<carton.lock> instead of resolving dependencies.
+
+=back
+
+=head1 OPTIONS
+
+=over 4
+
+=item --deployment
+
+Force the deployment mode and carton will ignore build file contents.
+
+=item --path
+
+Specify the path to install modules to. Defaults to C<local> in the current directory.
+
+=back

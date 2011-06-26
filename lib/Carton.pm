@@ -52,7 +52,7 @@ sub run {
 
     push @commands, @ARGV;
 
-    my $cmd = shift @commands || 'help';
+    my $cmd = shift @commands || 'usage';
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
@@ -60,6 +60,26 @@ sub run {
     } else {
         die "Could not find command '$cmd'\n";
     }
+}
+
+sub commands {
+    my $self = shift;
+
+    no strict 'refs';
+    map { s/^cmd_//; $_ }
+        grep /^cmd_(.*)/, sort keys %{__PACKAGE__."::"};
+}
+
+sub cmd_usage {
+    my $self = shift;
+    print <<HELP;
+Usage: carton <command>
+
+where <command> is one of:
+  @{[ join ", ", $self->commands ]}
+
+Run carton -h <command> for help.
+HELP
 }
 
 sub parse_options {
@@ -87,8 +107,8 @@ sub error {
 
 sub cmd_help {
     my $self = shift;
-    my $cmd  = $_[0] ? "carton-$_[0]" : "carton";
-    system "perldoc", $cmd;
+    my $module = "Carton::Doc::" . ($_[0] ? ucfirst $_[0] : "Carton");
+    system "perldoc", $module;
 }
 
 sub cmd_version {

@@ -1,7 +1,8 @@
 use inc::Module::Install;
 name 'carton';
 version_from 'lib/Carton.pm';
-all_from 'bin/carton';
+perl_version '5.008001';
+license_from 'lib/Carton/Doc/Carton.pod';
 readme_from('bin/carton');
 
 requires 'version', 0.77;
@@ -12,7 +13,21 @@ requires 'Module::Metadata', 1.000003;
 
 install_script 'bin/carton';
 
+makemaker_args MAN1PODS => man1pods();
+
 build_requires 'Test::More', 0.88;
 test_requires 'Test::Requires';
 auto_set_repository();
 WriteAll;
+
+sub man1pods {
+    my %pods;
+
+    for my $file (glob "lib/Carton/Doc/*.pod") {
+        my $name = ($file =~ m!Doc/(.*?)\.pod!)[0];
+        $name = $name eq 'Carton' ? "carton" : ("carton-" . lc($name));
+        $pods{$file} = "blib/man1/$name.1"
+    }
+
+    \%pods;
+}
