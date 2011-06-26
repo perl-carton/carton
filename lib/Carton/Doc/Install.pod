@@ -22,24 +22,31 @@ install the modules given as arguments.
 
 =item carton install (no arguments)
 
-If you run C<carton install> for the first itme, or your build file
-(C<Makefile.PL> or C<Build.PL>) is updated (i.e. its modification time
-is newer than C<carton.lock> file), carton will fetch all the
-dependencies specified in your build file, resolve dependencies and
-install all required modules.
+If you run C<carton install> without any arguments and if a build file
+(C<Makefile.PL> or C<Build.PL>) exists, carton will scan dependencies
+from the build file and install the modules.
 
 =back
 
-In the development mode, carton will analyze all the dependencies and
-their version information, and it is saved into C<carton.lock>
-file. It is important to add C<carton.lock> file into a version
-controlled repository and commit the changes as you update your
-dependencies.
+In either way, if you run C<carton install> for the first time
+(i.e. C<carton.lock> does not exist), carton will fetch all the
+modules specified, resolve dependencies and install all required
+modules from CPAN.
+
+If C<carton.lock> file does exist, carton will still try to install
+modules specified or updated in the build file, but uses
+C<carton.lock> for the dependency resolution, and then cascades to
+CPAN.
+
+carton will analyze all the dependencies and their version
+information, and it is saved into C<carton.lock> file. It is important
+to add C<carton.lock> file into a version controlled repository and
+commit the changes as you update your dependencies.
 
 =head2 DEPLOYMENT MODE
 
-If you specify the C<--deployment> command line option or your
-C<carton.lock> exists and is newer than your build file, carton will
+If you specify the C<--deployment> command line option or the
+C<carton.lock> exists and your build file does not exist, carton will
 fetch all remote modules and use the dependencies specified in the
 C<carton.lock> instead of resolving dependencies.
 

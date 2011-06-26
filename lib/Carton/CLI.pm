@@ -123,19 +123,28 @@ sub cmd_install {
     my($self, @args) = @_;
 
     $self->parse_options(\@args, "p|path=s", \$self->{path}, "deployment!" => \$self->{deployment});
-    $self->carton->configure_cpanm(path => $self->{path});
+
+    my $lock = $self->find_lock;
+
+    $self->carton->configure(
+        path => $self->{path},
+        lock => $lock,
+        mirror_file => $self->mirror_file, # $lock object?
+    );
+
+    my $build_file = $self->has_build_file;
 
     if (@args) {
         $self->print("Installing modules from the command line\n");
         $self->carton->install_modules(\@args);
-        $self->carton->update_packages($self->lock_file);
-    } elsif (my $file = $self->has_build_file) {
-        $self->print("Installing modules using $file\n");
-        $self->carton->install_from_build_file($file);
-        $self->carton->update_packages($self->lock_file);
-    } elsif (-e $self->lock_file) {
-        $self->print("Installing modules using carton.lock\n");
-        $self->carton->install_from_lock($self->lock_data, $self->mirror_file);
+        $self->carton->update_lock_file($self->lock_file);
+    } elsif ($self->{deployment} or not $build_file) {
+        $self->print("Installing modules using carton.lock (deployment mode)\n");
+        $self->carton->install_from_lock;
+    } elsif ($build_file) {
+        $self->print("Installing modules using $build_file\n");
+        $self->carton->install_from_build_file($build_file);
+        $self->carton->update_lock_file($self->lock_file);
     } else {
         $self->error("Can't locate build file or carton.lock\n");
     }
@@ -151,22 +160,10 @@ sub mirror_file {
 sub has_build_file {
     my $self = shift;
 
-    # deployment mode ignores build files and only uses carton.lock
-    return if $self->{deployment};
-
     my $file = (grep -e, qw( Build.PL Makefile.PL ))[0]
         or return;
 
-    if ($self->mtime($file) > $self->mtime($self->lock_file)) {
-        return $file;
-    }
-
-    return;
-}
-
-sub mtime {
-    my($self, $file) = @_;
-    return (stat($file))[9] || 0;
+    return $file;
 }
 
 *cmd_list = \&cmd_show;
@@ -217,6 +214,16 @@ sub cmd_update {
 
 sub cmd_exec {
     # setup lib::core::only, -L env, put extlib/bin into PATH and exec script
+}
+
+sub find_lock {
+    my $self = shift;
+
+    if (-e $self->lock_file) {
+        return $self->lock_data; # TODO object
+    }
+
+    return;
 }
 
 sub lock_data {

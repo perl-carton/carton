@@ -14,16 +14,24 @@ sub new {
     }, $class;
 }
 
-sub configure_cpanm {
+sub configure {
     my($self, %args) = @_;
-    $self->{path} = $args{path};
+    %{$self} = (%$self, %args);
 }
+
+sub lock { $_[0]->{lock} }
 
 sub install_from_build_file {
     my($self, $file) = @_;
 
-    my @modules = $self->show_deps();
-    $self->run_cpanm("--skip-satisfied", @modules)
+    my @modules;
+    if ($self->lock) {
+        my $tree = $self->build_tree($self->lock->{modules});
+        push @modules, map $_->spec, $tree->children;
+    }
+
+    push @modules, $self->show_deps();
+    $self->install_conservative(\@modules, 1)
         or die "Installing modules failed\n";
 }
 
@@ -40,24 +48,49 @@ sub show_deps {
 
 sub install_modules {
     my($self, $modules) = @_;
-    $self->run_cpanm("--skip-satisfied", @$modules)
+    $self->install_conservative($modules, 1)
         or die "Installing modules failed\n";
 }
 
 sub install_from_lock {
-    my($self, $lock, $mirror_file) = @_;
+    my($self) = @_;
 
-    my $index = $self->build_index($lock->{modules});
-    $self->build_mirror_file($index, $mirror_file);
+    my $tree = $self->build_tree($self->lock->{modules});
+    my @root = map $_->spec, $tree->children;
 
-    my $tree = $self->build_tree($lock->{modules});
-    my @root = map $_->key, $tree->children;
+    $self->install_conservative(\@root, 0)
+        or die "Installing modules failed\n";
+}
+
+sub dedupe_modules {
+    my($self, $modules) = @_;
+
+    my %seen;
+    my @result;
+    for my $spec (reverse @$modules) {
+        my($mod, $ver) = split /@/, $spec;
+        next if $seen{$mod}++;
+        push @result, $spec;
+    }
+
+    return [ reverse @result ];
+}
+
+sub install_conservative {
+    my($self, $modules, $cascade) = @_;
+
+    $modules = $self->dedupe_modules($modules);
+
+    my $index = $self->build_index($self->lock->{modules});
+    $self->build_mirror_file($index, $self->{mirror_file});
 
     $self->run_cpanm(
         "--skip-satisfied",
-        "--mirror", "http://backpan.perl.org/",
-        "--mirror", "http://cpan.cpantesters.org/",
-        "--index", $mirror_file, @root,
+        "--mirror", "http://cpan.cpantesters.org/", # fastest
+        "--mirror", "http://backpan.perl.org/",     # fallback
+        "--mirror-index", $self->{mirror_file},
+        ( $cascade ? "--cascade-search" : () ),
+        @$modules,
     );
 }
 
@@ -213,7 +246,7 @@ sub run_cpanm {
     !system $self->{cpanm}, "--quiet", "-L", $self->{path}, "--notest", @args;
 }
 
-sub update_packages {
+sub update_lock_file {
     my($self, $file) = @_;
 
     my %locals = $self->find_locals;

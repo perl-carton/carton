@@ -59,6 +59,13 @@ sub abort {
 sub key      { $_[0]->[0] }
 sub metadata { $_[0]->[1] }
 
+sub spec {
+    my $self = shift;
+
+    my $meta = $self->metadata;
+    $meta->{name} . ($meta->{version} ? '@' . $meta->{version} : '');
+}
+
 sub children { @{$_[0]->[2]} }
 
 sub add_child {
