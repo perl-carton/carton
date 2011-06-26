@@ -4,6 +4,7 @@ use strict;
 use 5.008_001;
 use version; our $VERSION = qv('v0.1.0');
 
+use Cwd;
 use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
@@ -26,8 +27,16 @@ sub new {
     }, $class;
 }
 
+sub work_file {
+    my($self, $file) = @_;
+    return "$self->{work_dir}/$file";
+}
+
 sub run {
     my($self, @args) = @_;
+
+    $self->{work_dir} = $ENV{PERL_CARTON_HOME} || (Cwd::cwd() . "/.carton");
+    mkdir $self->{work_dir}, 0777 unless -e $self->{work_dir};
 
     local @ARGV = @args;
     my @commands;
@@ -143,7 +152,66 @@ sub install_modules {
 }
 
 sub install_from_spec {
-    # build MIRROR index from carton.json and install with cpanm
+    my $self = shift;
+
+    my $data = $self->parse_json('carton.json')
+        or $self->error("Couldn't parse carton.json: Remove the file and run `carton install` to rebuild it.\n");
+
+    my $index = $self->build_index($data->{modules});
+    my $file = $self->build_mirror_file($index);
+
+    my $tree = $self->build_tree($data->{modules});
+    my @root = map $_->key, $tree->children;
+
+    $self->run_cpanm("--mirror", "http://backpan.perl.org/", "--index", $file, @root);
+}
+
+sub build_mirror_file {
+    my($self, $index) = @_;
+
+    my @packages = $self->build_packages($index);
+
+    my $file = $self->work_file("02packages.details.txt");
+    open my $fh, ">", $file or die $!;
+
+    print $fh <<EOF;
+File:         02packages.details.txt
+URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
+Description:  Package names found in carton.json
+Columns:      package name, version, path
+Intended-For: Automated fetch routines, namespace documentation.
+Written-By:   Carton $Carton::VERSION
+Line-Count:   @{[ scalar(@packages) ]}
+Last-Updated: @{[ scalar localtime ]}
+
+EOF
+    for my $p (@packages) {
+        print $fh sprintf "%s %s  %s\n", pad($p->[0], 32), pad($p->[1] || 'undef', 10, 1), $p->[2];
+    }
+
+    return $file;
+}
+
+sub pad {
+    my($str, $len, $left) = @_;
+
+    my $howmany = $len - length($str);
+    return $str if $howmany <= 0;
+
+    my $pad = " " x $howmany;
+    return $left ? "$pad$str" : "$str$pad";
+}
+
+sub build_packages {
+    my($self, $index) = @_;
+
+    my @packages;
+    for my $package (sort keys %$index) {
+        my $module = $index->{$package};
+        push @packages, [ $package, $module->{version}, $module->{meta}{pathname} ];
+    }
+
+    return @packages;
 }
 
 *cmd_list = \&cmd_show;
@@ -276,7 +344,8 @@ sub cmd_exec {
 
 sub run_cpanm {
     my($self, @args) = @_;
-    !system $self->{cpanm}, "--notest", "-L", $self->{path}, @args;
+    local $ENV{PERL_CPANM_OPT};
+    !system $self->{cpanm}, "--quiet", "--notest", "-L", $self->{path}, @args;
 }
 
 sub parse_json {
