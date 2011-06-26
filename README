@@ -28,13 +28,13 @@ DESCRIPTION
 
 TUTORIAL
   Initializing the environment
-    carton will use ".carton" folder for local configuration and "extlib" to
+    carton will use ".carton" folder for local configuration and "local" to
     install modules. You're recommended to exclude these directories from
     the version control system.
 
       > carton check
       > echo .carton >> .gitignore
-      > echo extlib >> .gitignore
+      > echo local/ >> .gitignore
       > git add carton.json
       > git commit -m "Start using carton"
 
@@ -53,7 +53,7 @@ TUTORIAL
 
       > carton install
 
-    The modules are installed into your "extlib" directory, and the
+    The modules are installed into your "local" directory, and the
     dependencies tree and version information are analyzed and saved into
     "carton.json" in your directory.
 
@@ -67,13 +67,13 @@ TUTORIAL
 
   Deploying your application
     Once you've done installing all the dependencies, you can push your
-    application directory to a remote machine (excluding "extlib" and
+    application directory to a remote machine (excluding "local" and
     ".carton") and run the following command:
 
       > carton install
 
     This will look at the "carton.json" and install the exact same versions
-    of the dependencies into "extlib", and now your application is ready to
+    of the dependencies into "local", and now your application is ready to
     run.
 
   Bundling modules
@@ -83,7 +83,7 @@ TUTORIAL
 
       > carton bundle
 
-    will bundle these tarballs into "extlib/cache" directory, and
+    will bundle these tarballs into "local/cache" directory, and
 
       > carton install --cached
 
