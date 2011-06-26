@@ -19,7 +19,7 @@ our $Colors = {
 sub new {
     my $class = shift;
     bless {
-        path  => 'extlib',
+        path  => 'local',
         color => 1,
         verbose => 0,
         cpanm => $ENV{PERL_CARTON_CPANM} || 'cpanm',
@@ -91,12 +91,11 @@ sub cmd_install {
 
     $self->parse_options(\@args, "p|path=s", \$self->{path}, "deployment!" => \$self->{deployment});
 
-#    if (@args) {
-#        $self->print("Installing modules from the command line\n");
-#        $self->install_modules(@args);
-#        $self->update_packages;
-#    }
-    if (my $file = $self->has_build_file) {
+    if (@args) {
+        $self->print("Installing modules from the command line\n");
+        $self->install_modules(@args);
+        $self->update_packages;
+    } elsif (my $file = $self->has_build_file) {
         $self->print("Installing modules using $file\n");
         $self->install_from_build_file($file);
         $self->update_packages;
