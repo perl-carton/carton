@@ -1,10 +1,10 @@
 .gitignore
 bin/carton
 Changes
-doc/carton-faq.pod
-doc/carton-install.pod
-doc/carton-list.pod
-doc/carton.pod
+docs/carton-faq.pod
+docs/carton-install.pod
+docs/carton-list.pod
+docs/carton.pod
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
