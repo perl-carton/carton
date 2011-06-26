@@ -11,6 +11,7 @@ use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
 use Carton::Tree;
+use Try::Tiny;
 
 our $Colors = {
     SUCCESS => 'green',
@@ -179,7 +180,6 @@ sub cmd_show {
     my $lock = $self->lock_data
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the spec file.\n");
 
-
     if ($tree_mode) {
         $self->carton->walk_down_tree($lock, sub {
             my($module, $depth) = @_;
@@ -221,9 +221,21 @@ sub cmd_exec {
 
 sub lock_data {
     my $self = shift;
-    $self->{lock} || do {
-        Carton::Util::parse_json($self->lock_file);
+
+    return $self->{lock} if $self->{lock};
+
+    try {
+        my $lock = Carton::Util::parse_json($self->lock_file);
+        $self->{lock} = $lock;
+    } catch {
+        if (/No such file/) {
+            $self->error("Can't locate carton.lock\n");
+        } else {
+            $self->error("Can't parse carton.lock: $_\n");
+        }
     };
+
+    return $self->{lock};
 }
 
 sub lock_file {

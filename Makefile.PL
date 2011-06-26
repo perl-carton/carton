@@ -10,6 +10,7 @@ requires 'JSON';
 requires 'App::cpanminus', 1.5000;
 requires 'Term::ANSIColor';
 requires 'Module::Metadata', 1.000003;
+requires 'Try::Tiny';
 
 install_script 'bin/carton';
 
