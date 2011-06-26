@@ -13,3 +13,6 @@
 \.cvsignore
 \.shipit
 MYMETA
+local/
+\.carton
+carton.lock
