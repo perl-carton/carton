@@ -114,6 +114,20 @@ will install modules using this local cache. This way you can avoid a
 dependency on CPAN meta DB and search.cpan.org at a deploy time, or
 you can have dependencies onto private CPAN modules aka DarkPAN.
 
+=head1 COMMUNITY
+
+=over 4
+
+=item L<https://github.com/miyagawa/carton>
+
+Code repository, Wiki and Issue Tracker
+
+=item L<irc://irc.perl.org/#carton>
+
+IRC chat room
+
+=back
+
 =head1 AUTHOR
 
 Tatsuhiko Miyagawa

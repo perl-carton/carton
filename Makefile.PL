@@ -20,6 +20,11 @@ doc_to_pods();
 build_requires 'Test::More', 0.88;
 test_requires 'Test::Requires';
 auto_set_repository();
+
+resources
+    homepage => 'https://github.com/miyagawa/carton',
+    bugtracker => 'https://github.com/miyagawa/carton/issues';
+
 WriteAll;
 
 sub doc_to_pods {

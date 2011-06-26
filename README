@@ -105,6 +105,13 @@ TUTORIAL
     dependency on CPAN meta DB and search.cpan.org at a deploy time, or you
     can have dependencies onto private CPAN modules aka DarkPAN.
 
+COMMUNITY
+    <https://github.com/miyagawa/carton>
+        Code repository, Wiki and Issue Tracker
+
+    <irc://irc.perl.org/#carton>
+        IRC chat room
+
 AUTHOR
     Tatsuhiko Miyagawa
 
