@@ -97,12 +97,6 @@ sub print {
     print $msg;
 }
 
-sub check {
-    my($self, $msg) = @_;
-    $self->print("✓ ", "SUCCESS");
-    $self->print($msg . "\n");
-}
-
 sub error {
     my($self, $msg) = @_;
     $self->print($msg, "ERROR");
@@ -192,19 +186,7 @@ sub cmd_show {
 
 sub cmd_check {
     my $self = shift;
-
-    $self->check_cpanm_version;
-    # check carton.lock and extlib?
-}
-
-sub check_cpanm_version {
-    my $self = shift;
-
-    my $version = (`$self->{cpanm} --version` =~ /version (\S+)/)[0];
-    unless ($version && $version >= 1.5) {
-        $self->error("carton needs cpanm version >= 1.5. You have " . ($version || "(not installed)") . "\n");
-    }
-    $self->check("You have cpanm $version");
+    # check if local directory has all the carton rquirements
 }
 
 sub cmd_update {
