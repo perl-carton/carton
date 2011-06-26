@@ -9,6 +9,7 @@ exec
 unit tests
 carton bundle
 self-contained cpanm and carton
+support lowest possible perl version (to change CoreList in cpanm dict)
 
 # 1.2
 Support DarkPAN/github etc

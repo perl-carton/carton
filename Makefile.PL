@@ -2,8 +2,8 @@ use inc::Module::Install;
 name 'carton';
 version_from 'lib/Carton.pm';
 perl_version '5.008001';
-license_from 'lib/Carton/Doc/Carton.pod';
-readme_from('lib/Carton/Doc/Carton.pod');
+license_from 'lib/Carton.pod';
+readme_from('lib/Carton.pod');
 
 requires 'version', 0.77;
 requires 'JSON';
@@ -26,14 +26,15 @@ sub doc_to_pods {
 
     my %pods;
 
-    for my $file (glob "lib/Carton/Doc/*.pod") {
-        my $base = ($file =~ m!Doc/(.*?)\.pod!)[0];
-        my $name = $base eq 'Carton' ? "carton" : ("carton-" . lc($base));
+    for my $file ("lib/Carton.pod", glob "lib/Carton/Doc/*.pod") {
+        my $base = ($file =~ m!lib/(.*?)\.pod!)[0];
+           $base =~ s!/!::!g;
+        my $name = $base eq 'Carton' ? "carton" : ("carton-" . lc( (split /::/, $base)[-1] ));
         my $doc = "doc/$name.pod";
 
         if ($Module::Install::AUTHOR) {
             mkdir "doc", 0777;
-            copy_pod($file, $doc, "Carton::Doc::$base" => $name);
+            copy_pod($file, $doc, $base => $name);
         }
 
         $pods{$doc} = "blib/man1/$name.1"
@@ -49,16 +50,19 @@ sub copy_pod {
 
     warn "Copying $src -> $dest\n";
 
-    open my $in, "<", $src   or die $!;
-    open my $out, ">", $dest or die $!;
+    open my $in, "<", $src    or die "$src: $!";
+    open my $out, ">", $dest  or die "$dest: $!";
 
     my $match;
     while (<$in>) {
-        s/^$pod_name - /$man - / and $match++;
+        unless ($match) {
+            s/^$pod_name - /$man - /
+                and $match++;
+        }
         print $out $_;
     }
 
     unless ($match) {
-        die "Could nto find NAME $pod_name in $src";
+        die "Couldn't find NAME $pod_name in $src";
     }
 }

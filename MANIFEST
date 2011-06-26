@@ -17,8 +17,8 @@ inc/Module/Install/Scripts.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Carton.pm
+lib/Carton.pod
 lib/Carton/CLI.pm
-lib/Carton/Doc/Carton.pod
 lib/Carton/Doc/FAQ.pod
 lib/Carton/Doc/Install.pod
 lib/Carton/Doc/List.pod
