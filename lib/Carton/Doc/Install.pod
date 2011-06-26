@@ -43,6 +43,37 @@ C<carton.lock> exists and is newer than your build file, carton will
 fetch all remote modules and use the dependencies specified in the
 C<carton.lock> instead of resolving dependencies.
 
+=head1 CONSERVATIVE UPDATE
+
+C<carton install> doesn't update the modules already installed into
+C<local> library path as long as the version is satisfied.
+
+For example, one day you install URI-1.50 from CPAN:
+
+  > carton install URI
+  Successfully installed URI-1.50
+
+Few weeks later, URI module is updated to 1.51 on CPAN. If you run the
+C<carton install URI> again:
+
+  > carton install URI
+  You have URI (1.50)
+
+because you haven't specified the version number, carton won't update
+the module in your local library path. If you want to update to the
+latest version of CPAN, you can either use C<carton update> command,
+or specify the required version either in your build file or a command
+line argument:
+
+ > carton install URI@1.51
+ > carton update URI
+
+ > cat Makefile.PL
+ requires 'URI', 1.51;
+
+Any of those will upgrade URI to the latest one from CPAN, and the
+version specified in the C<carton.lock> will be bumped.
+
 =head1 OPTIONS
 
 =over 4
