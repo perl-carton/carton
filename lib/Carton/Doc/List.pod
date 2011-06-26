@@ -1,6 +1,6 @@
 =head1 NAME
 
-carton-list - List dependencies tracked in the carton.lock file
+Carton::Doc::List - List dependencies tracked in the carton.lock file
 
 =head1 SYNOPSIS
 

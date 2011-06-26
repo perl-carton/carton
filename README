@@ -1,5 +1,6 @@
 NAME
-    carton - Perl module dependency manager (aka Bundler for Perl)
+    Carton::Doc::Carton - Perl module dependency manager (aka Bundler for
+    Perl)
 
 SYNOPSIS
       # During the development

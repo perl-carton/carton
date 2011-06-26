@@ -1,6 +1,6 @@
 =head1 NAME
 
-carton-install - Install the dependencies
+Carton::Doc::Install - Install the dependencies
 
 =head1 SYNOPSIS
 
