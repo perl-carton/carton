@@ -21,8 +21,24 @@ sub configure_cpanm {
 
 sub install_from_build_file {
     my($self, $file) = @_;
-    $self->run_cpanm("--installdeps", ".")
+
+    my @modules = $self->show_deps();
+    $self->run_cpanm(@modules)
         or die "Installing modules failed\n";
+}
+
+sub show_deps {
+    my $self = shift;
+
+    my @output = $self->run_cpanm_output("--showdeps", ".");
+    my @deps;
+    for my $line (@output) {
+        chomp $line;
+        my($mod, $ver) = split / /, $line, 2;
+        push @deps, $mod;
+    }
+
+    return @deps;
 }
 
 sub install_modules {
@@ -179,6 +195,18 @@ sub build_deps {
     }
 
     return @deps;
+}
+
+sub run_cpanm_output {
+    my($self, @args) = @_;
+
+    my $pid = open(my $kid, "-|"); # XXX portability
+    if ($pid) {
+        return <$kid>;
+    } else {
+        local $ENV{PERL_CPANM_OPT};
+        exec $self->{cpanm}, "--quiet", "-L", $self->{path}, @args;
+    }
 }
 
 sub run_cpanm {
