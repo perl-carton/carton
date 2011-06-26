@@ -81,14 +81,16 @@ sub install_conservative {
 
     $modules = $self->dedupe_modules($modules);
 
-    my $index = $self->build_index($self->lock->{modules});
-    $self->build_mirror_file($index, $self->{mirror_file});
+    if ($self->lock) {
+        my $index = $self->build_index($self->lock->{modules});
+        $self->build_mirror_file($index, $self->{mirror_file});
+    }
 
     $self->run_cpanm(
         "--skip-satisfied",
         "--mirror", "http://cpan.cpantesters.org/", # fastest
         "--mirror", "http://backpan.perl.org/",     # fallback
-        "--mirror-index", $self->{mirror_file},
+        ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
         @$modules,
     );
@@ -249,19 +251,25 @@ sub run_cpanm {
 sub update_lock_file {
     my($self, $file) = @_;
 
+    my $lock = $self->build_lock;
+
+    require JSON;
+    open my $fh, ">", "carton.lock" or die $!;
+    print $fh JSON->new->pretty->encode($lock);
+
+    return 1;
+}
+
+sub build_lock {
+    my $self = shift;
+
     my %locals = $self->find_locals;
 
-    my $spec = {
+    return {
         modules => \%locals,
         perl => $],
         generator => "carton $VERSION",
     };
-
-    require JSON;
-    open my $fh, ">", "carton.lock" or die $!;
-    print $fh JSON->new->pretty->encode($spec);
-
-    return 1;
 }
 
 sub find_locals {
