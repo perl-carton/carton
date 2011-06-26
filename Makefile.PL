@@ -5,10 +5,11 @@ perl_version '5.008001';
 license_from 'lib/Carton.pod';
 readme_from('lib/Carton.pod');
 
-requires 'version', 0.77;
+configure_requires 'version', 0.77;
+
 requires 'JSON';
 requires 'App::cpanminus', 1.5000;
-requires 'Term::ANSIColor';
+requires 'Term::ANSIColor', 1.12;
 requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny';
 
