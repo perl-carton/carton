@@ -1,12 +1,12 @@
 # 1.0
 carton config / .carton/config
+carton update
+clean uninstall?
 -g, --global + local::lib (~/perl5)
 exec
 
 # 1.1
 unit tests
-carton update
-clean uninstall?
 carton bundle
 self-contained cpanm and carton
 
