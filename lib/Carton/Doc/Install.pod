@@ -23,37 +23,37 @@ install the modules given as arguments.
 =item carton install (no arguments)
 
 If you run C<carton install> without any arguments and if a build file
-(C<Makefile.PL> or C<Build.PL>) exists, carton will scan dependencies
+(I<Makefile.PL> or I<Build.PL>) exists, carton will scan dependencies
 from the build file and install the modules.
 
 =back
 
 In either way, if you run C<carton install> for the first time
-(i.e. C<carton.lock> does not exist), carton will fetch all the
+(i.e. I<carton.lock> does not exist), carton will fetch all the
 modules specified, resolve dependencies and install all required
 modules from CPAN.
 
-If C<carton.lock> file does exist, carton will still try to install
+If I<carton.lock> file does exist, carton will still try to install
 modules specified or updated in the build file, but uses
-C<carton.lock> for the dependency resolution, and then cascades to
+I<carton.lock> for the dependency resolution, and then cascades to
 CPAN.
 
 carton will analyze all the dependencies and their version
-information, and it is saved into C<carton.lock> file. It is important
-to add C<carton.lock> file into a version controlled repository and
+information, and it is saved into I<carton.lock> file. It is important
+to add I<carton.lock> file into a version controlled repository and
 commit the changes as you update your dependencies.
 
 =head2 DEPLOYMENT MODE
 
 If you specify the C<--deployment> command line option or the
-C<carton.lock> exists and your build file does not exist, carton will
+I<carton.lock> exists and your build file does not exist, carton will
 fetch all remote modules and use the dependencies specified in the
-C<carton.lock> instead of resolving dependencies.
+I<carton.lock> instead of resolving dependencies.
 
 =head1 CONSERVATIVE UPDATE
 
 C<carton install> doesn't update the modules already installed into
-C<local> library path as long as the version is satisfied.
+I<local> library path as long as the version is satisfied.
 
 For example, one day you install URI-1.50 from CPAN:
 
@@ -79,7 +79,7 @@ line argument:
  requires 'URI', 1.51;
 
 Any of those will upgrade URI to the latest one from CPAN, and the
-version specified in the C<carton.lock> will be bumped.
+version specified in the I<carton.lock> will be bumped.
 
 =head1 OPTIONS
 
@@ -91,6 +91,6 @@ Force the deployment mode and carton will ignore build file contents.
 
 =item --path
 
-Specify the path to install modules to. Defaults to C<local> in the current directory.
+Specify the path to install modules to. Defaults to I<local> in the current directory.
 
 =back

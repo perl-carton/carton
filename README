@@ -32,9 +32,9 @@ DESCRIPTION
 
 TUTORIAL
   Initializing the environment
-    carton will use ".carton" folder for local configuration and "local" to
-    install modules. You're recommended to exclude these directories from
-    the version control system.
+    carton will use the *.carton* directory for local configuration and the
+    *local* directory to install modules into. You're recommended to exclude
+    these directories from the version control system.
 
       > carton check
       > echo .carton/ >> .gitignore
@@ -44,7 +44,7 @@ TUTORIAL
 
   Tracking the dependencies
     You can manage the dependencies of your application via the standard
-    "Makefile.PL" or "Build.PL".
+    *Makefile.PL* or *Build.PL*.
 
       # Makefile.PL
       use inc::Module::Install;
@@ -57,11 +57,11 @@ TUTORIAL
 
       > carton install
 
-    The modules are installed into your "local" directory, and the
+    The modules are installed into your *local* directory, and the
     dependencies tree and version information are analyzed and saved into
-    "carton.lock" in your directory.
+    *carton.lock* in your directory.
 
-    Make sure you add "carton.lock" to your version controlled repository
+    Make sure you add *carton.lock* to your version controlled repository
     and commit changes as you update dependencies.
 
       > git commit -m "Added Plack and Starman" Makefile.PL carton.lock
@@ -72,18 +72,18 @@ TUTORIAL
       > carton install Devel::NYTProf
       > carton install AnyEvent::Redis
 
-    carton will install these modules into "local" directory in the same
+    carton will install these modules into *local* directory in the same
     way, and also can track and analyze the dependencies.
 
   Deploying your application
     Once you've done installing all the dependencies, you can push your
-    application directory to a remote machine (excluding "local" and
-    ".carton") and run the following command:
+    application directory to a remote machine (excluding *local* and
+    *.carton*) and run the following command:
 
       > carton install
 
-    This will look at the "carton.lock" and install the exact same versions
-    of the dependencies into "local", and now your application is ready to
+    This will look at the *carton.lock* and install the exact same versions
+    of the dependencies into *local*, and now your application is ready to
     run.
 
   Bundling modules
@@ -93,7 +93,7 @@ TUTORIAL
 
       > carton bundle
 
-    will bundle these tarballs into "local/cache" directory, and
+    will bundle these tarballs into *local/cache* directory, and
 
       > carton install --cached
 
