@@ -1,4 +1,4 @@
-package App::Carton;
+package Carton;
 
 use strict;
 use 5.008_001;
@@ -8,7 +8,7 @@ use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
-use App::Carton::Tree;
+use Carton::Tree;
 
 our $Colors = {
     SUCCESS => 'green',
@@ -204,7 +204,7 @@ sub build_tree {
     my $idx  = $self->build_index($modules);
     my $pool = { %$modules }; # copy
 
-    my $tree = App::Carton::Tree->new;
+    my $tree = Carton::Tree->new;
 
     while (my $pick = (keys %$pool)[0]) {
         $self->_build_tree($pick, $tree, $tree, $pool, $idx);
@@ -218,12 +218,12 @@ sub build_tree {
 sub _build_tree {
     my($self, $elem, $tree, $curr_node, $pool, $idx) = @_;
 
-    if (my $cached = App::Carton::TreeNode->cached($elem)) {
+    if (my $cached = Carton::TreeNode->cached($elem)) {
         $curr_node->add_child($cached);
         return;
     }
 
-    my $node = App::Carton::TreeNode->new($elem, $pool);
+    my $node = Carton::TreeNode->new($elem, $pool);
     $curr_node->add_child($node);
 
     for my $child ( $self->build_deps($node->metadata, $idx) ) {

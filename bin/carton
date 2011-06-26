@@ -1,9 +1,9 @@
 #!perl
 use strict;
 use 5.008001;
-use App::Carton;
+use Carton;
 
-App::Carton->new->run(@ARGV);
+Carton->new->run(@ARGV);
 
 __END__
 

@@ -1,4 +1,4 @@
-package App::Carton::TreeNode;
+package Carton::TreeNode;
 use strict;
 use warnings;
 
@@ -37,12 +37,12 @@ sub _walk_down {
 
     my @child = $self->children;
     for my $child ($self->children) {
-        local $App::Carton::Tree::Abort = 0;
+        local $Carton::Tree::Abort = 0;
         if ($pre_cb) {
             $pre_cb->($child, $depth, $self);
         }
 
-        unless ($App::Carton::Tree::Abort) {
+        unless ($Carton::Tree::Abort) {
             $child->_walk_down($pre_cb, $post_cb, $depth + 1);
         }
 
@@ -53,7 +53,7 @@ sub _walk_down {
 }
 
 sub abort {
-    $App::Carton::Tree::Abort = 1;
+    $Carton::Tree::Abort = 1;
 }
 
 sub key      { $_[0]->[0] }
@@ -82,8 +82,8 @@ sub is {
     $self->key eq $node->key;
 }
 
-package App::Carton::Tree;
-our @ISA = qw(App::Carton::TreeNode);
+package Carton::Tree;
+our @ISA = qw(Carton::TreeNode);
 
 sub new {
     bless [0, {}, []], shift;
