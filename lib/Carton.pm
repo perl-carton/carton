@@ -163,7 +163,11 @@ sub install_from_spec {
     my $tree = $self->build_tree($data->{modules});
     my @root = map $_->key, $tree->children;
 
-    $self->run_cpanm("--mirror", "http://backpan.perl.org/", "--index", $file, @root);
+    $self->run_cpanm(
+        "--mirror", "http://backpan.perl.org/",
+        "--mirror", "http://cpan.cpantesters.org/",
+        "--index", $file, @root,
+    );
 }
 
 sub build_mirror_file {
