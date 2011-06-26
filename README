@@ -37,7 +37,7 @@ TUTORIAL
     the version control system.
 
       > carton check
-      > echo .carton >> .gitignore
+      > echo .carton/ >> .gitignore
       > echo local/ >> .gitignore
       > git add carton.lock
       > git commit -m "Start using carton"

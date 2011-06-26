@@ -220,6 +220,8 @@ sub update_packages {
 
     my $spec = {
         modules => \%locals,
+        perl => $],
+        generator => "carton $VERSION",
     };
 
     require JSON;
