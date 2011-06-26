@@ -1,0 +1,51 @@
+=head1 NAME
+
+Carton::Doc::FAQ - Frequently Asked Questions
+
+=head1 QUESTIONS
+
+=head2 How is this different from DPAN or CPAN::Mini::Inject?
+
+First of all, if you currently use L<DPAN|MyCPAN::App::DPAN>,
+L<CPAN::Mini::Inject> or any other similar tools successfully, then
+that's totally fine. You don't need to switch to carton.
+
+If you experience difficulties with these tools, or are interested in
+what could be better in carton, keep on reading.
+
+carton definitely shares the goal with these private CPAN repository
+management tool:
+
+=over 4
+
+=item *
+
+Manage the dependencies tree locally
+
+=item *
+
+Take snapshots/lock the versions
+
+=item *
+
+Inject private modules into the repository
+
+=back
+
+Existing tools are designed to work with existing CPAN clients such as
+L<CPAN> or L<CPANPLUS>, and have accomplished that by working around
+the CPAN mirror structure.
+
+carton internally does the same thing, but its user interface is
+centerd around the installer, by implementing a wrapper for
+L<cpanm|App::cpanminus>, so you can use the same commands in the
+development mode and deployment mode.
+
+Carton automatically maintains the L<carton.lock> file, which is meant
+to be version controlled, inside your application directory. You don't
+need a separate database or a directory to maintain tarballs outside
+your application. The C<carton.lock> file can always be generated out
+of the local library path, and carton can reproduce the tree using the
+lock file on other machines.
+
+

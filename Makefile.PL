@@ -22,7 +22,7 @@ auto_set_repository();
 WriteAll;
 
 sub doc_to_pods {
-    # lib/Carton/Doc/*.pod => doc/carton-*.pod => blib/man1/carton-*.1
+    # lib/Carton/Doc/*.pod => docs/carton-*.pod => blib/man1/carton-*.1
 
     my %pods;
 
@@ -30,10 +30,10 @@ sub doc_to_pods {
         my $base = ($file =~ m!lib/(.*?)\.pod!)[0];
            $base =~ s!/!::!g;
         my $name = $base eq 'Carton' ? "carton" : ("carton-" . lc( (split /::/, $base)[-1] ));
-        my $doc = "doc/$name.pod";
+        my $doc = "docs/$name.pod";
 
         if ($Module::Install::AUTHOR) {
-            mkdir "doc", 0777;
+            mkdir "docs", 0777;
             copy_pod($file, $doc, $base => $name);
         }
 
