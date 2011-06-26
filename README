@@ -2,7 +2,7 @@ NAME
     Carton - Perl module dependency manager (aka Bundler for Perl)
 
 SYNOPSIS
-      # During the development
+      # On your development environment
       > cat Makefile.PL
       use inc::Module::Install;
       name 'MyApp';
@@ -12,12 +12,13 @@ SYNOPSIS
       requires 'Starman', 0.2000;
   
       WriteAll;
-  
-      > carton install
-      > git commit -m "add Plack and Starman" Makefile.PL carton.lock
 
-      # Then elsewhere (on a deployment machine)
-      > carton install --deployment
+      > carton install
+      > git add Makefile.PL carton.lock
+      > git commit -m "add Plack and Starman"
+
+      # Other developer's machine, or on a deployment box
+      > carton install
       > carton exec starman -p 8080 myapp.psgi
 
 WARNING
@@ -62,9 +63,12 @@ TUTORIAL
     *carton.lock* in your directory.
 
     Make sure you add *carton.lock* to your version controlled repository
-    and commit changes as you update dependencies.
+    and commit changes as you update dependencies. This will ensure that
+    other developers on your app, as well as your deployment environment,
+    use exactly the same versions of the modules you just installed.
 
-      > git commit -m "Added Plack and Starman" Makefile.PL carton.lock
+      > git add Makefile.PL carton.lock
+      > git commit -m "Added Plack and Starman"
 
     You can aternatively install modules adhoc from the command line,
     without managing the build file at all.
