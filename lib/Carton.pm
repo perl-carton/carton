@@ -276,7 +276,7 @@ sub cmd_exec {
 
 sub run_cpanm {
     my($self, @args) = @_;
-    !system $self->{cpanm}, "--notest", "--reinstall", "-L", $self->{path}, @args;
+    !system $self->{cpanm}, "--notest", "-L", $self->{path}, @args;
 }
 
 sub parse_json {

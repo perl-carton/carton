@@ -44,12 +44,12 @@ for your Perl application.
 =head2 Initializing the environment
 
 carton will use C<.carton> folder for local configuration and
-C<extlib> to install modules. You're recommended to exclude these
+C<local> to install modules. You're recommended to exclude these
 directories from the version control system.
 
   > carton check
   > echo .carton >> .gitignore
-  > echo extlib >> .gitignore
+  > echo local/ >> .gitignore
   > git add carton.json
   > git commit -m "Start using carton"
 
@@ -69,7 +69,7 @@ And then you can install these dependencies via:
 
   > carton install
 
-The modules are installed into your C<extlib> directory, and the
+The modules are installed into your C<local> directory, and the
 dependencies tree and version information are analyzed and saved into
 C<carton.json> in your directory.
 
@@ -84,13 +84,13 @@ without managing the build file at all.
 =head2 Deploying your application
 
 Once you've done installing all the dependencies, you can push your
-application directory to a remote machine (excluding C<extlib> and
+application directory to a remote machine (excluding C<local> and
 C<.carton>) and run the following command:
 
   > carton install
 
 This will look at the C<carton.json> and install the exact same
-versions of the dependencies into C<extlib>, and now your application
+versions of the dependencies into C<local>, and now your application
 is ready to run.
 
 =head2 Bundling modules
@@ -101,7 +101,7 @@ available on CPAN, such as internal distribution aka DarkPAN.
 
   > carton bundle
 
-will bundle these tarballs into C<extlib/cache> directory, and
+will bundle these tarballs into C<local/cache> directory, and
 
   > carton install --cached
 
