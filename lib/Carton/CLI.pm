@@ -184,7 +184,7 @@ sub cmd_show {
         });
     } else {
         for my $module (values %{$lock->{modules} || {}}) {
-            printf "$module->{dist}\n";
+            $self->print("$module->{dist}\n");
         }
     }
 }

@@ -21,9 +21,12 @@ EOF
     unlike $app->output, qr/found in local but/;
 
     $app->run("install");
-    $app->run("check");
 
+    $app->run("check");
     like $app->output, qr/matches/;
+
+    $app->run("list");
+    like $app->output, qr/Try-Tiny-/;
 }
 
 
