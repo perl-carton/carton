@@ -46,7 +46,6 @@ carton will use the I<.carton> directory for local configuration and
 the I<local> directory to install modules into. You're recommended to
 exclude these directories from the version control system.
 
-  > carton check
   > echo .carton/ >> .gitignore
   > echo local/ >> .gitignore
   > git add carton.lock
