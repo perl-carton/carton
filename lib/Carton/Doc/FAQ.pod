@@ -7,8 +7,9 @@ Carton::Doc::FAQ - Frequently Asked Questions
 =head2 How is this different from DPAN or CPAN::Mini::Inject?
 
 First of all, if you currently use L<DPAN|MyCPAN::App::DPAN>,
-L<CPAN::Mini::Inject> or any other similar tools successfully, then
-that's totally fine. You don't need to switch to carton.
+L<CPAN::Mini::Inject>, L<Shipwright> or any other similar tools
+successfully, then that's totally fine. You don't need to switch to
+carton.
 
 If you experience difficulties with these tools, or are interested in
 what could be better in carton, keep on reading.
