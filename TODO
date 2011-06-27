@@ -1,4 +1,5 @@
 # 1.0
+Fix non-intuitive errors when Makefile.PL is not valid (in showdeps)
 carton config / .carton/config
 carton update
 clean uninstall?

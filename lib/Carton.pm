@@ -171,7 +171,7 @@ sub is_core {
 };
 
 sub walk_down_tree {
-    my($self, $tree, $cb) = @_;
+    my($self, $tree, $cb, $no_warn) = @_;
 
     my %seen;
     $tree->walk_down(sub {
@@ -180,7 +180,7 @@ sub walk_down_tree {
 
         if ($node->metadata->{dist}) {
             $cb->($node->metadata, $depth);
-        } elsif (!$self->is_core($node->key, 0)) {
+        } elsif (!$self->is_core($node->key, 0) && !$no_warn) {
             warn "Couldn't find ", $node->key, "\n";
         }
     });

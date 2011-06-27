@@ -219,7 +219,7 @@ sub cmd_check {
             my($module, $depth) = @_;
             print "  " x $depth;
             print "$module->{dist}\n";
-        });
+        }, 1);
         $ok = 0;
     }
 
