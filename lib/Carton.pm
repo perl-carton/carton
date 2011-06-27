@@ -284,13 +284,16 @@ sub find_locals {
 
     require File::Find;
 
+    my $libdir = "$self->{path}/lib/perl5/auto/meta";
+    return unless -e $libdir;
+
     my @locals;
     my $wanted = sub {
         if ($_ eq 'local.json') {
             push @locals, $File::Find::name;
         }
     };
-    File::Find::find($wanted, "$self->{path}/lib/perl5/auto/meta");
+    File::Find::find($wanted, $libdir);
 
     return map { my $module = Carton::Util::parse_json($_); ($module->{name} => $module) } @locals;
 }
@@ -311,9 +314,11 @@ sub check_satisfies {
         $self->_check_satisfies($dep, \@unsatisfied, $index, \%pool);
     }
 
+    my $tree = keys %pool ? $self->build_tree(\%pool) : undef;
+
     return {
         unsatisfied => \@unsatisfied,
-        superflous  => $self->build_tree(\%pool),
+        superflous  => $tree,
     };
 }
 
