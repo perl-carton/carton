@@ -201,16 +201,27 @@ sub cmd_check {
     my $lock = $self->carton->build_lock;
     my @deps = $self->carton->list_dependencies;
 
-    my @unsatisfied = $self->carton->check_satisfies($lock, \@deps);
-    if (@unsatisfied) {
+    my $res = $self->carton->check_satisfies($lock, \@deps);
+
+    my $ok = 1;
+    if (@{$res->{unsatisfied}}) {
         $self->print("Following dependencies are not satisfied. Run `carton install` to install them.\n", WARN);
-        for my $dep (@unsatisfied) {
-            $self->print("$dep->{module} " .
-                         ($dep->{version} ? "($dep->{version}" . ($dep->{found} ? " > $dep->{found})" : ")") : "") .
-                         "\n");
+        for my $dep (@{$res->{unsatisfied}}) {
+            $self->print("  $dep->{module} " . ($dep->{version} ? "($dep->{version})" : "") . "\n");
         }
-    } else {
-        $self->print("Dependencies specified in your $file are satisfied.\n", SUCCESS);
+        $ok = 0;
+    }
+
+    if (@{$res->{superflous}}) {
+        $self->print("Following modules are found in $self->{path} but couldn't be tracked from your $file\n", WARN);
+        for my $dep (@{$res->{superflous}}) {
+            $self->print("  $dep->{module} " . ($dep->{version} ? "($dep->{version})" : "") . "\n");
+        }
+        $ok = 0;
+    }
+
+    if ($ok) {
+        $self->print("Dependencies specified in your $file are satisfied and completely match with modules in $self->{path}.\n", SUCCESS);
     }
 }
 

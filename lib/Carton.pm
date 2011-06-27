@@ -160,10 +160,18 @@ sub build_index {
     return $index;
 }
 
-sub walk_down_tree {
-    my($self, $lock, $cb) = @_;
+sub is_core {
+    my($self, $module, $want_ver, $perl_version) = @_;
+    $perl_version ||= $];
 
     require Module::CoreList;
+    my $core_ver = $Module::CoreList::version{$perl_version + 0}{$module};
+
+    return $core_ver && version->new($core_ver) >= version->new($want_ver);
+};
+
+sub walk_down_tree {
+    my($self, $lock, $cb) = @_;
 
     my %seen;
     my $tree = $self->build_tree($lock->{modules});
@@ -173,7 +181,7 @@ sub walk_down_tree {
 
         if ($node->metadata->{dist}) {
             $cb->($node->metadata, $depth);
-        } elsif (!$Module::CoreList::version{$]+0}{$node->key}) {
+        } elsif ($self->is_core($node->key, 0)) {
             warn "Couldn't find ", $node->key, "\n";
         }
     });
@@ -291,22 +299,53 @@ sub find_locals {
 sub check_satisfies {
     my($self, $lock, $deps) = @_;
 
-    my @missing;
+    # TODO recurse dep tree to see all your dependencies are satisfied
+    # TODO then check if something is remaining in $lock, which is not specified in the build file
+
+    my @unsatisfied;
     my $index = $self->build_index($lock->{modules});
-    for my $dep (@$deps) {
-        # TODO recurse to see all your dependencies are satisfied?
-        my($mod, $ver) = split /~/, $dep;
-        my $found = $index->{$mod};
-        unless ($found && (!$ver or version->new($found->{version}) >= version->new($ver))) {
-            push @missing, {
-                module => $mod,
-                version => $ver,
-                found => $found ? $found->{version} : undef,
-            };
-        }
+    my %pool = %{$lock->{modules}}; # copy
+
+    my @root = map { [ split /~/, $_, 2 ] } @$deps;
+
+    for my $dep (@root) {
+        $self->_check_satisfies($dep, \@unsatisfied, $index, \%pool);
     }
 
-    return @missing;
+    return {
+        unsatisfied => \@unsatisfied,
+        superflous  => [ values %pool ],
+    };
+}
+
+sub _check_satisfies {
+    my($self, $dep, $unsatisfied, $index, $pool) = @_;
+
+    my($mod, $ver) = @$dep;
+
+    my $found = $index->{$mod};
+    if ($found) {
+        delete $pool->{$found->{meta}{name}};
+    } elsif ($self->is_core($mod, $ver)) {
+        return;
+    }
+
+    unless ($found and (!$ver or version->new($found->{version}) >= version->new($ver))) {
+        push @$unsatisfied, {
+            module => $mod,
+            version => $ver,
+            found => $found ? $found->{version} : undef,
+        };
+        return;
+    }
+
+    my $meta = $found->{meta};
+    for my $requires (values %{$meta->{requires}}) {
+        for my $module (keys %$requires) {
+            next if $module eq 'perl';
+            $self->_check_satisfies([ $module, $requires->{$module} ], $unsatisfied, $index, $pool);
+        }
+    }
 }
 
 
