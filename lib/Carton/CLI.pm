@@ -175,7 +175,8 @@ sub cmd_show {
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the spec file.\n");
 
     if ($tree_mode) {
-        $self->carton->walk_down_tree($lock, sub {
+        my $tree = $self->carton->build_tree($lock->{modules});
+        $self->carton->walk_down_tree($tree, sub {
             my($module, $depth) = @_;
             print "  " x $depth;
             print "$module->{dist}\n";
@@ -207,16 +208,18 @@ sub cmd_check {
     if (@{$res->{unsatisfied}}) {
         $self->print("Following dependencies are not satisfied. Run `carton install` to install them.\n", WARN);
         for my $dep (@{$res->{unsatisfied}}) {
-            $self->print("  $dep->{module} " . ($dep->{version} ? "($dep->{version})" : "") . "\n");
+            $self->print("$dep->{module} " . ($dep->{version} ? "($dep->{version})" : "") . "\n");
         }
         $ok = 0;
     }
 
-    if (@{$res->{superflous}}) {
+    if ($res->{superflous}) {
         $self->print("Following modules are found in $self->{path} but couldn't be tracked from your $file\n", WARN);
-        for my $dep (@{$res->{superflous}}) {
-            $self->print("  $dep->{module} " . ($dep->{version} ? "($dep->{version})" : "") . "\n");
-        }
+        $self->carton->walk_down_tree($res->{superflous}, sub {
+            my($module, $depth) = @_;
+            print "  " x $depth;
+            print "$module->{dist}\n";
+        });
         $ok = 0;
     }
 

@@ -171,17 +171,16 @@ sub is_core {
 };
 
 sub walk_down_tree {
-    my($self, $lock, $cb) = @_;
+    my($self, $tree, $cb) = @_;
 
     my %seen;
-    my $tree = $self->build_tree($lock->{modules});
     $tree->walk_down(sub {
         my($node, $depth, $parent) = @_;
         return $tree->abort if $seen{$node->key}++;
 
         if ($node->metadata->{dist}) {
             $cb->($node->metadata, $depth);
-        } elsif ($self->is_core($node->key, 0)) {
+        } elsif (!$self->is_core($node->key, 0)) {
             warn "Couldn't find ", $node->key, "\n";
         }
     });
@@ -314,7 +313,7 @@ sub check_satisfies {
 
     return {
         unsatisfied => \@unsatisfied,
-        superflous  => [ values %pool ],
+        superflous  => $self->build_tree(\%pool),
     };
 }
 
