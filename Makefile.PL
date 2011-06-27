@@ -12,6 +12,7 @@ requires 'App::cpanminus', 1.4900;
 requires 'Term::ANSIColor', 1.12;
 requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny';
+requires 'parent';
 
 install_script 'bin/carton';
 

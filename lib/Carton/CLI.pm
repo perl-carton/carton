@@ -79,7 +79,7 @@ sub commands {
 
 sub cmd_usage {
     my $self = shift;
-    print <<HELP;
+    $self->print(<<HELP);
 Usage: carton <command>
 
 where <command> is one of:
@@ -113,7 +113,8 @@ sub cmd_help {
 }
 
 sub cmd_version {
-    print "carton $Carton::VERSION\n";
+    my $self = shift;
+    $self->print("carton $Carton::VERSION\n");
 }
 
 sub cmd_install {
@@ -178,8 +179,8 @@ sub cmd_show {
         my $tree = $self->carton->build_tree($lock->{modules});
         $self->carton->walk_down_tree($tree, sub {
             my($module, $depth) = @_;
-            print "  " x $depth;
-            print "$module->{dist}\n";
+            my $line = " " x $depth . "$module->{dist}\n";
+            $self->print($line);
         });
     } else {
         for my $module (values %{$lock->{modules} || {}}) {
@@ -217,8 +218,8 @@ sub cmd_check {
         $self->print("Following modules are found in $self->{path} but couldn't be tracked from your $file\n", WARN);
         $self->carton->walk_down_tree($res->{superflous}, sub {
             my($module, $depth) = @_;
-            print "  " x $depth;
-            print "$module->{dist}\n";
+            my $line = "  " x $depth . "$module->{dist}\n";
+            $self->print($line);
         }, 1);
         $ok = 0;
     }
