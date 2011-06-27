@@ -221,7 +221,7 @@ sub cmd_check {
     }
 
     if ($ok) {
-        $self->print("Dependencies specified in your $file are satisfied and completely match with modules in $self->{path}.\n", SUCCESS);
+        $self->print("Dependencies specified in your $file are satisfied and matches with modules in $self->{path}.\n", SUCCESS);
     }
 }
 
