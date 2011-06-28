@@ -5,7 +5,10 @@ use warnings;
 use 5.008_001;
 use version; our $VERSION = qv('v0.1_0');
 
+use Cwd;
+use Config qw(%Config);
 use Carton::Util;
+use File::Path;
 
 sub new {
     my $class = shift;
@@ -187,7 +190,7 @@ sub walk_down_tree {
 }
 
 sub build_tree {
-    my($self, $modules) = @_;
+    my($self, $modules, %args) = @_;
 
     my $idx  = $self->build_index($modules);
     my $pool = { %$modules }; # copy
@@ -198,7 +201,8 @@ sub build_tree {
         $self->_build_tree($pick, $tree, $tree, $pool, $idx);
     }
 
-    $tree->finalize;
+    $tree->finalize
+        unless $args{no_finalize};
 
     return $tree;
 }
@@ -301,9 +305,6 @@ sub find_locals {
 sub check_satisfies {
     my($self, $lock, $deps) = @_;
 
-    # TODO recurse dep tree to see all your dependencies are satisfied
-    # TODO then check if something is remaining in $lock, which is not specified in the build file
-
     my @unsatisfied;
     my $index = $self->build_index($lock->{modules});
     my %pool = %{$lock->{modules}}; # copy
@@ -352,5 +353,27 @@ sub _check_satisfies {
     }
 }
 
+sub uninstall {
+    my($self, $lock, $module) = @_;
+
+    my $meta = $lock->{modules}{$module};
+    (my $path_name = $meta->{name}) =~ s!::!/!g;
+
+    my $path = Cwd::realpath($self->{path});
+    my $packlist = "$path/lib/perl5/$Config{archname}/auto/$path_name/.packlist";
+
+    open my $fh, "<", $packlist or die "Couldn't locate .packlist for $meta->{name}";
+    while (<$fh>) {
+        # EUMM merges with site and perl library paths
+        chomp;
+        next unless /^\Q$path\E/;
+        unlink $_ or warn "Couldn't unlink $_: $!";
+    }
+
+    unlink $packlist;
+    if ($meta->{dist}) { # safety guard not to rm -r auto/meta
+        File::Path::rmtree("$self->{path}/lib/perl5/auto/meta/$meta->{dist}");
+    }
+}
 
 1;

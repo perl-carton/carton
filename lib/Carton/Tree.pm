@@ -20,15 +20,17 @@ sub new {
     return $self;
 }
 
-sub walk_down {
-    my($self, $cb) = @_;
-
-    $cb ||= sub {
+sub dump {
+    my $self = shift;
+    $self->walk_down(sub {
         my($node, $depth) = @_;
         print " " x $depth;
         print $node->key, "\n";
-    };
+    });
+}
 
+sub walk_down {
+    my($self, $cb) = @_;
     $self->_walk_down($cb, undef, 0);
 }
 
@@ -78,7 +80,11 @@ sub remove_child {
 
     my @new;
     for my $child (@{$self->[2]}) {
-        push @new, $child if $rm->key ne $child->key;
+        if ($rm->key eq $child->key) {
+            undef $child;
+        } else {
+            push @new, $child;
+        }
     }
 
     $self->[2] = \@new;
@@ -127,6 +133,20 @@ sub finalize {
     }
 
     %cache = ();
+}
+
+sub has_child {
+    my($self, $key) = @_;
+
+    my $has;
+    $self->walk_down(sub {
+        if ($_[0]->key eq $key) {
+            $has++;
+            return $self->abort;
+        }
+    });
+
+    return $has;
 }
 
 1;

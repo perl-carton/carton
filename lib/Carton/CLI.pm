@@ -150,6 +150,54 @@ sub cmd_install {
     $self->print("Complete! Modules were installed into $self->{path}\n", SUCCESS);
 }
 
+sub cmd_uninstall {
+    my($self, @args) = @_;
+
+    $self->parse_options(\@args, "p|path=s", \$self->{path});
+    $self->carton->configure(
+        path => $self->{path},
+    );
+
+    my $lock = $self->find_lock
+        or $self->error("Can't find carton.lock: Run `carton install`");
+
+    my $index = $self->carton->build_index($lock->{modules});
+
+    my @meta;
+    for my $module (@args) {
+        if (exists $index->{$module}) {
+            push @meta, $index->{$module}{meta};
+        } else {
+            $self->print("Can't locate module $module\n", WARN);
+        }
+    }
+
+    # only can uninstall root dependencies
+    my $tree = $self->carton->build_tree($lock->{modules}, no_finalize => 1);
+    for my $root ($tree->children) {
+        if (grep $_->{name} eq $root->key, @meta) {
+            $tree->remove_child($root);
+        }
+    }
+    $tree->finalize;
+
+    my @missing = grep !$tree->has_child($_), keys %{$lock->{modules}};
+    for my $module (@missing) {
+        my $meta = $lock->{modules}{$module};
+        $self->print("Uninstalling $meta->{dist}\n");
+        $self->carton->uninstall($lock, $module);
+    }
+
+    for my $meta (@meta) {
+        unless (grep $meta->{name} eq $_, @missing) {
+            $self->print("$meta->{name} is dependent by some other modules. Can't uninstall it.\n", WARN);
+        }
+    }
+
+    $self->carton->update_lock_file($self->lock_file);
+    $self->print("Complete! Modules and its dependencies were uninstalled from $self->{path}\n", SUCCESS);
+}
+
 sub mirror_file {
     my $self = shift;
     return $self->work_file("02packages.details.txt");
@@ -164,16 +212,19 @@ sub has_build_file {
     return $file;
 }
 
-*cmd_list = \&cmd_show;
+sub cmd_tree {
+    my $self = shift;
+    $self->cmd_list("--tree", @_);
+}
 
-sub cmd_show {
+sub cmd_list {
     my($self, @args) = @_;
 
     my $tree_mode;
     $self->parse_options(\@args, "tree!" => \$tree_mode);
 
-    my $lock = $self->lock_data
-        or $self->error("Can't find carton.lock: Run `carton install` to rebuild the spec file.\n");
+    my $lock = $self->find_lock
+        or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
     if ($tree_mode) {
         my $tree = $self->carton->build_tree($lock->{modules});
@@ -251,11 +302,9 @@ sub find_lock {
 sub lock_data {
     my $self = shift;
 
-    return $self->{lock} if $self->{lock};
-
+    my $lock;
     try {
-        my $lock = Carton::Util::parse_json($self->lock_file);
-        $self->{lock} = $lock;
+        $lock = Carton::Util::parse_json($self->lock_file);
     } catch {
         if (/No such file/) {
             $self->error("Can't locate carton.lock\n");
@@ -264,7 +313,7 @@ sub lock_data {
         }
     };
 
-    return $self->{lock};
+    return $lock;
 }
 
 sub lock_file {
