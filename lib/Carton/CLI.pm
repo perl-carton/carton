@@ -364,7 +364,7 @@ sub cmd_exec {
     $self->parse_options(\@args, "system", \$system); # always run parse_options to allow --
 
     my $path = $self->config->get('path');
-    local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$path/lib/perl5";
+    local $ENV{PERL5OPT} = "-MCarton::lib=. -Mlib=$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $system ? system(@args) : exec(@args);
