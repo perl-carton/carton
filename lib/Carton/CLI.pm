@@ -340,10 +340,12 @@ sub cmd_check {
 sub cmd_update {
     # "cleanly" update distributions in extlib
     # rebuild the tree, update modules with DFS
+    die "Unimplemented";
 }
 
 sub cmd_exec {
     # setup lib::core::only, -L env, put extlib/bin into PATH and exec script
+    die "Unimplemented";
 }
 
 sub find_lock {
