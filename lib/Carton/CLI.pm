@@ -346,10 +346,14 @@ sub cmd_update {
 sub cmd_exec {
     my($self, @args) = @_;
 
+    my $system; # for unit testing
+    $self->parse_options(\@args, "system", \$system); # always run parse_options to allow --
+
     my $path = $self->config->get('path');
     local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
-    exec @args;
+
+    $system ? system(@args) : exec(@args);
 }
 
 sub find_lock {
