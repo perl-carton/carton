@@ -7,14 +7,19 @@ use version; our $VERSION = qv('v0.1_0');
 
 use Cwd;
 use Config qw(%Config);
+use Carton::Config;
 use Carton::Util;
 use File::Path;
 
 sub new {
-    my $class = shift;
+    my($class, %args) = @_;
     bless {
-        cpanm => $ENV{PERL_CARTON_CPANM} || 'cpanm',
+        config => $args{config},
     }, $class;
+}
+
+sub config {
+    $_[0]->{config};
 }
 
 sub configure {
@@ -299,7 +304,7 @@ sub find_locals {
     };
     File::Find::find($wanted, $libdir);
 
-    return map { my $module = Carton::Util::parse_json($_); ($module->{name} => $module) } @locals;
+    return map { my $module = Carton::Util::load_json($_); ($module->{name} => $module) } @locals;
 }
 
 sub check_satisfies {

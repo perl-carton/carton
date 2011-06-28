@@ -10,6 +10,7 @@ use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
+use Carton::Config;
 use Carton::Tree;
 use Try::Tiny;
 
@@ -30,6 +31,11 @@ sub new {
         verbose => 0,
         carton => Carton->new,
     }, $class;
+}
+
+sub config {
+    my $self = shift;
+    $self->{config} ||= Carton::Config->load;
 }
 
 sub carton { $_[0]->{carton} }
@@ -61,6 +67,8 @@ sub run {
 
     my $cmd = shift @commands || 'usage';
     my $call = $self->can("cmd_$cmd");
+
+    $self->config; # load Carton::Config
 
     if ($call) {
         $self->$call(@commands);
@@ -198,6 +206,43 @@ sub cmd_uninstall {
     $self->print("Complete! Modules and its dependencies were uninstalled from $self->{path}\n", SUCCESS);
 }
 
+sub cmd_config {
+    my($self, @args) = @_;
+
+    my($global, $local, $unset);
+    $self->parse_options(\@args, "global" => \$global, "local" => \$local, "unset" => \$unset);
+
+    # don't use $self->config
+    my $config = Carton::Config->new;
+
+    if ($global) {
+        $config->load_global;
+        $config->global(1);
+    } elsif ($local) {
+        $config->load_local;
+    } else {
+        $config->load_global;
+        $config->load_local;
+    }
+
+    my($key, $value) = @args;
+
+    if (!@args) {
+        $self->print($config->dump);
+    } elsif ($unset) {
+        $config->remove($key);
+        $config->save;
+    } elsif (defined $value) {
+        $config->set($key, $value);
+        $config->save;
+    } else {
+        my $val = $config->get($key);
+        if (defined $val) {
+            $self->print($val . "\n")
+        }
+    }
+}
+
 sub mirror_file {
     my $self = shift;
     return $self->work_file("02packages.details.txt");
@@ -304,7 +349,7 @@ sub lock_data {
 
     my $lock;
     try {
-        $lock = Carton::Util::parse_json($self->lock_file);
+        $lock = Carton::Util::load_json($self->lock_file);
     } catch {
         if (/No such file/) {
             $self->error("Can't locate carton.lock\n");
