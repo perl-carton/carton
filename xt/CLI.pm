@@ -8,7 +8,11 @@ use Test::Requires qw( Directory::Scratch );
 sub cli {
     my $dir = Directory::Scratch->new();
     chdir $dir;
-    return Carton::CLI::Tested->new(dir => $dir);
+
+    my $app = Carton::CLI::Tested->new(dir => $dir);
+    $app->config->set("mirror" => "$ENV{HOME}/minicpan");
+
+    return $app;
 }
 
 sub run {

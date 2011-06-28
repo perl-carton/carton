@@ -26,10 +26,8 @@ our $Colors = {
 sub new {
     my $class = shift;
     bless {
-        path  => 'local',
         color => 1,
         verbose => 0,
-        carton => Carton->new,
     }, $class;
 }
 
@@ -38,7 +36,10 @@ sub config {
     $self->{config} ||= Carton::Config->load;
 }
 
-sub carton { $_[0]->{carton} }
+sub carton {
+    my $self = shift;
+    $self->{carton} ||= Carton->new(config => $self->{config});
+}
 
 sub work_file {
     my($self, $file) = @_;
@@ -68,13 +69,24 @@ sub run {
     my $cmd = shift @commands || 'usage';
     my $call = $self->can("cmd_$cmd");
 
-    $self->config; # load Carton::Config
+    $self->set_config_defaults;
 
     if ($call) {
         $self->$call(@commands);
     } else {
         die "Could not find command '$cmd'\n";
     }
+}
+
+sub set_config_defaults {
+    my $self = shift;
+
+    my $config = $self->config;
+    $config->set_defaults(
+        'path' => 'local',
+        'cpanm'  => 'cpanm',
+        'mirror' => 'http://cpan.cpantesters.org',
+    );
 }
 
 sub commands {
@@ -100,6 +112,13 @@ HELP
 sub parse_options {
     my($self, $args, @spec) = @_;
     Getopt::Long::GetOptionsFromArray($args, @spec);
+}
+
+sub printf {
+    my $self = shift;
+    my $type = pop;
+    my($temp, @args) = @_;
+    $self->print(sprintf($temp, @args), $type);
 }
 
 sub print {
@@ -128,12 +147,11 @@ sub cmd_version {
 sub cmd_install {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", \$self->{path}, "deployment!" => \$self->{deployment});
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) }, "deployment!" => \$self->{deployment});
 
     my $lock = $self->find_lock;
 
     $self->carton->configure(
-        path => $self->{path},
         lock => $lock,
         mirror_file => $self->mirror_file, # $lock object?
     );
@@ -155,16 +173,13 @@ sub cmd_install {
         $self->error("Can't locate build file or carton.lock\n");
     }
 
-    $self->print("Complete! Modules were installed into $self->{path}\n", SUCCESS);
+    $self->printf("Complete! Modules were installed into %s\n", $self->config->get('path'), SUCCESS);
 }
 
 sub cmd_uninstall {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", \$self->{path});
-    $self->carton->configure(
-        path => $self->{path},
-    );
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) });
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install`");
@@ -203,7 +218,7 @@ sub cmd_uninstall {
     }
 
     $self->carton->update_lock_file($self->lock_file);
-    $self->print("Complete! Modules and its dependencies were uninstalled from $self->{path}\n", SUCCESS);
+    $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n", $self->config->get('path'), SUCCESS);
 }
 
 sub cmd_config {
@@ -291,10 +306,7 @@ sub cmd_check {
     my $file = $self->has_build_file
         or $self->error("Can't find a build file: nothing to check.\n");
 
-    $self->parse_options(\@args, "p|path=s", \$self->{path});
-    $self->carton->configure(
-        path => $self->{path},
-    );
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) });
 
     my $lock = $self->carton->build_lock;
     my @deps = $self->carton->list_dependencies;
@@ -311,7 +323,7 @@ sub cmd_check {
     }
 
     if ($res->{superflous}) {
-        $self->print("Following modules are found in $self->{path} but couldn't be tracked from your $file\n", WARN);
+        $self->printf("Following modules are found in %s but couldn't be tracked from your $file\n", $self->config->get('path'), WARN);
         $self->carton->walk_down_tree($res->{superflous}, sub {
             my($module, $depth) = @_;
             my $line = "  " x $depth . "$module->{dist}\n";
@@ -321,7 +333,7 @@ sub cmd_check {
     }
 
     if ($ok) {
-        $self->print("Dependencies specified in your $file are satisfied and matches with modules in $self->{path}.\n", SUCCESS);
+        $self->printf("Dependencies specified in your $file are satisfied and matches with modules in %s.\n", $self->config->get('path'), SUCCESS);
     }
 }
 

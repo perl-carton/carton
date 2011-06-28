@@ -8,13 +8,19 @@ use JSON;
 
 sub new {
     my $class = shift;
-    bless { global => undef, values => {} }, $class;
+    bless { global => undef, values => {}, defaults => {} }, $class;
+}
+
+sub set_defaults {
+    my($self, %values) = @_;
+    $self->{defaults} = \%values;
 }
 
 sub get {
-    my($self, $key, $default) = @_;
-    return exists $self->{values}{$key} ?
-        $self->{values}{$key} : $default;
+    my($self, $key) = @_;
+    return exists $self->{values}{$key}   ? $self->{values}{$key}
+         : exists $self->{defaults}{$key} ? $self->{defaults}{$key}
+         : undef;
 }
 
 sub set {

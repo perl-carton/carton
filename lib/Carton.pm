@@ -96,7 +96,7 @@ sub install_conservative {
 
     $self->run_cpanm(
         "--skip-satisfied",
-        "--mirror", "http://cpan.cpantesters.org/", # fastest
+        "--mirror", $self->config->get('mirror') || 'http://cpan.cpantesters.org/',
         "--mirror", "http://backpan.perl.org/",     # fallback
         ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
@@ -254,14 +254,16 @@ sub run_cpanm_output {
         return <$kid>;
     } else {
         local $ENV{PERL_CPANM_OPT};
-        exec $self->{cpanm}, "--quiet", "-L", $self->{path}, @args;
+        my $cpanm = $self->config->get('cpanm');
+        exec $cpanm, "--quiet", "-L", $self->config->get('path'), @args;
     }
 }
 
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    !system $self->{cpanm}, "--quiet", "-L", $self->{path}, "--notest", @args;
+    my $cpanm = $self->config->get('cpanm');
+    !system $cpanm, "--quiet", "-L", $self->config->get('path'), "--notest", @args;
 }
 
 sub update_lock_file {
@@ -293,7 +295,7 @@ sub find_locals {
 
     require File::Find;
 
-    my $libdir = "$self->{path}/lib/perl5/auto/meta";
+    my $libdir = $self->config->get('path') . "/lib/perl5/auto/meta";
     return unless -e $libdir;
 
     my @locals;
@@ -364,7 +366,7 @@ sub uninstall {
     my $meta = $lock->{modules}{$module};
     (my $path_name = $meta->{name}) =~ s!::!/!g;
 
-    my $path = Cwd::realpath($self->{path});
+    my $path = Cwd::realpath($self->config->get('path'));
     my $packlist = "$path/lib/perl5/$Config{archname}/auto/$path_name/.packlist";
 
     open my $fh, "<", $packlist or die "Couldn't locate .packlist for $meta->{name}";
@@ -377,7 +379,7 @@ sub uninstall {
 
     unlink $packlist;
     if ($meta->{dist}) { # safety guard not to rm -r auto/meta
-        File::Path::rmtree("$self->{path}/lib/perl5/auto/meta/$meta->{dist}");
+        File::Path::rmtree($self->config->get('path') . "/lib/perl5/auto/meta/$meta->{dist}");
     }
 }
 
