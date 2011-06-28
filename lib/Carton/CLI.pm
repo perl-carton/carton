@@ -360,11 +360,17 @@ sub cmd_update {
 sub cmd_exec {
     my($self, @args) = @_;
 
+    # allows -Ilib
+    @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
+
     my $system; # for unit testing
-    $self->parse_options(\@args, "system", \$system); # always run parse_options to allow --
+    my @include;
+    $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
+
+    my $include = join ",", @include, ".";
 
     my $path = $self->config->get('path');
-    local $ENV{PERL5OPT} = "-MCarton::lib=. -Mlib=$path/lib/perl5";
+    local $ENV{PERL5OPT} = "-MCarton::lib=$include -Mlib=$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $system ? system(@args) : exec(@args);
