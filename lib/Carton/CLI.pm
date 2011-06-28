@@ -272,6 +272,20 @@ sub has_build_file {
     return $file;
 }
 
+sub cmd_show {
+    my($self, @args) = @_;
+
+    my $lock = $self->find_lock
+        or $self->error("Can't find carton.lock: Run `carton install`\n");
+    my $index = $self->carton->build_index($lock->{modules});
+
+    for my $module (@args) {
+        my $meta = $index->{$module}{meta}
+            or $self->error("Couldn't locate $module in the carton.lock\n");
+        $self->print( Carton::Util::to_json($meta) );
+    }
+}
+
 sub cmd_tree {
     my $self = shift;
     $self->cmd_list("--tree", @_);

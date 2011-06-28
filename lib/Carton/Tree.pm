@@ -138,15 +138,15 @@ sub finalize {
 sub has_child {
     my($self, $key) = @_;
 
-    my $has;
+    my $child;
     $self->walk_down(sub {
         if ($_[0]->key eq $key) {
-            $has++;
+            $child = $_[0];
             return $self->abort;
         }
     });
 
-    return $has;
+    return $child;
 }
 
 1;
