@@ -3,7 +3,7 @@ use strict;
 use base qw(Exporter);
 our @EXPORT = qw(run cli);
 
-use Test::Requires qw( Directory::Scratch );
+use Test::Requires qw( Directory::Scratch Capture::Tiny );
 
 sub cli {
     my $dir = Directory::Scratch->new();
@@ -23,6 +23,8 @@ sub run {
 
 package Carton::CLI::Tested;
 use parent qw(Carton::CLI);
+
+use Capture::Tiny qw(capture_merged);
 
 sub new {
     my($class, %args) = @_;
@@ -44,14 +46,21 @@ sub print {
 }
 
 sub run {
-    my $self = shift;
+    my($self, @args) = @_;
     $self->{output} = '';
-    $self->SUPER::run(@_);
+    $self->{system_output} = capture_merged {
+        $self->SUPER::run(@args);
+    };
 }
 
 sub output {
     my $self = shift;
     $self->{output};
+}
+
+sub system_output {
+    my $self = shift;
+    $self->{system_output};
 }
 
 1;
