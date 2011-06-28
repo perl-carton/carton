@@ -272,10 +272,7 @@ sub update_lock_file {
     my($self, $file) = @_;
 
     my $lock = $self->build_lock;
-
-    require JSON;
-    open my $fh, ">", "carton.lock" or die $!;
-    print $fh JSON->new->pretty->encode($lock);
+    Carton::Util::dump_json($lock, $file);
 
     return 1;
 }

@@ -24,7 +24,7 @@ sub from_json {
 sub to_json {
     my($data) = @_;
     require JSON;
-    JSON->new->pretty->encode($data);
+    JSON->new->pretty->canonical->encode($data);
 }
 
 1;
