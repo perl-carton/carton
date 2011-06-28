@@ -49,7 +49,7 @@ sub run {
     my($self, @args) = @_;
     $self->{output} = '';
     $self->{system_output} = capture_merged {
-        $self->SUPER::run(@args);
+        eval { $self->SUPER::run(@args) };
     };
 }
 
