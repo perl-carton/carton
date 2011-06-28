@@ -344,8 +344,12 @@ sub cmd_update {
 }
 
 sub cmd_exec {
-    # setup lib::core::only, -L env, put extlib/bin into PATH and exec script
-    die "Unimplemented";
+    my($self, @args) = @_;
+
+    my $path = $self->config->get('path');
+    local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$path/lib/perl5";
+    local $ENV{PATH} = "$path/bin:$ENV{PATH}";
+    exec @args;
 }
 
 sub find_lock {

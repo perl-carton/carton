@@ -13,6 +13,7 @@ requires 'Term::ANSIColor', 1.12;
 requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny';
 requires 'parent';
+requires 'lib::core::only';
 
 install_script 'bin/carton';
 
