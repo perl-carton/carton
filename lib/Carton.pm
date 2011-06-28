@@ -198,7 +198,7 @@ sub walk_down_tree {
 }
 
 sub build_tree {
-    my($self, $modules, %args) = @_;
+    my($self, $modules) = @_;
 
     my $idx  = $self->build_index($modules);
     my $pool = { %$modules }; # copy
@@ -209,8 +209,7 @@ sub build_tree {
         $self->_build_tree($pick, $tree, $tree, $pool, $idx);
     }
 
-    $tree->finalize
-        unless $args{no_finalize};
+    $tree->finalize;
 
     return $tree;
 }
