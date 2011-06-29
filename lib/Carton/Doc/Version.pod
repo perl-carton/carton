@@ -1,0 +1,11 @@
+=head1 NAME
+
+Carton::Doc::Version - Display version
+
+=head1 SYNOPSIS
+
+  carton version
+
+=head1 DESCRIPTION
+
+This command displays the current version number of carton.

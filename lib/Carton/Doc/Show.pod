@@ -1,0 +1,12 @@
+=head1 NAME
+
+Carton::Doc::Show - Show the module information
+
+=head1 SYNOPSIS
+
+  carton show Module
+
+=head1 DESCRIPTION
+
+Displays the information about modules, distribution and its versions.
+

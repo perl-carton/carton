@@ -72,7 +72,7 @@ latest version of CPAN, you can either use C<carton update> command,
 or specify the required version either in your build file or a command
 line argument:
 
- > carton install URI@1.51
+ > carton install URI~1.51
  > carton update URI
 
  > cat Makefile.PL

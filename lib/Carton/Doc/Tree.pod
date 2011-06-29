@@ -1,0 +1,13 @@
+=head1 NAME
+
+Carton::Doc::Tree - List dependencies in a tree structure
+
+=head1 SYNOPSIS
+
+  carton tree
+
+=head1 DESCRIPTION
+
+List the dependencies and version information tracked in the
+I<carton.lock> file as a tree structure. This command is an alias for
+C<carton list --tree>

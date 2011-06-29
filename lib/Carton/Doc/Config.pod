@@ -1,0 +1,32 @@
+=head1 NAME
+
+Carton::Doc::Config - set and get configuration for carton
+
+=head1 SYNOPSIS
+
+  carton config
+  carton config key
+  carton config key value
+  carton config --unset key
+
+=head1 DESCRIPTION
+
+This command, much like C<git config> allows you to get and set config values for carton.
+
+=head1 OPTIONS
+
+=over 4
+
+=item --global
+
+Only loads and saves the config from your global config (C<$HOME/.carton/config>).
+
+=item --local
+
+Only loads and saves the config from your local config (C<.carton/config>).
+
+=item --unset
+
+Removes the key in the config.
+
+=back
