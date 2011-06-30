@@ -195,15 +195,25 @@ sub cmd_uninstall {
         }
     }
 
+    my %root;
+    if ($self->has_build_file) {
+        for my $dep ($self->carton->list_dependencies) {
+            my($mod, $ver) = split /~/, $dep;
+            if (exists $index->{$mod}) {
+                $root{ $index->{$mod}{meta}{name} } = 1;
+            }
+        }
+    }
+
     # only can uninstall root dependencies
-    my $tree = $self->carton->build_tree($lock->{modules});
+    my $tree = $self->carton->build_tree($lock->{modules}, \%root);
     for my $root ($tree->children) {
         if (grep $_->{name} eq $root->key, @meta) {
             $tree->remove_child($root);
         }
     }
 
-    my @missing = grep !$tree->has_child($_), keys %{$lock->{modules}};
+    my @missing = grep !$tree->find_child($_), keys %{$lock->{modules}};
     for my $module (@missing) {
         my $meta = $lock->{modules}{$module};
         $self->print("Uninstalling $meta->{dist}\n");

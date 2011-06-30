@@ -103,7 +103,9 @@ sub new {
 }
 
 sub finalize {
-    my $self = shift;
+    my($self, $want_root) = @_;
+
+    $want_root ||= {};
 
     my %subtree;
     my @ancestor;
@@ -125,17 +127,26 @@ sub finalize {
     my $up = sub { pop @ancestor };
     $self->_walk_down($down, $up, 0);
 
-    # remove root nodes that are sub-tree of another
+    # normalize: remove root nodes that are sub-tree of another
     for my $child ($self->children) {
         if ($subtree{$child->key}) {
             $self->remove_child($child);
         }
     }
 
+    # Ugh, but if the build file is there, restore the links to sub-tree as a root elements
+    my %curr_root = map { ($_->key => 1) } $self->children;
+    for my $key (keys %$want_root) {
+        my $node = $self->find_child($key) or next;
+        unless ($curr_root{$node->key}) {
+            $self->add_child($node);
+        }
+    }
+
     %cache = ();
 }
 
-sub has_child {
+sub find_child {
     my($self, $key) = @_;
 
     my $child;
