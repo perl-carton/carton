@@ -1,0 +1,25 @@
+File:         02packages.details.txt
+URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
+Description:  Package names found in carton.lock
+Columns:      package name, version, path
+Intended-For: Automated fetch routines, namespace documentation.
+Written-By:   Carton v0.9.0
+Line-Count:   16
+Last-Updated: Wed Jun 29 22:54:55 2011
+
+CGI                                    3.55  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Apache                            1.01  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Carp                              3.51  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Cookie                            1.30  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Fast                              1.08  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Pretty                            3.46  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Push                              1.05  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Switch                            1.01  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGI::Util                              3.53  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+CGITempFile                           undef  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+FCGI                                   0.73  F/FL/FLORA/FCGI-0.73.tar.gz
+FCGI::Stream                          undef  F/FL/FLORA/FCGI-0.73.tar.gz
+Fh                                    undef  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+Hash::MultiValue                       0.08  M/MI/MIYAGAWA/Hash-MultiValue-0.08.tar.gz
+MultipartBuffer                       undef  M/MA/MARKSTOS/CGI.pm-3.55.tar.gz
+Try::Tiny                              0.09  D/DO/DOY/Try-Tiny-0.09.tar.gz
