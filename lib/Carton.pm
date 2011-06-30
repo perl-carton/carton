@@ -284,8 +284,6 @@ sub build_lock {
 
     return {
         modules => \%locals,
-        perl => $],
-        generator => "carton/$VERSION",
     };
 }
 
