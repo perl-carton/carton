@@ -3,8 +3,6 @@ use Test::More;
 use xt::CLI;
 use Cwd;
 
-my $cwd = Cwd::cwd();
-
 {
     my $app = cli();
 
@@ -32,6 +30,27 @@ EOF
 
     $app->run("uninstall", "FCGI");
     like $app->output, qr/Uninstalling FCGI/;
+}
+
+{
+    my $app = cli();
+
+    $app->dir->touch("Makefile.PL", <<EOF);
+use ExtUtils::MakeMaker;
+WriteMakefile(
+  NAME => 'foo',
+  VERSION => '0.1',
+  PREREQ_PM => {
+    'JSON::PP' => 0,
+    'CPAN::Meta' => 0,
+  },
+);
+EOF
+
+    $app->run("install");
+    $app->run("uninstall", "JSON::PP");
+
+    like $app->output, qr/JSON::PP is dependent by/;
 }
 
 done_testing;
