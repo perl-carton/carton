@@ -11,6 +11,8 @@ use Carton::Config;
 use Carton::Util;
 use File::Path;
 
+our $DefaultMirror = 'http://cpan.cpantesters.org/';
+
 sub new {
     my($class, %args) = @_;
     bless {
@@ -94,10 +96,13 @@ sub install_conservative {
         $self->build_mirror_file($index, $self->{mirror_file});
     }
 
+    my $mirror = $self->config->get('mirror') || $DefaultMirror;
+
     $self->run_cpanm(
         "--skip-satisfied",
-        "--mirror", $self->config->get('mirror') || 'http://cpan.cpantesters.org/',
-        "--mirror", "http://backpan.perl.org/",     # fallback
+        "--mirror", $mirror,
+        "--mirror", "http://backpan.perl.org/", # fallback
+        ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
         @$modules,
