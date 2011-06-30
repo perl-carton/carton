@@ -227,7 +227,11 @@ sub cmd_uninstall {
     }
 
     $self->carton->update_lock_file($self->lock_file);
-    $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n", $self->config->get('path'), SUCCESS);
+
+    if (@missing) {
+        $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n",
+                      $self->config->get('path'), SUCCESS);
+    }
 }
 
 sub cmd_config {
