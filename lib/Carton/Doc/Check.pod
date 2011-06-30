@@ -14,7 +14,7 @@ local environment.
 =head2 MISSING MODULES
 
 If one of the modules specified in your build file such as
-I<Makefile.PL are not found in your local environment, C<carton check>
+I<Makefile.PL> are not found in your local environment, C<carton check>
 will warn you about this:
 
   $ carton check
