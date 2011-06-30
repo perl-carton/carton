@@ -203,8 +203,6 @@ sub cmd_uninstall {
         }
     }
 
-    my @remains= grep $tree->has_child($_), keys %{$lock->{modules}};
-
     my @missing = grep !$tree->has_child($_), keys %{$lock->{modules}};
     for my $module (@missing) {
         my $meta = $lock->{modules}{$module};
