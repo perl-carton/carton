@@ -290,7 +290,7 @@ sub cmd_show {
 
     for my $module (@args) {
         my $meta = $index->{$module}{meta}
-            or $self->error("Couldn't locate $module in the carton.lock\n");
+            or $self->error("Couldn't locate $module in carton.lock\n");
         $self->print( Carton::Util::to_json($meta) );
     }
 }
