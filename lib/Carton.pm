@@ -11,6 +11,7 @@ use Carton::Config;
 use Carton::Util;
 use File::Path;
 
+use constant CARTON_LOCK_VERSION => '0.9';
 our $DefaultMirror = 'http://cpan.cpantesters.org/';
 
 sub new {
@@ -289,6 +290,7 @@ sub build_lock {
 
     return {
         modules => \%locals,
+        version => CARTON_LOCK_VERSION,
     };
 }
 
