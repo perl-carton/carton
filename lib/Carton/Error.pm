@@ -1,9 +1,9 @@
 package Carton::Error;
 use strict;
-use Any::Moose;
+use Mouse;
 
 package Carton::Error::CommandExit;
-use Any::Moose;
+use Mouse;
 extends 'Carton::Error';
 
 1;

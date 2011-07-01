@@ -14,6 +14,7 @@ requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
 requires 'Config::GitLike', 1.05;
+requires 'Mouse', 0.93;
 
 install_script 'bin/carton';
 

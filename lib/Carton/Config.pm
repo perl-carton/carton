@@ -2,7 +2,7 @@ package Carton::Config;
 use strict;
 use warnings;
 
-use Any::Moose;
+use Mouse;
 extends 'Config::GitLike';
 
 use File::Basename ();
@@ -42,7 +42,7 @@ sub set {
     $self->SUPER::set(%args);
 }
 
-no Any::Moose;
+no Mouse;
 __PACKAGE__->meta->make_immutable;
 
 1;
