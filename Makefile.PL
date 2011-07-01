@@ -15,6 +15,7 @@ requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
 requires 'Config::GitLike', 1.05;
 requires 'Mouse', 0.93;
+requires 'Text::ParseWords', 3.10;
 
 install_script 'bin/carton';
 

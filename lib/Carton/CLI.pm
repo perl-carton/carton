@@ -72,6 +72,12 @@ sub run {
     push @commands, @ARGV;
 
     my $cmd = shift @commands || 'usage';
+
+    if (my @alias = $self->find_alias($cmd)) {
+        $cmd = shift @alias;
+        unshift @commands, @alias;
+    }
+
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
@@ -84,6 +90,16 @@ sub run {
     } else {
         die "Could not find command '$cmd'\n";
     }
+}
+
+sub find_alias {
+    my($self, $cmd) = @_;
+
+    my $alias = $self->config->get(key => "alias.$cmd")
+        or return;
+
+    require Text::ParseWords;
+    return Text::ParseWords::shellwords($alias);
 }
 
 sub commands {
