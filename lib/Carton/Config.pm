@@ -25,7 +25,10 @@ sub load_defaults {
 
     for my $default (@defaults) {
         my($section, $name, $value) = @$default;
-        $self->define(section => $section, name => $name, value => $value, origin => 'module');
+        my $v = $self->get(key => "$section.$name");
+        unless (defined $v) {
+            $self->define(section => $section, name => $name, value => $value, origin => 'module');
+        }
     }
 
     $self->loaded_defaults(1);
