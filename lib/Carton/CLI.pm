@@ -2,15 +2,15 @@ package Carton::CLI;
 use strict;
 use warnings;
 
-use Carton;
-use Carton::Util;
-
 use Cwd;
 use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
+use Carton;
+use Carton::Util;
 use Carton::Config;
+use Carton::Error;
 use Carton::Tree;
 use Try::Tiny;
 
@@ -75,7 +75,12 @@ sub run {
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
-        $self->$call(@commands);
+        try {
+            $self->$call(@commands);
+        } catch {
+            /Carton::Error::CommandExit/ and return;
+            die $_;
+        }
     } else {
         die "Could not find command '$cmd'\n";
     }
@@ -123,6 +128,7 @@ sub print {
 sub error {
     my($self, $msg) = @_;
     $self->print($msg, ERROR);
+    Carton::Error::CommandExit->throw;
 }
 
 sub cmd_help {
