@@ -2,25 +2,25 @@ package Carton::CLI;
 use strict;
 use warnings;
 
-use Carton;
-use Carton::Util;
-
 use Cwd;
 use Config;
 use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
+use Carton;
+use Carton::Util;
 use Carton::Config;
+use Carton::Error;
 use Carton::Tree;
 use Try::Tiny;
 
-use constant { SUCCESS => 0, WARN => 1, INFO => 2, ERROR => 3 };
+use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $Colors = {
-    SUCCESS() => 'green',
-    WARN()    => 'yellow',
-    INFO()    => 'cyan',
-    ERROR()   => 'red',
+    SUCCESS, => 'green',
+    WARN,    => 'yellow',
+    INFO,    => 'cyan',
+    ERROR,   => 'red',
 };
 
 sub new {
@@ -33,12 +33,17 @@ sub new {
 
 sub config {
     my $self = shift;
-    $self->{config} ||= Carton::Config->load;
+    $self->{config} ||= do {
+        my $config = Carton::Config->new(confname => "carton/config");
+        $config->load;
+        $config->load_defaults;
+        $config;
+    };
 }
 
 sub carton {
     my $self = shift;
-    $self->{carton} ||= Carton->new(config => $self->{config});
+    $self->{carton} ||= Carton->new(config => $self->config);
 }
 
 sub work_file {
@@ -69,24 +74,16 @@ sub run {
     my $cmd = shift @commands || 'usage';
     my $call = $self->can("cmd_$cmd");
 
-    $self->set_config_defaults;
-
     if ($call) {
-        $self->$call(@commands);
+        try {
+            $self->$call(@commands);
+        } catch {
+            /Carton::Error::CommandExit/ and return;
+            die $_;
+        }
     } else {
         die "Could not find command '$cmd'\n";
     }
-}
-
-sub set_config_defaults {
-    my $self = shift;
-
-    my $config = $self->config;
-    $config->set_defaults(
-        'path' => 'local',
-        'cpanm'  => 'cpanm',
-        'mirror' => 'http://cpan.cpantesters.org',
-    );
 }
 
 sub commands {
@@ -124,13 +121,14 @@ sub printf {
 sub print {
     my($self, $msg, $type) = @_;
     $msg = colored $msg, $Colors->{$type} if defined $type && $self->{color};
-    print $msg;
+    my $fh = $type && $type >= WARN ? *STDERR : *STDOUT;
+    print {$fh} $msg;
 }
 
 sub error {
     my($self, $msg) = @_;
     $self->print($msg, ERROR);
-    exit(1);
+    Carton::Error::CommandExit->throw;
 }
 
 sub cmd_help {
@@ -173,7 +171,7 @@ sub cmd_install {
         $self->error("Can't locate build file or carton.lock\n");
     }
 
-    $self->printf("Complete! Modules were installed into %s\n", $self->config->get('path'), SUCCESS);
+    $self->printf("Complete! Modules were installed into %s\n", $self->config->get(key => 'environment.path'), SUCCESS);
 }
 
 sub cmd_uninstall {
@@ -230,7 +228,7 @@ sub cmd_uninstall {
 
     if (@missing) {
         $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n",
-                      $self->config->get('path'), SUCCESS);
+                      $self->config->get(key => 'environment.path'), SUCCESS);
     }
 }
 
@@ -241,30 +239,37 @@ sub cmd_config {
     $self->parse_options(\@args, "global" => \$global, "local" => \$local, "unset" => \$unset);
 
     # don't use $self->config
-    my $config = Carton::Config->new;
+    my $config = Carton::Config->new(confname => "carton/config");
 
+    my $filename;
     if ($global) {
-        $config->load_global;
-        $config->global(1);
+        $filename = $config->user_file;
+        $config->load_file($filename) if -f $filename;
     } elsif ($local) {
-        $config->load_local;
+        $filename = $config->dir_file;
+        $config->load_file($filename) if -f $filename;
     } else {
-        $config->load_global;
-        $config->load_local;
+        $filename = $config->dir_file;
+        $config->load;
     }
+
+    $config->load_defaults;
 
     my($key, $value) = @args;
 
+    if (defined $key && $key !~ /\./) {
+        $self->error("key does not contain a section: $key\n");
+        return;
+    }
+
     if (!@args) {
-        $self->print($config->dump);
+        $self->print(my $dump = $config->dump);
     } elsif ($unset) {
-        $config->remove($key);
-        $config->save;
+        $config->set(key => $key, filename => $filename);
     } elsif (defined $value) {
-        $config->set($key, $value);
-        $config->save;
-    } else {
-        my $val = $config->get($key);
+        $config->set(key => $key, value => $value, filename => $filename);
+    } elsif (defined $key) {
+        my $val = $config->get(key => $key);
         if (defined $val) {
             $self->print($val . "\n")
         }
@@ -350,7 +355,8 @@ sub cmd_check {
     }
 
     if ($res->{superflous}) {
-        $self->printf("Following modules are found in %s but couldn't be tracked from your $file\n", $self->config->get('path'), WARN);
+        $self->printf("Following modules are found in %s but couldn't be tracked from your $file\n",
+                      $self->config->get(key => 'environment.path'), WARN);
         $self->carton->walk_down_tree($res->{superflous}, sub {
             my($module, $depth) = @_;
             my $line = "  " x $depth . "$module->{dist}\n";
@@ -360,7 +366,8 @@ sub cmd_check {
     }
 
     if ($ok) {
-        $self->printf("Dependencies specified in your $file are satisfied and matches with modules in %s.\n", $self->config->get('path'), SUCCESS);
+        $self->printf("Dependencies specified in your $file are satisfied and matches with modules in %s.\n",
+                      $self->config->get(key => 'environment.path'), SUCCESS);
     }
 }
 
@@ -382,7 +389,7 @@ sub cmd_exec {
 
     my $include = join ",", @include, ".";
 
-    my $path = $self->config->get('path');
+    my $path = $self->config->get(key => 'environment.path');
     local $ENV{PERL5OPT} = "-MCarton::lib=$include -Mlib=$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 

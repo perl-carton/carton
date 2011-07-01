@@ -10,7 +10,7 @@ sub cli {
     chdir $dir;
 
     my $app = Carton::CLI::Tested->new(dir => $dir);
-    $app->config->set("mirror" => "$ENV{HOME}/minicpan");
+    $app->config->define(section => "cpanm", name => "mirror", value => "$ENV{HOME}/minicpan", origin => 'test');
 
     return $app;
 }
