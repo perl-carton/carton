@@ -403,10 +403,10 @@ sub cmd_exec {
     my @include;
     $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
 
-    my $include = join ",", @include, ".";
-
     my $path = $self->config->get(key => 'environment.path');
-    local $ENV{PERL5OPT} = "-MCarton::lib=$include -Mlib=$path/lib/perl5";
+    my $lib  = join ",", @include, "$path/lib/perl5", ".";
+
+    local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$lib";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $system ? system(@args) : exec(@args);
