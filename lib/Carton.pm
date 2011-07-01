@@ -97,7 +97,7 @@ sub install_conservative {
         $self->build_mirror_file($index, $self->{mirror_file});
     }
 
-    my $mirror = $self->config->get('mirror') || $DefaultMirror;
+    my $mirror = $self->config->get(key => 'cpanm.mirror') || $DefaultMirror;
 
     $self->run_cpanm(
         "--skip-satisfied",
@@ -262,16 +262,16 @@ sub run_cpanm_output {
         return <$kid>;
     } else {
         local $ENV{PERL_CPANM_OPT};
-        my $cpanm = $self->config->get('cpanm');
-        exec $cpanm, "--quiet", "-L", $self->config->get('path'), @args;
+        my $cpanm = $self->config->get(key => 'cpanm.path');
+        exec $cpanm, "--quiet", "-L", $self->config->get(key => 'environment.path'), @args;
     }
 }
 
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    my $cpanm = $self->config->get('cpanm');
-    !system $cpanm, "--quiet", "-L", $self->config->get('path'), "--notest", @args;
+    my $cpanm = $self->config->get(key => 'cpanm.path');
+    !system $cpanm, "--quiet", "-L", $self->config->get(key => 'environment.path'), "--notest", @args;
 }
 
 sub update_lock_file {
@@ -299,7 +299,7 @@ sub find_locals {
 
     require File::Find;
 
-    my $libdir = $self->config->get('path') . "/lib/perl5/auto/meta";
+    my $libdir = $self->config->get(key => 'environment.path') . "/lib/perl5/auto/meta";
     return unless -e $libdir;
 
     my @locals;
@@ -370,7 +370,7 @@ sub uninstall {
     my $meta = $lock->{modules}{$module};
     (my $path_name = $meta->{name}) =~ s!::!/!g;
 
-    my $path = Cwd::realpath($self->config->get('path'));
+    my $path = Cwd::realpath($self->config->get(key => 'environment.path'));
     my $packlist = "$path/lib/perl5/$Config{archname}/auto/$path_name/.packlist";
 
     open my $fh, "<", $packlist or die "Couldn't locate .packlist for $meta->{name}";
@@ -383,7 +383,7 @@ sub uninstall {
 
     unlink $packlist;
     if ($meta->{dist}) { # safety guard not to rm -r auto/meta
-        File::Path::rmtree($self->config->get('path') . "/lib/perl5/auto/meta/$meta->{dist}");
+        File::Path::rmtree($self->config->get(key => 'environment.path') . "/lib/perl5/auto/meta/$meta->{dist}");
     }
 }
 
