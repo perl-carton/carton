@@ -88,7 +88,7 @@ sub run {
             die $_;
         }
     } else {
-        die "Could not find command '$cmd'\n";
+        $self->error("Could not find command '$cmd'\n");
     }
 }
 

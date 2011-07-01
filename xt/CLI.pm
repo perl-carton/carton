@@ -47,6 +47,7 @@ sub print {
 
 sub run {
     my($self, @args) = @_;
+    delete $self->{config};
     $self->{output} = '';
     $self->{system_output} = capture_merged {
         eval { $self->SUPER::run(@args) };
