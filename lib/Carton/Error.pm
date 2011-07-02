@@ -1,9 +1,7 @@
 package Carton::Error;
 use strict;
-use Mouse;
-
-package Carton::Error::CommandExit;
-use Mouse;
-extends 'Carton::Error';
+use Exception::Class (
+    'Carton::Error::CommandExit',
+);
 
 1;

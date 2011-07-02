@@ -17,6 +17,7 @@ requires 'Config::GitLike', 1.05;
 requires 'Mouse', 0.93;
 requires 'Text::ParseWords', 3.10;
 requires 'local::lib', 1.008;
+requires 'Exception::Class', 1.32;
 
 install_script 'bin/carton';
 
