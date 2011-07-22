@@ -4,6 +4,36 @@ Carton::Doc::FAQ - Frequently Asked Questions
 
 =head1 QUESTIONS
 
+=head2 It looks useful, but what is the use case of this tool?
+
+The particular problem that carton is trying to address is this:
+
+You develop a Perl web application with dozens of CPAN module
+dependencies. You install these modules on your development machine,
+and describe these dependencies in your Makefile.PL or some other text
+format.
+
+Now you get a produciton environment on Cloud PaaS provider or some
+VPS, you install the dependencies using C<cpanm --installdeps .> and
+it will pull all the latest releases from CPAN as of today and
+everything just works.
+
+A few weeks later, your application becomes more popular, and you
+think you need another machine to serve more requests. You set up
+another machine with vanilla perl installation and install the
+dependencies the same way. That will pull the I<latest> releases from
+CPAN I<on that date>, rather than the same as what you have today.
+
+And that is the problem. It's not likely that everything just breaks
+one day, but there's always a chance that one of the dependencies
+breaks an API compatibility, or just uploaded a buggy version to CPAN
+on that particular day.
+
+Carton allows you to I<lock> these dependencies into a version
+controlled system, so that every time you deploy from a checkout, it
+is guaranteed that all the same versions are installed into the local
+environment.
+
 =head2 How is this different from DPAN or CPAN::Mini::Inject?
 
 First of all, if you currently use L<DPAN|MyCPAN::App::DPAN>,
