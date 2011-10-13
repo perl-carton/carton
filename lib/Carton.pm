@@ -50,7 +50,7 @@ sub install_from_build_file {
 sub list_dependencies {
     my $self = shift;
 
-    my @deps = $self->run_cpanm_output("--showdeps", ".");
+    my @deps = grep !/^perl~/, $self->run_cpanm_output("--showdeps", ".");
     for my $line (@deps) {
         chomp $line;
     }
