@@ -319,7 +319,18 @@ sub cmd_check {
 sub cmd_update {
     # "cleanly" update distributions in extlib
     # rebuild the tree, update modules with DFS
-    die "Unimplemented";
+    die <<EOF;
+carton update is not implemented yet.
+
+The command is supposed to update all the dependencies to the latest
+version as if you don't have the current local environment doesn't
+exist.
+
+For now, you can remove the local environment and re-run carton install
+to get the similar functionality.
+
+EOF
+
 }
 
 sub cmd_exec {
