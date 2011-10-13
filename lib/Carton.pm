@@ -101,6 +101,7 @@ sub install_conservative {
     my $mirror = $self->config->get(key => 'cpanm.mirror') || $DefaultMirror;
 
     $self->run_cpanm(
+        "--notest",
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
