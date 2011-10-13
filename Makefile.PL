@@ -18,7 +18,7 @@ requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
 
 # MYMETA support
-requires 'App::cpanminus', 1.4900;
+requires 'App::cpanminus', 1.5000;
 requires 'ExtUtils::MakeMaker', 6.59;
 requires 'Module::Build', 0.38;
 requires 'CPAN::Meta', 2.112;
