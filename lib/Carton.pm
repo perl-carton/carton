@@ -367,12 +367,10 @@ sub _check_satisfies {
         return;
     }
 
-    my $meta = $found->{meta};
-    for my $requires (values %{$meta->{requires}}) {
-        for my $module (keys %$requires) {
-            next if $module eq 'perl';
-            $self->_check_satisfies([ $module, $requires->{$module} ], $unsatisfied, $index, $pool);
-        }
+    my $requires = $self->merge_prereqs($found->{meta}{mymeta}{prereqs});
+    for my $module (keys %$requires) {
+        next if $module eq 'perl';
+        $self->_check_satisfies([ $module, $requires->{$module} ], $unsatisfied, $index, $pool);
     }
 }
 
