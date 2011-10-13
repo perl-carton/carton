@@ -9,6 +9,7 @@ use Cwd;
 use Config qw(%Config);
 use Carton::Config;
 use Carton::Util;
+use CPAN::Meta;
 use File::Path;
 
 use constant CARTON_LOCK_VERSION => '0.9';
@@ -162,11 +163,9 @@ sub build_index {
 
     my $index;
 
-    for my $name (keys %$modules) {
-        my $metadata = $modules->{$name};
-        my $provides = $metadata->{provides};
-        for my $mod (keys %$provides) {
-            $index->{$mod} = { version => $provides->{$mod}, meta => $metadata };
+    while (my($name, $metadata) = each %$modules) {
+        for my $mod (keys %{$metadata->{provides}}) {
+            $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
         }
     }
 
@@ -235,18 +234,29 @@ sub _build_tree {
     }
 }
 
+sub merge_prereqs {
+    my($self, $prereqs) = @_;
+
+    my %requires;
+    for my $phase (qw( configure build test runtime )) {
+        %requires = (%requires, %{$prereqs->{$phase}{requires} || {}});
+    }
+
+    return \%requires;
+}
+
 sub build_deps {
     my($self, $meta, $idx) = @_;
 
+    my $requires = $self->merge_prereqs($meta->{mymeta}{prereqs});
+
     my @deps;
-    for my $requires (values %{$meta->{requires}}) {
-        for my $module (keys %$requires) {
-            next if $module eq 'perl';
-            if (exists $idx->{$module}) {
-                push @deps, $idx->{$module}{meta}{name};
-            } else {
-                push @deps, $module;
-            }
+    for my $module (keys %$requires) {
+        next if $module eq 'perl';
+        if (exists $idx->{$module}) {
+            push @deps, $idx->{$module}{meta}{name};
+        } else {
+            push @deps, $module;
         }
     }
 
@@ -304,12 +314,15 @@ sub find_installs {
     my @installs;
     my $wanted = sub {
         if ($_ eq 'install.json') {
-            push @installs, $File::Find::name;
+            push @installs, [ $File::Find::name, "$File::Find::dir/MYMETA.json" ];
         }
     };
     File::Find::find($wanted, $libdir);
 
-    return map { my $module = Carton::Util::load_json($_); ($module->{name} => $module) } @installs;
+    return map {
+        my $module = Carton::Util::load_json($_->[0]);
+        my $mymeta = CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" });
+        ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
 }
 
 sub check_satisfies {
