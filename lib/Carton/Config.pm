@@ -2,18 +2,15 @@ package Carton::Config;
 use strict;
 use warnings;
 
-use Mouse;
-extends 'Config::GitLike';
+use parent qw(Config::GitLike);
 
 use File::Basename ();
 use File::Path ();
 
-has 'loaded_defaults' => (is => 'rw', isa => 'Bool');
-
 sub load_defaults {
     my $self = shift;
 
-    return if $self->loaded_defaults;
+    return if $self->{loaded_defaults};
 
     $self->data({}) unless $self->is_loaded;
 
@@ -31,7 +28,7 @@ sub load_defaults {
         }
     }
 
-    $self->loaded_defaults(1);
+    $self->{loaded_defaults} = 1;
 }
 
 sub set {
@@ -44,9 +41,6 @@ sub set {
 
     $self->SUPER::set(%args);
 }
-
-no Mouse;
-__PACKAGE__->meta->make_immutable;
 
 1;
 
