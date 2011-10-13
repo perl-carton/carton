@@ -394,7 +394,7 @@ sub uninstall {
 
     unlink $packlist;
     if ($meta->{dist}) { # safety guard not to rm -r auto/meta
-        File::Path::rmtree($self->config->get(key => 'environment.path') . "/lib/perl5/auto/meta/$meta->{dist}");
+        File::Path::rmtree($self->config->get(key => 'environment.path') . "/lib/perl5/$Config{archname}/.meta/$meta->{dist}");
     }
 }
 
