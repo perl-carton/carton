@@ -10,7 +10,7 @@ sub cli {
     chdir $dir;
 
     my $app = Carton::CLI::Tested->new(dir => $dir);
-    $app->config->define(section => "cpanm", name => "mirror", value => "$ENV{HOME}/minicpan", origin => 'test');
+    $app->carton->{mirror} = "$ENV{HOME}/minicpan";
 
     return $app;
 }
@@ -47,7 +47,6 @@ sub print {
 
 sub run {
     my($self, @args) = @_;
-    delete $self->{config};
     $self->{output} = '';
     $self->{system_output} = capture_merged {
         eval { $self->SUPER::run(@args) };

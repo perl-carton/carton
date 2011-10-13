@@ -8,8 +8,7 @@ my $cwd = Cwd::cwd();
 {
     my $app = cli();
 
-    $app->run("config", "cpanm.mirror", "$cwd/xt/mirror");
-    $app->run("config", "cpanm.mirror");
+    $app->carton->{mirror} = "$cwd/xt/mirror";
     $app->run("install", "Hash::MultiValue");
 
     $app->run("list");

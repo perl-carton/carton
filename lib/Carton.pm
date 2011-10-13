@@ -7,7 +7,6 @@ use version; our $VERSION = qv('v0.9.0');
 
 use Cwd;
 use Config qw(%Config);
-use Carton::Config;
 use Carton::Util;
 use CPAN::Meta;
 use File::Path;
@@ -18,12 +17,9 @@ our $DefaultMirror = 'http://cpan.metacpan.org/';
 sub new {
     my($class, %args) = @_;
     bless {
-        config => $args{config},
+        path => $ENV{PERL_CARTON_PATH} || 'local',
+        mirror => $ENV{PERL_CARTON_MIRROR} || $DefaultMirror,
     }, $class;
-}
-
-sub config {
-    $_[0]->{config};
 }
 
 sub configure {
@@ -98,7 +94,7 @@ sub install_conservative {
         $self->build_mirror_file($index, $self->{mirror_file});
     }
 
-    my $mirror = $self->config->get(key => 'cpanm.mirror') || $DefaultMirror;
+    my $mirror = $self->{mirror} || $DefaultMirror;
 
     $self->run_cpanm(
         "--mirror", $mirror,
@@ -272,16 +268,14 @@ sub run_cpanm_output {
         return <$kid>;
     } else {
         local $ENV{PERL_CPANM_OPT};
-        my $cpanm = $self->config->get(key => 'cpanm.path');
-        exec $cpanm, "--quiet", "-L", $self->config->get(key => 'environment.path'), @args;
+        exec "cpanm", "--quiet", "-L", $self->{path}, @args;
     }
 }
 
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    my $cpanm = $self->config->get(key => 'cpanm.path');
-    !system $cpanm, "--quiet", "-L", $self->config->get(key => 'environment.path'), "--notest", @args;
+    !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
 }
 
 sub update_lock_file {
@@ -309,7 +303,7 @@ sub find_installs {
 
     require File::Find;
 
-    my $libdir = $self->config->get(key => 'environment.path') . "/lib/perl5/$Config{archname}/.meta";
+    my $libdir = "$self->{path}/lib/perl5/$Config{archname}/.meta";
     return unless -e $libdir;
 
     my @installs;
@@ -381,7 +375,7 @@ sub uninstall {
     my $meta = $lock->{modules}{$module};
     (my $path_name = $meta->{name}) =~ s!::!/!g;
 
-    my $path = Cwd::realpath($self->config->get(key => 'environment.path'));
+    my $path = Cwd::realpath($self->{path});
     my $packlist = "$path/lib/perl5/$Config{archname}/auto/$path_name/.packlist";
 
     open my $fh, "<", $packlist or die "Couldn't locate .packlist for $meta->{name}";
@@ -394,7 +388,7 @@ sub uninstall {
 
     unlink $packlist;
     if ($meta->{dist}) { # safety guard not to rm -r auto/meta
-        File::Path::rmtree($self->config->get(key => 'environment.path') . "/lib/perl5/$Config{archname}/.meta/$meta->{dist}");
+        File::Path::rmtree("$self->{path}/lib/perl5/$Config{archname}/.meta/$meta->{dist}");
     }
 }
 

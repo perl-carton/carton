@@ -9,7 +9,6 @@ use Term::ANSIColor qw(colored);
 
 use Carton;
 use Carton::Util;
-use Carton::Config;
 use Carton::Error;
 use Carton::Tree;
 use Try::Tiny;
@@ -31,19 +30,9 @@ sub new {
     }, $class;
 }
 
-sub config {
-    my $self = shift;
-    $self->{config} ||= do {
-        my $config = Carton::Config->new(confname => "carton/config");
-        $config->load;
-        $config->load_defaults;
-        $config;
-    };
-}
-
 sub carton {
     my $self = shift;
-    $self->{carton} ||= Carton->new(config => $self->config);
+    $self->{carton} ||= Carton->new;
 }
 
 sub work_file {
@@ -72,12 +61,6 @@ sub run {
     push @commands, @ARGV;
 
     my $cmd = shift @commands || 'usage';
-
-    if (my @alias = $self->find_alias($cmd)) {
-        $cmd = shift @alias;
-        unshift @commands, @alias;
-    }
-
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
@@ -90,16 +73,6 @@ sub run {
     } else {
         $self->error("Could not find command '$cmd'\n");
     }
-}
-
-sub find_alias {
-    my($self, $cmd) = @_;
-
-    my $alias = $self->config->get(key => "alias.$cmd")
-        or return;
-
-    require Text::ParseWords;
-    return Text::ParseWords::shellwords($alias);
 }
 
 sub commands {
@@ -161,7 +134,7 @@ sub cmd_version {
 sub cmd_install {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] }, "deployment!" => \$self->{deployment});
+    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] }, "deployment!" => \$self->{deployment});
 
     my $lock = $self->find_lock;
 
@@ -187,13 +160,13 @@ sub cmd_install {
         $self->error("Can't locate build file or carton.lock\n");
     }
 
-    $self->printf("Complete! Modules were installed into %s\n", $self->config->get(key => 'environment.path'), SUCCESS);
+    $self->printf("Complete! Modules were installed into %s\n", $self->carton->{path}, SUCCESS);
 }
 
 sub cmd_uninstall {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] });
+    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install`");
@@ -244,51 +217,7 @@ sub cmd_uninstall {
 
     if (@missing) {
         $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n",
-                      $self->config->get(key => 'environment.path'), SUCCESS);
-    }
-}
-
-sub cmd_config {
-    my($self, @args) = @_;
-
-    my($global, $local, $unset);
-    $self->parse_options(\@args, "global" => \$global, "local" => \$local, "unset" => \$unset);
-
-    # don't use $self->config
-    my $config = Carton::Config->new(confname => "carton/config");
-
-    my $filename;
-    if ($global) {
-        $filename = $config->user_file;
-        $config->load_file($filename) if -f $filename;
-    } elsif ($local) {
-        $filename = $config->dir_file;
-        $config->load_file($filename) if -f $filename;
-    } else {
-        $filename = $config->dir_file;
-        $config->load;
-    }
-
-    $config->load_defaults;
-
-    my($key, $value) = @args;
-
-    if (defined $key && $key !~ /\./) {
-        $self->error("key does not contain a section: $key\n");
-        return;
-    }
-
-    if (!@args) {
-        $self->print(my $dump = $config->dump);
-    } elsif ($unset) {
-        $config->set(key => $key, filename => $filename);
-    } elsif (defined $value) {
-        $config->set(key => $key, value => $value, filename => $filename);
-    } elsif (defined $key) {
-        my $val = $config->get(key => $key);
-        if (defined $val) {
-            $self->print($val . "\n")
-        }
+                      $self->carton->{path}, SUCCESS);
     }
 }
 
@@ -354,7 +283,7 @@ sub cmd_check {
     my $file = $self->has_build_file
         or $self->error("Can't find a build file: nothing to check.\n");
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] });
+    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
 
     my $lock = $self->carton->build_lock;
     my @deps = $self->carton->list_dependencies;
@@ -372,7 +301,7 @@ sub cmd_check {
 
     if ($res->{superflous}) {
         $self->printf("Following modules are found in %s but couldn't be tracked from your $file\n",
-                      $self->config->get(key => 'environment.path'), WARN);
+                      $self->carton->{path}, WARN);
         $self->carton->walk_down_tree($res->{superflous}, sub {
             my($module, $depth) = @_;
             my $line = "  " x $depth . "$module->{dist}\n";
@@ -383,7 +312,7 @@ sub cmd_check {
 
     if ($ok) {
         $self->printf("Dependencies specified in your $file are satisfied and matches with modules in %s.\n",
-                      $self->config->get(key => 'environment.path'), SUCCESS);
+                      $self->carton->{path}, SUCCESS);
     }
 }
 
@@ -403,7 +332,7 @@ sub cmd_exec {
     my @include;
     $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
 
-    my $path = $self->config->get(key => 'environment.path');
+    my $path = $self->carton->{path};
     my $lib  = join ",", @include, "$path/lib/perl5", ".";
 
     local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$lib";

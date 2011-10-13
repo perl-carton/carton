@@ -12,8 +12,6 @@ requires 'Term::ANSIColor', 1.12;
 requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
-requires 'Config::GitLike', 1.05;
-requires 'Text::ParseWords', 3.10;
 requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
 
