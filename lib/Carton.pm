@@ -298,7 +298,7 @@ sub find_installs {
 
     require File::Find;
 
-    my $libdir = $self->config->get(key => 'environment.path') . "/lib/perl5/auto/meta";
+    my $libdir = $self->config->get(key => 'environment.path') . "/lib/perl5/$Config{archname}/.meta";
     return unless -e $libdir;
 
     my @installs;
