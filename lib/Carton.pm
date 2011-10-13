@@ -12,7 +12,7 @@ use Carton::Util;
 use File::Path;
 
 use constant CARTON_LOCK_VERSION => '0.9';
-our $DefaultMirror = 'http://cpan.cpantesters.org/';
+our $DefaultMirror = 'http://cpan.metacpan.org/';
 
 sub new {
     my($class, %args) = @_;
@@ -285,15 +285,15 @@ sub update_lock_file {
 sub build_lock {
     my $self = shift;
 
-    my %locals = $self->find_locals;
+    my %installs = $self->find_installs;
 
     return {
-        modules => \%locals,
+        modules => \%installs,
         version => CARTON_LOCK_VERSION,
     };
 }
 
-sub find_locals {
+sub find_installs {
     my $self = shift;
 
     require File::Find;
@@ -301,15 +301,15 @@ sub find_locals {
     my $libdir = $self->config->get(key => 'environment.path') . "/lib/perl5/auto/meta";
     return unless -e $libdir;
 
-    my @locals;
+    my @installs;
     my $wanted = sub {
-        if ($_ eq 'local.json') {
-            push @locals, $File::Find::name;
+        if ($_ eq 'install.json') {
+            push @installs, $File::Find::name;
         }
     };
     File::Find::find($wanted, $libdir);
 
-    return map { my $module = Carton::Util::load_json($_); ($module->{name} => $module) } @locals;
+    return map { my $module = Carton::Util::load_json($_); ($module->{name} => $module) } @installs;
 }
 
 sub check_satisfies {

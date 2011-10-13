@@ -20,7 +20,7 @@ sub load_defaults {
     my @defaults = (
         [ 'environment', 'path' => 'local' ],
         [ 'cpanm', 'path' => 'cpanm' ],
-        [ 'cpanm', 'mirror' => 'http://cpan.cpantesters.org' ],
+        [ 'cpanm', 'mirror' => 'http://cpan.metacpan.org/' ],
     );
 
     for my $default (@defaults) {
