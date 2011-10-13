@@ -161,7 +161,7 @@ sub cmd_version {
 sub cmd_install {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) }, "deployment!" => \$self->{deployment});
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] }, "deployment!" => \$self->{deployment});
 
     my $lock = $self->find_lock;
 
@@ -193,7 +193,7 @@ sub cmd_install {
 sub cmd_uninstall {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) });
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] });
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install`");
@@ -354,7 +354,7 @@ sub cmd_check {
     my $file = $self->has_build_file
         or $self->error("Can't find a build file: nothing to check.\n");
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->config->set(path => $_[1]) });
+    $self->parse_options(\@args, "p|path=s", sub { $self->config->data->{'environment.path'} = $_[1] });
 
     my $lock = $self->carton->build_lock;
     my @deps = $self->carton->list_dependencies;
