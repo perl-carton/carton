@@ -103,6 +103,7 @@ sub install_conservative {
     $self->run_cpanm(
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
+        "--skip-satisfied",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
