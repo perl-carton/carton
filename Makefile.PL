@@ -28,6 +28,7 @@ doc_to_pods();
 build_requires 'Test::More', 0.88;
 test_requires 'Test::Requires';
 auto_set_repository();
+auto_provides;
 
 resources
     homepage => 'https://github.com/miyagawa/carton',
