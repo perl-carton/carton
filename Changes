@@ -1,5 +1,9 @@
 Revision history for carton
 
+v0.9.1  Mon Oct 17 19:05:12 JST 2011
+        - Fixed packaging
+        - Fixed UTF8 encoding warnings for JSON
+
 v0.9.0  Fri Oct 14 01:27:02 JST 2011
         - Initial non-dev release. Still considered beta before it hits 1.0.0!
 
