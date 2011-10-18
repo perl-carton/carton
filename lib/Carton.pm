@@ -10,6 +10,7 @@ use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
 use File::Path;
+use Capture::Tiny 'capture';
 
 use constant CARTON_LOCK_VERSION => '0.9';
 our $DefaultMirror = 'http://cpan.metacpan.org/';
@@ -263,13 +264,13 @@ sub build_deps {
 sub run_cpanm_output {
     my($self, @args) = @_;
 
-    my $pid = open(my $kid, "-|"); # XXX portability
-    if ($pid) {
-        return <$kid>;
-    } else {
+    my $deps = capture {
         local $ENV{PERL_CPANM_OPT};
-        exec "cpanm", "--quiet", "-L", $self->{path}, @args;
-    }
+        system "cpanm", "--quiet", "-L", $self->{path}, @args;
+    };
+    my @deps = split $/, $deps;
+
+    return @deps;
 }
 
 sub run_cpanm {
