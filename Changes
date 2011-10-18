@@ -1,5 +1,9 @@
 Revision history for carton
 
+v0.9.2  Tue Oct 18 12:53:57 JST 2011
+        - Fixed packaging *again* by declaring version as a simple string
+          via http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
+
 v0.9.1  Mon Oct 17 19:05:12 JST 2011
         - Fixed packaging
         - Fixed UTF8 encoding warnings for JSON
