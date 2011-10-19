@@ -6,7 +6,7 @@ use xt::CLI;
     my $app = cli();
 
     $app->run("exec", "--system", "--", "perl", "-e", "use Try::Tiny");
-    like $app->system_output, qr/Can't locate Try\/Tiny.pm/;
+    like $app->system_error, qr/Can't locate Try\/Tiny.pm/;
 
     $app->run("install", "Try::Tiny");
     $app->run("exec", "--system", "--", "perl", "-e", 'use Try::Tiny; print "OK\n"');

@@ -24,7 +24,7 @@ sub run {
 package Carton::CLI::Tested;
 use parent qw(Carton::CLI);
 
-use Capture::Tiny qw(capture_merged);
+use Capture::Tiny qw(capture);
 
 sub new {
     my($class, %args) = @_;
@@ -48,7 +48,7 @@ sub print {
 sub run {
     my($self, @args) = @_;
     $self->{output} = '';
-    $self->{system_output} = capture_merged {
+    ($self->{system_output}, $self->{system_error}) = capture {
         eval { $self->SUPER::run(@args) };
     };
 }
@@ -61,6 +61,11 @@ sub output {
 sub system_output {
     my $self = shift;
     $self->{system_output};
+}
+
+sub system_error {
+    my $self = shift;
+    $self->{system_error};
 }
 
 1;
