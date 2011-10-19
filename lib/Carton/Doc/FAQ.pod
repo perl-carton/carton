@@ -79,4 +79,48 @@ your application. The I<carton.lock> file can always be generated out
 of the local library path, and carton can reproduce the tree using the
 lock file on other machines.
 
+=head2 I'm already using perlbrew and local::lib. Can I use carton with this?
+
+If you're using L<local::lib> already with L<perlbrew> perl, possibly
+with the new C<perlbrew lib> command, that's great! There are multiple
+benefits over using L<perlbrew> and L<local::lib> for development and
+use L<Carton> for deployment.
+
+The best practice and workflow to get your perl environment as clean
+as possible with lots of modules installed for quick development would
+be this:
+
+=over
+
+=item *
+
+Install fresh perl using perlbrew. The version should be the same
+against the version you'll run on the production environment (if any).
+
+=item *
+
+Once the installation is done, use C<perlbrew lib> command to create a
+new local lib environment (let's call it I<devel>) and always use the
+library as a default environment. Install as many modules as you would
+like into the I<devel> library path.
+
+This ensures to have a vanilla C<perl> library path as clean as
+possible.
+
+=item *
+
+When you build a new project that you want to manage dependencies via
+Carton, turn off the I<devel> local::lib and create a new one, like
+I<carton>. Install L<Carton> and all of its dependencies to the
+I<carton> local::lib path. Then run C<carton install> like you
+normally do.
+
+Becuase I<devel> and I<carton> are isolated, the modules you installed
+into I<devel> doesn't affect the process when carton builds the
+dependency tree for your new project at all. This could often be
+critical when you have a conditional dependency in your tree, like
+L<Any::Moose>.
+
+=back
+
 
