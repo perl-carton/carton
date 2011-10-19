@@ -3,6 +3,7 @@ name 'carton';
 version_from 'lib/Carton.pm';
 perl_version '5.008001';
 license_from 'lib/Carton.pod';
+author_from 'lib/Carton.pod';
 readme_from('lib/Carton.pod');
 
 configure_requires 'version', 0.77;
