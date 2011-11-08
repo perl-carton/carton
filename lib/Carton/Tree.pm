@@ -65,7 +65,8 @@ sub spec {
     my $self = shift;
 
     my $meta = $self->metadata;
-    $meta->{name} . ($meta->{version} ? '~' . $meta->{version} : '');
+    my $version = $meta->{provides}{$meta->{name}}{version} || $meta->{version};
+    $meta->{name} . ($version ? '~' . $version : '');
 }
 
 sub children { @{$_[0]->[2]} }
