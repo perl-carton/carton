@@ -324,7 +324,18 @@ sub _collect_install_metadata {
     my ( $self, $install ) = @_;
 
     my $module = Carton::Util::load_json( $install->[0] );
-    my $mymeta = CPAN::Meta->load_file( $install->[1] )->as_struct( { version => "2" } );
+
+    if ( !-f $install->[1] ) {
+        warn "Build phase of $module->{name} did not create a MYMETA.json. Please contact the author.\n";
+        return;
+    }
+
+    my $mymeta = eval { CPAN::Meta->load_file( $install->[1] )->as_struct( { version => "2" } ) };
+
+    if ( !$mymeta ) {
+        warn "Build phase of $module->{name} created a broken MYMETA.json ($@). Please contact the author.\n";
+        return;
+    }
 
     return ( $module->{name} => { %$module, mymeta => $mymeta } );
 }
