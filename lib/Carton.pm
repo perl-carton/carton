@@ -315,10 +315,18 @@ sub find_installs {
     };
     File::Find::find($wanted, $libdir);
 
-    return map {
-        my $module = Carton::Util::load_json($_->[0]);
-        my $mymeta = CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" });
-        ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
+    my %installs = map $self->_collect_install_metadata( $_ ) , @installs;
+
+    return %installs;
+}
+
+sub _collect_install_metadata {
+    my ( $self, $install ) = @_;
+
+    my $module = Carton::Util::load_json( $install->[0] );
+    my $mymeta = CPAN::Meta->load_file( $install->[1] )->as_struct( { version => "2" } );
+
+    return ( $module->{name} => { %$module, mymeta => $mymeta } );
 }
 
 sub check_satisfies {
