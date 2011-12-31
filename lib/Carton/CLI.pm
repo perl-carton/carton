@@ -131,16 +131,37 @@ sub cmd_version {
     $self->print("carton $Carton::VERSION\n");
 }
 
+sub cmd_bundle {
+    my($self, @args) = @_;
+
+    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
+
+    if (my $build_file = $self->has_build_file) {
+        $self->print("Bundling modules using $build_file\n");
+        $self->carton->bundle_from_build_file($build_file);
+    } else {
+        $self->error("Can't locate build file\n");
+    }
+
+    $self->printf("Complete! Modules were bundled into %s (DarkPAN)\n", $self->carton->bundle_dir, SUCCESS);
+}
+
 sub cmd_install {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] }, "deployment!" => \$self->{deployment});
+    $self->parse_options(
+        \@args,
+        "p|path=s"    => sub { $self->carton->{path} = $_[1] },
+        "deployment!" => \$self->{deployment},
+        "cached!"     => \$self->{use_local_cache},
+    );
 
     my $lock = $self->find_lock;
 
     $self->carton->configure(
         lock => $lock,
         mirror_file => $self->mirror_file, # $lock object?
+        ( $self->{use_local_cache} ? (mirror => $self->carton->bundle_dir) : () ),
     );
 
     my $build_file = $self->has_build_file;

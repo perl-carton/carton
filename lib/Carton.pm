@@ -9,7 +9,9 @@ use Cwd;
 use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
-use File::Path;
+use File::Path ();
+use File::Basename ();
+use File::Spec ();
 use Capture::Tiny 'capture';
 
 use constant CARTON_LOCK_VERSION => '0.9';
@@ -29,6 +31,25 @@ sub configure {
 }
 
 sub lock { $_[0]->{lock} }
+
+sub bundle_dir { File::Spec->rel2abs("$_[0]->{path}/cache") }
+
+sub bundle_from_build_file {
+    my($self, $file) = @_;
+
+    my $bundle_dir = $self->bundle_dir;
+
+    my @modules = $self->list_dependencies;
+    $self->download_conservative(\@modules, $bundle_dir, 1)
+        or die "Bundling modules failed\n";
+
+    my $index = $self->build_index_from_darkpan($bundle_dir);
+
+    my $index_file = "$bundle_dir/modules/02packages.details.txt.gz";
+    File::Path::mkpath(File::Basename::dirname($index_file));
+    $self->build_mirror_file($index, $index_file)
+        or die "Bundling modules failed\n";
+}
 
 sub install_from_build_file {
     my($self, $file) = @_;
@@ -85,6 +106,30 @@ sub dedupe_modules {
     return [ reverse @result ];
 }
 
+sub download_conservative {
+    my($self, $modules, $dir, $cascade) = @_;
+
+    require File::Temp;
+
+    $modules = $self->dedupe_modules($modules);
+
+    local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
+
+    my $mirror = $self->{mirror} || $DefaultMirror;
+
+    $self->run_cpanm(
+        "--mirror", $mirror,
+        "--mirror", "http://backpan.perl.org/", # fallback
+        "--no-skip-satisfied",
+        ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
+        ( $cascade ? "--cascade-search" : () ),
+        "--scandeps",
+        "--format", "dists",
+        "--save-dists", $dir,
+        @$modules,
+    );
+}
+
 sub install_conservative {
     my($self, $modules, $cascade) = @_;
 
@@ -113,7 +158,13 @@ sub build_mirror_file {
 
     my @packages = $self->build_packages($index);
 
-    open my $fh, ">", $file or die $!;
+    my $fh;
+    if ($file =~ /\.gz$/i) {
+        require IO::Compress::Gzip;
+        $fh = IO::Compress::Gzip->new($file) or die $IO::Compress::Gzip::GzipError;
+    } else {
+        open $fh, ">", $file or die $!;
+    }
 
     print $fh <<EOF;
 File:         02packages.details.txt
@@ -166,6 +217,30 @@ sub build_index {
             $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
         }
     }
+
+    return $index;
+}
+
+sub build_index_from_darkpan {
+    my($self, $base_dir) = @_;
+
+    require Dist::Metadata;
+
+    my $index = {};
+    my $author_dir = "$base_dir/authors/id";
+
+    for my $file (<$author_dir/*/*/*/*>) {
+        my $dist = Dist::Metadata->new(file => $file);
+        (my $normalized_path = $file) =~ s!$author_dir/!!;
+
+        my $provides = $dist->provides;
+        while (my($package, $meta) = each %$provides) {
+            $index->{$package} = +{
+                version => $meta->{version},
+                meta    => { pathname => $normalized_path },
+            };
+        }
+    };
 
     return $index;
 }
