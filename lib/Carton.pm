@@ -12,6 +12,7 @@ use CPAN::Meta;
 use File::Path ();
 use File::Basename ();
 use File::Spec ();
+use File::Temp ();
 use Capture::Tiny 'capture';
 
 use constant CARTON_LOCK_VERSION => '0.9';
@@ -32,22 +33,13 @@ sub configure {
 
 sub lock { $_[0]->{lock} }
 
-sub bundle_dir { File::Spec->rel2abs("$_[0]->{path}/cache") }
+sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
 
-sub bundle_from_build_file {
-    my($self, $file) = @_;
-
-    my $bundle_dir = $self->bundle_dir;
+sub download_from_build_file {
+    my($self, $build_file, $local_mirror) = @_;
 
     my @modules = $self->list_dependencies;
-    $self->download_conservative(\@modules, $bundle_dir, 1)
-        or die "Bundling modules failed\n";
-
-    my $index = $self->build_index_from_darkpan($bundle_dir);
-
-    my $index_file = "$bundle_dir/modules/02packages.details.txt.gz";
-    File::Path::mkpath(File::Basename::dirname($index_file));
-    $self->build_mirror_file($index, $index_file)
+    $self->download_conservative(\@modules, $local_mirror, 1)
         or die "Bundling modules failed\n";
 }
 
@@ -109,14 +101,11 @@ sub dedupe_modules {
 sub download_conservative {
     my($self, $modules, $dir, $cascade) = @_;
 
-    require File::Temp;
-
     $modules = $self->dedupe_modules($modules);
-
-    local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     my $mirror = $self->{mirror} || $DefaultMirror;
 
+    local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
     $self->run_cpanm(
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
@@ -221,24 +210,22 @@ sub build_index {
     return $index;
 }
 
-sub build_index_from_darkpan {
-    my($self, $base_dir) = @_;
+sub build_mirror_index {
+    my($self, $local_mirror) = @_;
 
+    require File::chdir;
     require Dist::Metadata;
 
     my $index = {};
-    my $author_dir = "$base_dir/authors/id";
 
-    for my $file (<$author_dir/*/*/*/*>) {
+    local $File::chdir::CWD = "$local_mirror/authors/id";
+
+    for my $file (<*/*/*/*>) { # D/DU/DUMMY/Foo-Bar-0.01.tar.gz
         my $dist = Dist::Metadata->new(file => $file);
-        (my $normalized_path = $file) =~ s!$author_dir/!!;
 
-        my $provides = $dist->provides;
-        while (my($package, $meta) = each %$provides) {
-            $index->{$package} = +{
-                version => $meta->{version},
-                meta    => { pathname => $normalized_path },
-            };
+        my $provides = $dist->package_versions;
+        while (my($package, $version) = each %$provides) {
+            $index->{$package} = { version => $version, meta => { pathname => $file } };
         }
     };
 
@@ -352,6 +339,17 @@ sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
     !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
+}
+
+sub update_mirror_index {
+    my($self, $local_mirror) = @_;
+
+    my $index = $self->build_mirror_index($local_mirror);
+
+    my $file = "$local_mirror/modules/02packages.details.txt.gz";
+    File::Path::mkpath(File::Basename::dirname($file));
+    $self->build_mirror_file($index, $file)
+        or die "Bundling modules failed\n";
 }
 
 sub update_lock_file {

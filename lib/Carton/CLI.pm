@@ -134,16 +134,19 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
+    $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
+
+    my $local_mirror = $self->carton->local_mirror;
 
     if (my $build_file = $self->has_build_file) {
         $self->print("Bundling modules using $build_file\n");
-        $self->carton->bundle_from_build_file($build_file);
+        $self->carton->download_from_build_file($build_file, $local_mirror);
+        $self->carton->update_mirror_index($local_mirror);
     } else {
         $self->error("Can't locate build file\n");
     }
 
-    $self->printf("Complete! Modules were bundled into %s (DarkPAN)\n", $self->carton->bundle_dir, SUCCESS);
+    $self->printf("Complete! Modules were bundled into %s (DarkPAN)\n", $local_mirror, SUCCESS);
 }
 
 sub cmd_install {
@@ -153,15 +156,16 @@ sub cmd_install {
         \@args,
         "p|path=s"    => sub { $self->carton->{path} = $_[1] },
         "deployment!" => \$self->{deployment},
-        "cached!"     => \$self->{use_local_cache},
+        "cached!"     => \$self->{use_local_mirror},
     );
 
     my $lock = $self->find_lock;
+    my $local_mirror = $self->carton->local_mirror;
 
     $self->carton->configure(
         lock => $lock,
         mirror_file => $self->mirror_file, # $lock object?
-        ( $self->{use_local_cache} ? (mirror => $self->carton->bundle_dir) : () ),
+        ( $self->{use_local_mirror} && -d $local_mirror ? (mirror => $local_mirror) : () ),
     );
 
     my $build_file = $self->has_build_file;

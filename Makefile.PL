@@ -24,6 +24,7 @@ requires 'Module::Build', 0.38;
 requires 'CPAN::Meta', 2.112;
 
 # bundle DarkPAN support
+requires 'File::chdir';
 requires 'Dist::Metadata';
 requires 'IO::Compress::Gzip';
 
