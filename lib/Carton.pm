@@ -392,7 +392,7 @@ sub find_installs {
 
     return map {
         my $module = Carton::Util::load_json($_->[0]);
-        my $mymeta = CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" });
+        my $mymeta = -f $_->[1] ? CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" }) : {};
         ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
 }
 
