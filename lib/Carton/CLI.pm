@@ -146,7 +146,7 @@ sub cmd_bundle {
         $self->error("Can't locate build file\n");
     }
 
-    $self->printf("Complete! Modules were bundled into %s (DarkPAN)\n", $local_mirror, SUCCESS);
+    $self->printf("Complete! Modules were bundled into %s\n", $local_mirror, SUCCESS);
 }
 
 sub cmd_install {
