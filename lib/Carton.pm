@@ -9,7 +9,10 @@ use Cwd;
 use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
-use File::Path;
+use File::Path ();
+use File::Basename ();
+use File::Spec ();
+use File::Temp ();
 use Capture::Tiny 'capture';
 
 use constant CARTON_LOCK_VERSION => '0.9';
@@ -29,6 +32,16 @@ sub configure {
 }
 
 sub lock { $_[0]->{lock} }
+
+sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
+
+sub download_from_build_file {
+    my($self, $build_file, $local_mirror) = @_;
+
+    my @modules = $self->list_dependencies;
+    $self->download_conservative(\@modules, $local_mirror, 1)
+        or die "Bundling modules failed\n";
+}
 
 sub install_from_build_file {
     my($self, $file) = @_;
@@ -85,6 +98,27 @@ sub dedupe_modules {
     return [ reverse @result ];
 }
 
+sub download_conservative {
+    my($self, $modules, $dir, $cascade) = @_;
+
+    $modules = $self->dedupe_modules($modules);
+
+    my $mirror = $self->{mirror} || $DefaultMirror;
+
+    local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
+    $self->run_cpanm(
+        "--mirror", $mirror,
+        "--mirror", "http://backpan.perl.org/", # fallback
+        "--no-skip-satisfied",
+        ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
+        ( $cascade ? "--cascade-search" : () ),
+        "--scandeps",
+        "--format", "dists",
+        "--save-dists", $dir,
+        @$modules,
+    );
+}
+
 sub install_conservative {
     my($self, $modules, $cascade) = @_;
 
@@ -113,7 +147,13 @@ sub build_mirror_file {
 
     my @packages = $self->build_packages($index);
 
-    open my $fh, ">", $file or die $!;
+    my $fh;
+    if ($file =~ /\.gz$/i) {
+        require IO::Compress::Gzip;
+        $fh = IO::Compress::Gzip->new($file) or die $IO::Compress::Gzip::GzipError;
+    } else {
+        open $fh, ">", $file or die $!;
+    }
 
     print $fh <<EOF;
 File:         02packages.details.txt
@@ -166,6 +206,28 @@ sub build_index {
             $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
         }
     }
+
+    return $index;
+}
+
+sub build_mirror_index {
+    my($self, $local_mirror) = @_;
+
+    require File::chdir;
+    require Dist::Metadata;
+
+    my $index = {};
+
+    local $File::chdir::CWD = "$local_mirror/authors/id";
+
+    for my $file (<*/*/*/*>) { # D/DU/DUMMY/Foo-Bar-0.01.tar.gz
+        my $dist = Dist::Metadata->new(file => $file);
+
+        my $provides = $dist->package_versions;
+        while (my($package, $version) = each %$provides) {
+            $index->{$package} = { version => $version, meta => { pathname => $file } };
+        }
+    };
 
     return $index;
 }
@@ -279,6 +341,17 @@ sub run_cpanm {
     !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
 }
 
+sub update_mirror_index {
+    my($self, $local_mirror) = @_;
+
+    my $index = $self->build_mirror_index($local_mirror);
+
+    my $file = "$local_mirror/modules/02packages.details.txt.gz";
+    File::Path::mkpath(File::Basename::dirname($file));
+    $self->build_mirror_file($index, $file)
+        or die "Bundling modules failed\n";
+}
+
 sub update_lock_file {
     my($self, $file) = @_;
 
@@ -317,7 +390,7 @@ sub find_installs {
 
     return map {
         my $module = Carton::Util::load_json($_->[0]);
-        my $mymeta = CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" });
+        my $mymeta = -f $_->[1] ? CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" }) : {};
         ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
 }
 
