@@ -19,7 +19,7 @@ SYNOPSIS
 
       # Other developer's machine, or on a deployment box
       > carton install
-      > carton exec starman -p 8080 myapp.psgi
+      > carton exec -Ilib -- starman -p 8080 myapp.psgi
 
 WARNING
     This software is under the heavy development and considered ALPHA
