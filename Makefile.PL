@@ -16,6 +16,7 @@ requires 'parent', 0.223;
 requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
 requires 'Capture::Tiny';
+requires 'Getopt::Long', 2.36;
 
 # MYMETA support
 requires 'App::cpanminus', 1.5000;
