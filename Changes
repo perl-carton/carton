@@ -1,5 +1,11 @@
 Revision history for carton
 
+v0.9.4  Sat Mar 31 13:49:41 CEST 2012
+        - use Capture::Tiny to capture output (wchristian)
+        - Improve synopsis for exec (dagolden)
+        - Implemented bundle command (masaki)
+        - Fix Getopt::Long dependency (pfig)
+
 v0.9.3  Wed Oct 19 14:30:50 JST 2011
         - Fixed META.yml by patching Module::Install and repackaging
 
