@@ -21,7 +21,7 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
 
   # Other developer's machine, or on a deployment box
   > carton install
-  > carton exec starman -p 8080 myapp.psgi
+  > carton exec -Ilib -- starman -p 8080 myapp.psgi
 
 =head1 WARNING
 
