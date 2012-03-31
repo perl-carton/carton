@@ -13,6 +13,7 @@ sub dump_json {
     my($data, $file) = @_;
 
     open my $fh, ">", $file or die "$file: $!";
+    binmode $fh;
     print $fh to_json($data);
 }
 
