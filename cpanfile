@@ -25,5 +25,5 @@ requires 'IO::Compress::Gzip';
 
 on 'develop' => sub {
     requires 'Module::Install';
-    requires 'Module::Install::CPANfile';
+    requires 'Module::Install::CPANfile', 0.03;
 };
