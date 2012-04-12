@@ -1,6 +1,6 @@
 Revision history for carton
 
-v0.9.5  Thu Apr 12 19:39:19 JST 2012
+v0.9_5  Thu Apr 12 19:39:19 JST 2012
         - Added experimental cpanfile support
         - Fixed POD (yanick)
 
