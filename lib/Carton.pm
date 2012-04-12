@@ -10,7 +10,6 @@ use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
 use File::Path ();
-use File::Basename ();
 use File::Spec ();
 use File::Temp ();
 use Capture::Tiny 'capture';
@@ -326,17 +325,6 @@ sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
     !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
-}
-
-sub update_mirror_index {
-    my($self, $local_mirror) = @_;
-
-    my $index = $self->build_mirror_index($local_mirror);
-
-    my $file = "$local_mirror/modules/02packages.details.txt.gz";
-    File::Path::mkpath(File::Basename::dirname($file));
-    $self->build_mirror_file($index, $file)
-        or die "Bundling modules failed\n";
 }
 
 sub update_lock_file {
