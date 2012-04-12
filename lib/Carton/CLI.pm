@@ -187,64 +187,6 @@ sub cmd_install {
     $self->printf("Complete! Modules were installed into %s\n", $self->carton->{path}, SUCCESS);
 }
 
-sub cmd_uninstall {
-    my($self, @args) = @_;
-
-    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
-
-    my $lock = $self->find_lock
-        or $self->error("Can't find carton.lock: Run `carton install`");
-
-    my $index = $self->carton->build_index($lock->{modules});
-
-    my @meta;
-    for my $module (@args) {
-        if (exists $index->{$module}) {
-            push @meta, $index->{$module}{meta};
-        } else {
-            $self->print("Can't locate module $module\n", WARN);
-        }
-    }
-
-    my %root;
-    if ($self->has_cpanfile) {
-        for my $dep ($self->carton->list_dependencies) {
-            my($mod, $ver) = split /~/, $dep;
-            if (exists $index->{$mod}) {
-                $root{ $index->{$mod}{meta}{name} } = 1;
-            }
-        }
-    }
-
-    # only can uninstall root dependencies
-    my $tree = $self->carton->build_tree($lock->{modules}, \%root);
-    for my $root ($tree->children) {
-        if (grep $_->{name} eq $root->key, @meta) {
-            $tree->remove_child($root);
-        }
-    }
-
-    my @missing = grep !$tree->find_child($_), keys %{$lock->{modules}};
-    for my $module (@missing) {
-        my $meta = $lock->{modules}{$module};
-        $self->print("Uninstalling $meta->{dist}\n");
-        $self->carton->uninstall($lock, $module);
-    }
-
-    for my $meta (@meta) {
-        unless (grep $meta->{name} eq $_, @missing) {
-            $self->print("$meta->{name} is dependent by some other modules. Can't uninstall it.\n", WARN);
-        }
-    }
-
-    $self->carton->update_lock_file($self->lock_file);
-
-    if (@missing) {
-        $self->printf("Complete! Modules and its dependencies were uninstalled from %s\n",
-                      $self->carton->{path}, SUCCESS);
-    }
-}
-
 sub mirror_file {
     my $self = shift;
     return $self->work_file("02packages.details.txt");
