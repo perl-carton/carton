@@ -110,6 +110,7 @@ sub download_conservative {
     my $mirror = $self->{mirror} || $DefaultMirror;
 
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
+
     $self->run_cpanm(
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
@@ -117,10 +118,14 @@ sub download_conservative {
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         ( $cascade ? "--cascade-search" : () ),
         "--scandeps",
-        "--format", "dists",
         "--save-dists", $dir,
         @$modules,
     );
+
+    # write 02packages using local installations
+    my %installs = $self->find_installs;
+    my $index = $self->build_index(\%installs);
+    $self->build_mirror_file($index, $self->{mirror_file});
 }
 
 sub install_conservative {
@@ -210,28 +215,6 @@ sub build_index {
             $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
         }
     }
-
-    return $index;
-}
-
-sub build_mirror_index {
-    my($self, $local_mirror) = @_;
-
-    require File::chdir;
-    require Dist::Metadata;
-
-    my $index = {};
-
-    local $File::chdir::CWD = "$local_mirror/authors/id";
-
-    for my $file (<*/*/*/*>) { # D/DU/DUMMY/Foo-Bar-0.01.tar.gz
-        my $dist = Dist::Metadata->new(file => $file);
-
-        my $provides = $dist->package_versions;
-        while (my($package, $version) = each %$provides) {
-            $index->{$package} = { version => $version, meta => { pathname => $file } };
-        }
-    };
 
     return $index;
 }
