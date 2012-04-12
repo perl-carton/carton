@@ -138,10 +138,13 @@ sub cmd_bundle {
 
     my $local_mirror = $self->carton->local_mirror;
 
+    $self->carton->configure(
+        mirror_file => $self->mirror_file, # $lock object?
+    );
+
     if (my $cpanfile = $self->has_cpanfile) {
         $self->print("Bundling modules using $cpanfile\n");
         $self->carton->download_from_cpanfile($cpanfile, $local_mirror);
-        $self->carton->update_mirror_index($local_mirror);
     } else {
         $self->error("Can't locate build file\n");
     }

@@ -19,8 +19,6 @@ requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
 
 # bundle DarkPAN support
-requires 'File::chdir';
-requires 'Dist::Metadata';
 requires 'IO::Compress::Gzip';
 
 on 'develop' => sub {
