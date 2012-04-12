@@ -15,9 +15,15 @@ requires 'Module::CPANfile', 0.9004;
 requires 'App::cpanminus', 1.5000;
 requires 'ExtUtils::MakeMaker', 6.59;
 requires 'Module::Build', 0.38;
-requires 'CPAN::Meta', 2.112;
+requires 'CPAN::Meta', 2.120921;
+requires 'CPAN::Meta::Requirements', 2.121;
 
 # bundle DarkPAN support
 requires 'File::chdir';
 requires 'Dist::Metadata';
 requires 'IO::Compress::Gzip';
+
+on 'develop' => sub {
+    requires 'Module::Install';
+    requires 'Module::Install::CPANfile';
+};
