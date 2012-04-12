@@ -1,6 +1,7 @@
 .gitignore
 bin/carton
 Changes
+cpanfile
 docs/carton-check.pod
 docs/carton-exec.pod
 docs/carton-faq.pod
