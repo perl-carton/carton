@@ -5,15 +5,8 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->dir->touch("Makefile.PL", <<EOF);
-use ExtUtils::MakeMaker;
-WriteMakefile(
-  NAME => "foo",
-  VERSION => 1,
-  PREREQ_PM => {
-    "Try::Tiny" => 0,
-  },
-);
+    $app->dir->touch("cpanfile", <<EOF);
+requires 'Try::Tiny';
 EOF
 
     $app->run("check");

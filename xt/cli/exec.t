@@ -8,13 +8,22 @@ use xt::CLI;
     $app->run("exec", "--system", "--", "perl", "-e", "use Try::Tiny");
     like $app->system_error, qr/Can't locate Try\/Tiny.pm/;
 
-    $app->run("install", "Try::Tiny");
+    $app->dir->touch("cpanfile", <<EOF);
+requires 'Try::Tiny';
+EOF
+
+    $app->run("install");
     $app->run("exec", "--system", "--", "perl", "-e", 'use Try::Tiny; print "OK\n"');
 
     like $app->system_output, qr/OK/;
 
-    $app->run("install", "Mojolicious");
-    $app->run("exec", "--system", "--", "mojolicious", "version");
+    $app->dir->touch("cpanfile", <<EOF);
+requires 'Try::Tiny';
+requires 'Mojolicious';
+EOF
+
+    $app->run("install");
+    $app->run("exec", "--system", "--", "mojo", "version");
 
     like $app->system_output, qr/Mojolicious/;
 }
