@@ -15,16 +15,11 @@ modes and the behavior is slightly different.
 
 =over 4
 
-=item carton install <name>
-
-If you run C<carton install> with the arguments, carton will fetch and
-install the modules given as arguments.
-
 =item carton install (no arguments)
 
-If you run C<carton install> without any arguments and if a build file
-(I<Makefile.PL> or I<Build.PL>) exists, carton will scan dependencies
-from the build file and install the modules.
+If you run C<carton install> without any arguments and if I<cpanfile>
+exists, carton will scan dependencies from I<cpanfile> and install
+the modules.
 
 =back
 
@@ -34,9 +29,8 @@ modules specified, resolve dependencies and install all required
 modules from CPAN.
 
 If I<carton.lock> file does exist, carton will still try to install
-modules specified or updated in the build file, but uses
-I<carton.lock> for the dependency resolution, and then cascades to
-CPAN.
+modules specified or updated in I<cpanfile>, but uses I<carton.lock>
+for the dependency resolution, and then cascades to CPAN.
 
 carton will analyze all the dependencies and their version
 information, and it is saved into I<carton.lock> file. It is important
@@ -46,7 +40,7 @@ commit the changes as you update your dependencies.
 =head2 DEPLOYMENT MODE
 
 If you specify the C<--deployment> command line option or the
-I<carton.lock> exists and your build file does not exist, carton will
+I<carton.lock> exists and I<cpanfile> does not exist, carton will
 fetch all remote modules and use the dependencies specified in the
 I<carton.lock> instead of resolving dependencies.
 
@@ -67,15 +61,17 @@ C<carton install URI> again:
   You have URI (1.50)
 
 because you haven't specified the version number, carton won't update
-the module in your local library path. If you want to update to the
-latest version of CPAN, you can either use C<carton update> command,
-or specify the required version either in your build file or a command
-line argument:
+the module in your local library path.
 
- > carton install URI~1.51
+B<WARNINGS: following commands are not implemented>
+
+If you want to update to the latest version of CPAN, you can either
+use C<carton update> command, or specify the required version either
+in your I<cpanfile>.
+
  > carton update URI
 
- > cat Makefile.PL
+ > cat cpanfile
  requires 'URI', 1.51;
 
 Any of those will upgrade URI to the latest one from CPAN, and the
@@ -87,7 +83,7 @@ version specified in the I<carton.lock> will be bumped.
 
 =item --deployment
 
-Force the deployment mode and carton will ignore build file contents.
+Force the deployment mode and carton will ignore I<cpanfile> contents.
 
 =item --path
 

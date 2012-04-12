@@ -10,8 +10,8 @@ The particular problem that carton is trying to address is this:
 
 You develop a Perl web application with dozens of CPAN module
 dependencies. You install these modules on your development machine,
-and describe these dependencies in your Makefile.PL or some other text
-format.
+and describe these dependencies in your I<Makefile.PL> or some other
+text format.
 
 Now you get a produciton environment on Cloud PaaS provider or some
 VPS, you install the dependencies using C<cpanm --installdeps .> and

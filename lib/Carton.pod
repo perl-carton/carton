@@ -5,18 +5,12 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
 =head1 SYNOPSIS
 
   # On your development environment
-  > cat Makefile.PL
-  use inc::Module::Install;
-  name 'MyApp';
-  version '1.0';
-  
+  > cat cpanfile
   requires 'Plack', 0.9980;
   requires 'Starman', 0.2000;
   
-  WriteAll;
-
   > carton install
-  > git add Makefile.PL carton.lock
+  > git add cpanfile carton.lock
   > git commit -m "add Plack and Starman"
 
   # Other developer's machine, or on a deployment box
@@ -53,15 +47,11 @@ exclude these directories from the version control system.
 
 =head2 Tracking the dependencies
 
-You can manage the dependencies of your application via the standard
-I<Makefile.PL> or I<Build.PL>.
+You can manage the dependencies of your application via I<cpanfile>.
 
-  # Makefile.PL
-  use inc::Module::Install;
-  name 'MyAwesomeApp';
+  # cpanfile
   requires 'Plack', 0.9980;
   requires 'Starman', 0.2000;
-  WriteAll;
 
 And then you can install these dependencies via:
 
@@ -76,17 +66,8 @@ and commit changes as you update dependencies. This will ensure that
 other developers on your app, as well as your deployment environment,
 use exactly the same versions of the modules you just installed.
 
-  > git add Makefile.PL carton.lock
+  > git add cpanfile carton.lock
   > git commit -m "Added Plack and Starman"
-
-You can aternatively install modules adhoc from the command line,
-without managing the build file at all.
-
-  > carton install Devel::NYTProf
-  > carton install AnyEvent::Redis
-
-carton will install these modules into I<local> directory in the same
-way, and also can track and analyze the dependencies.
 
 =head2 Deploying your application
 

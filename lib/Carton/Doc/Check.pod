@@ -1,6 +1,6 @@
 =head1 NAME
 
-Carton::Doc::Check - Check if your build file and local environment are in sync
+Carton::Doc::Check - Check if your cpanfile and local environment are in sync
 
 =head1 SYNOPSIS
 
@@ -8,14 +8,13 @@ Carton::Doc::Check - Check if your build file and local environment are in sync
 
 =head1 DESCRIPTION
 
-This command checks the consisntency between yoru build file and the
+This command checks the consisntency between yoru cpanfile and the
 local environment.
 
 =head2 MISSING MODULES
 
-If one of the modules specified in your build file such as
-I<Makefile.PL> are not found in your local environment, C<carton check>
-will warn you about this:
+If one of the modules specified in your I<cpanfile> are not found in
+your local environment, C<carton check> will warn you about this:
 
   $ carton check
   Following dependencies are not satisfied. Run `carton install` to install them.
@@ -26,17 +25,17 @@ You can run C<carton install> again to reinstall these missing dependencies.
 =head2 UNUSED MODULES
 
 If one of the modules in the local environment (i.e. I<local> library
-path) are not specified in your build file, you'll get a warning like
+path) are not specified in your I<cpanfile>, you'll get a warning like
 this:
 
   $ carton check
-  Following modules are found in local but couldn't be tracked from your Makefile.PL
+  Following modules are found in local but couldn't be tracked from your cpanfile
   CGI.pm-3.55
     FCGI-0.73
 
 This means you probably installed this module in an ad-hoc mode so you
-have to add it to I<Makefile.PL>, or you originally declared the
+have to add it to I<cpanfile>, or you originally declared the
 dependencies but found out that you don't need it, so deleted from
-your build file. In that case you can uninstall the module with the
+your I<cpanfile>. In that case you can uninstall the module with the
 L<uninstall|Plack::Doc::Uninstall> command.
 

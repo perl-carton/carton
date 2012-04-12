@@ -3,18 +3,12 @@ NAME
 
 SYNOPSIS
       # On your development environment
-      > cat Makefile.PL
-      use inc::Module::Install;
-      name 'MyApp';
-      version '1.0';
-  
+      > cat cpanfile
       requires 'Plack', 0.9980;
       requires 'Starman', 0.2000;
   
-      WriteAll;
-
       > carton install
-      > git add Makefile.PL carton.lock
+      > git add cpanfile carton.lock
       > git commit -m "add Plack and Starman"
 
       # Other developer's machine, or on a deployment box
@@ -46,15 +40,11 @@ TUTORIAL
       > git commit -m "Start using carton"
 
   Tracking the dependencies
-    You can manage the dependencies of your application via the standard
-    *Makefile.PL* or *Build.PL*.
+    You can manage the dependencies of your application via *cpanfile*.
 
-      # Makefile.PL
-      use inc::Module::Install;
-      name 'MyAwesomeApp';
+      # cpanfile
       requires 'Plack', 0.9980;
       requires 'Starman', 0.2000;
-      WriteAll;
 
     And then you can install these dependencies via:
 
@@ -69,17 +59,8 @@ TUTORIAL
     other developers on your app, as well as your deployment environment,
     use exactly the same versions of the modules you just installed.
 
-      > git add Makefile.PL carton.lock
+      > git add cpanfile carton.lock
       > git commit -m "Added Plack and Starman"
-
-    You can aternatively install modules adhoc from the command line,
-    without managing the build file at all.
-
-      > carton install Devel::NYTProf
-      > carton install AnyEvent::Redis
-
-    carton will install these modules into *local* directory in the same
-    way, and also can track and analyze the dependencies.
 
   Deploying your application
     Once you've done installing all the dependencies, you can push your
