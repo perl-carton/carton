@@ -72,12 +72,6 @@ sub list_dependencies {
     return map "$_~$hash->{$_}", keys %$hash; # TODO refactor to not rely on string representation
 }
 
-sub install_modules {
-    my($self, $modules) = @_;
-    $self->install_conservative($modules, 1)
-        or die "Installing modules failed\n";
-}
-
 sub install_from_lock {
     my($self) = @_;
 
