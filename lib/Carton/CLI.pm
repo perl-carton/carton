@@ -60,7 +60,7 @@ sub run {
 
     push @commands, @ARGV;
 
-    my $cmd = shift @commands || 'usage';
+    my $cmd = shift @commands || 'install';
     my $call = $self->can("cmd_$cmd");
 
     if ($call) {
