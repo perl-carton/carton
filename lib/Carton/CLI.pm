@@ -138,9 +138,9 @@ sub cmd_bundle {
 
     my $local_mirror = $self->carton->local_mirror;
 
-    if (my $build_file = $self->has_build_file) {
-        $self->print("Bundling modules using $build_file\n");
-        $self->carton->download_from_build_file($build_file, $local_mirror);
+    if (my $cpanfile = $self->has_cpanfile) {
+        $self->print("Bundling modules using $cpanfile\n");
+        $self->carton->download_from_cpanfile($cpanfile, $local_mirror);
         $self->carton->update_mirror_index($local_mirror);
     } else {
         $self->error("Can't locate build file\n");
@@ -168,18 +168,14 @@ sub cmd_install {
         ( $self->{use_local_mirror} && -d $local_mirror ? (mirror => $local_mirror) : () ),
     );
 
-    my $build_file = $self->has_build_file;
+    my $cpanfile = $self->has_cpanfile;
 
-    if (@args) {
-        $self->print("Installing modules from the command line\n");
-        $self->carton->install_modules(\@args);
-        $self->carton->update_lock_file($self->lock_file);
-    } elsif ($self->{deployment} or not $build_file) {
+    if ($self->{deployment} or not $cpanfile) {
         $self->print("Installing modules using carton.lock (deployment mode)\n");
         $self->carton->install_from_lock;
-    } elsif ($build_file) {
-        $self->print("Installing modules using $build_file\n");
-        $self->carton->install_from_build_file($build_file);
+    } elsif ($cpanfile) {
+        $self->print("Installing modules using $cpanfile\n");
+        $self->carton->install_from_cpanfile($cpanfile);
         $self->carton->update_lock_file($self->lock_file);
     } else {
         $self->error("Can't locate build file or carton.lock\n");
@@ -208,7 +204,7 @@ sub cmd_uninstall {
     }
 
     my %root;
-    if ($self->has_build_file) {
+    if ($self->has_cpanfile) {
         for my $dep ($self->carton->list_dependencies) {
             my($mod, $ver) = split /~/, $dep;
             if (exists $index->{$mod}) {
@@ -251,13 +247,11 @@ sub mirror_file {
     return $self->work_file("02packages.details.txt");
 }
 
-sub has_build_file {
+sub has_cpanfile {
     my $self = shift;
 
-    my $file = (grep -e, qw( Build.PL Makefile.PL ))[0]
-        or return;
-
-    return $file;
+    return 'cpanfile' if -e 'cpanfile';
+    return;
 }
 
 sub cmd_show {
@@ -305,7 +299,7 @@ sub cmd_list {
 sub cmd_check {
     my($self, @args) = @_;
 
-    my $file = $self->has_build_file
+    my $file = $self->has_cpanfile
         or $self->error("Can't find a build file: nothing to check.\n");
 
     $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });

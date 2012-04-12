@@ -14,6 +14,7 @@ use File::Basename ();
 use File::Spec ();
 use File::Temp ();
 use Capture::Tiny 'capture';
+use Module::CPANfile;
 
 use constant CARTON_LOCK_VERSION => '0.9';
 our $DefaultMirror = 'http://cpan.metacpan.org/';
@@ -35,15 +36,15 @@ sub lock { $_[0]->{lock} }
 
 sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
 
-sub download_from_build_file {
-    my($self, $build_file, $local_mirror) = @_;
+sub download_from_cpanfile {
+    my($self, $cpanfile, $local_mirror) = @_;
 
     my @modules = $self->list_dependencies;
     $self->download_conservative(\@modules, $local_mirror, 1)
         or die "Bundling modules failed\n";
 }
 
-sub install_from_build_file {
+sub install_from_cpanfile {
     my($self, $file) = @_;
 
     my @modules;
@@ -60,12 +61,15 @@ sub install_from_build_file {
 sub list_dependencies {
     my $self = shift;
 
-    my @deps = grep !/^perl~/, $self->run_cpanm_output("--showdeps", ".");
-    for my $line (@deps) {
-        chomp $line;
-    }
+    my $cpanfile = Module::CPANfile->load;
+    my $prereq = $cpanfile->prereq;
 
-    return @deps;
+    my $reqs = CPAN::Meta::Requirements->new;
+    $reqs->add_requirements($prereq->requirements_for($_, 'requires'))
+        for qw( configure build runtime);
+
+    my $hash = $reqs->as_string_hash;
+    return map "$_~$hash->{$_}", keys %$hash; # TODO refactor to not rely on string representation
 }
 
 sub install_modules {
