@@ -44,8 +44,6 @@ sub doc_to_pods {
         $pods{$doc} = "blib/man1/$name.1"
     }
 
-    \%pods;
-
     makemaker_args MAN1PODS => \%pods;
 }
 
