@@ -1,5 +1,13 @@
 Revision history for carton
 
+v0.9_6  Thu May 10 21:05:35 CEST 2012
+        - use cpanfile + Module::Install for dogfooding
+        - `carton` without args now does `carton install` (inspired by bundler)
+        - Update bundle command to use install.json (masaki)
+        - code cleanups and doc overhauls
+        - removed `uninstall` command for now
+        - Fixed CPAN::Meta::Requirements dependency
+
 v0.9_5  Thu Apr 12 19:39:19 JST 2012
         - Added experimental cpanfile support
         - Fixed POD (yanick)

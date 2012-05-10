@@ -12,10 +12,14 @@ docs/carton-tree.pod
 docs/carton-uninstall.pod
 docs/carton-version.pod
 docs/carton.pod
+inc/Module/CPANfile.pm
 inc/Module/Install.pm
+inc/Module/Install/AuthorRequires.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
+inc/Module/Install/CPANfile.pm
 inc/Module/Install/Fetch.pm
+inc/Module/Install/Include.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/ReadmeFromPod.pm
@@ -33,7 +37,6 @@ lib/Carton/Doc/Install.pod
 lib/Carton/Doc/List.pod
 lib/Carton/Doc/Show.pod
 lib/Carton/Doc/Tree.pod
-lib/Carton/Doc/Uninstall.pod
 lib/Carton/Doc/Version.pod
 lib/Carton/Error.pm
 lib/Carton/Tree.pm
@@ -47,8 +50,6 @@ xt/CLI.pm
 xt/cli/check.t
 xt/cli/exec.t
 xt/cli/mirror.t
-xt/cli/uninstall.t
-xt/cli/uninstall_dep.t
 xt/cli/version.t
 xt/mirror/modules/02packages.details.txt
 xt/pod.t
