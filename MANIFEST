@@ -50,6 +50,7 @@ xt/CLI.pm
 xt/cli/check.t
 xt/cli/exec.t
 xt/cli/mirror.t
+xt/cli/mirror_multi.t
 xt/cli/version.t
 xt/mirror/modules/02packages.details.txt
 xt/pod.t

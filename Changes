@@ -1,5 +1,9 @@
 Revision history for carton
 
+v0.9_7  Sat May 12 06:15:44 EEST 2012
+        - Experimental multiple mirror support (nihen)
+        - Fixed cpanm dependency to avoid cascading bug
+
 v0.9_6  Thu May 10 21:05:35 CEST 2012
         - use cpanfile + Module::Install for dogfooding
         - `carton` without args now does `carton install` (inspired by bundler)
