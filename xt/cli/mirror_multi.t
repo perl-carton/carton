@@ -8,9 +8,12 @@ my $cwd = Cwd::cwd();
 {
     # split string
     my $app = cli();
+    $app->dir->touch("cpanfile", <<EOF);
+requires 'PSGI';
+EOF
 
     $app->carton->{mirror} = "$cwd/xt/mirror,http://cpan.metacpan.org/";
-    $app->run("install", "PSGI");
+    $app->run("install");
 
     $app->run("list");
     like $app->output, qr/^PSGI-/;
@@ -19,10 +22,12 @@ my $cwd = Cwd::cwd();
 {
     # ARRAY ref
     my $app = cli();
+    $app->dir->touch("cpanfile", <<EOF);
+requires 'PSGI';
+EOF
 
     $app->carton->{mirror} = ["$cwd/xt/mirror", "http://cpan.metacpan.org/"];
-    $app->run("install", "PSGI");
-
+    $app->run("install");
     $app->run("list");
     like $app->output, qr/^PSGI-/;
 }
