@@ -75,8 +75,11 @@ sub list_dependencies {
 sub install_from_lock {
     my($self) = @_;
 
-    my $tree = $self->build_tree($self->lock->{modules});
-    my @root = map $_->spec, $tree->children;
+    my @root = ();
+    for my $meta ( values %{$self->lock->{modules}} ) {
+        my $version = $meta->{provides}{$meta->{name}}{version} || $meta->{version};
+        push @root, $meta->{name} . ($version ? '~' . $version : '');
+    }
 
     $self->install_conservative(\@root, 0)
         or die "Installing modules failed\n";
