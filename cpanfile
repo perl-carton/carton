@@ -24,4 +24,6 @@ requires 'IO::Compress::Gzip';
 on 'develop' => sub {
     requires 'Module::Install';
     requires 'Module::Install::CPANfile', 0.03;
+    requires 'Module::Install::ReadmeFromPod';
+    requires 'Module::Install::Repository';
 };

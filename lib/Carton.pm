@@ -34,7 +34,7 @@ sub configure {
 
 sub lock { $_[0]->{lock} }
 
-sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
+sub local_mirror { File::Spec->rel2abs($ENV{PERL_CARTON_LMIRROR} || "$_[0]->{path}/cache") }
 
 sub download_from_cpanfile {
     my($self, $cpanfile, $local_mirror) = @_;
