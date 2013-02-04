@@ -134,7 +134,12 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
+    my $locked;
+    $self->parse_options(
+        \@args,
+        "p|path=s" => sub { $self->carton->{path} = $_[1] },
+        "locked" => \$locked,
+    );
 
     my $local_mirror = $self->carton->local_mirror;
 
@@ -142,7 +147,17 @@ sub cmd_bundle {
         mirror_file => $self->mirror_file, # $lock object?
     );
 
-    if (my $cpanfile = $self->has_cpanfile) {
+    if ($locked) {
+        my $lock = $self->find_lock;
+        my $tree = $self->carton->build_tree($lock->{modules});
+        my @modules;
+        $self->carton->walk_down_tree($tree, sub {
+            my($meta) = @_;
+            my $version = $meta->{provides}{$meta->{name}}{version} || $meta->{version};
+            push @modules, $meta->{name} . ($version ? '~' . $version : '');
+        });
+        $self->carton->download_conservative(\@modules, $local_mirror, 1, 1);
+    } elsif (my $cpanfile = $self->has_cpanfile) {
         $self->print("Bundling modules using $cpanfile\n");
         $self->carton->download_from_cpanfile($cpanfile, $local_mirror);
     } else {

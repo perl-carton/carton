@@ -97,7 +97,7 @@ sub dedupe_modules {
 }
 
 sub download_conservative {
-    my($self, $modules, $dir, $cascade) = @_;
+    my($self, $modules, $dir, $cascade, $download) = @_;
 
     $modules = $self->dedupe_modules($modules);
 
@@ -109,6 +109,7 @@ sub download_conservative {
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
         "--no-skip-satisfied",
+        ( $download ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         ( $cascade ? "--cascade-search" : () ),
         "--scandeps",
@@ -116,10 +117,12 @@ sub download_conservative {
         @$modules,
     );
 
-    # write 02packages using local installations
-    my %installs = $self->find_installs;
-    my $index = $self->build_index(\%installs);
-    $self->build_mirror_file($index, $self->{mirror_file});
+    unless ($download) {
+        # write 02packages using local installations
+        my %installs = $self->find_installs;
+        my $index = $self->build_index(\%installs);
+        $self->build_mirror_file($index, $self->{mirror_file});
+    }
 }
 
 sub install_conservative {
