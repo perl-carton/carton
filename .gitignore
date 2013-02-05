@@ -1,5 +1,5 @@
 MYMETA.*
-META.yml
+META.*
 Makefile
 inc/
 pm_to_blib

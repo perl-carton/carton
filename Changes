@@ -1,5 +1,11 @@
 Revision history for carton
 
+v0.9_8  Tue Feb  5 12:17:54 PST 2013
+        - Do not use carton.lock to build extra dependencies. Everything has to be
+          pulled out of cpanfile, even with the deployment mode. This makes the deployment
+          much more reliable, and could possibly work with differing os/perl versions
+          across development and deployments.
+
 v0.9_7  Sat May 12 06:15:44 EEST 2012
         - Experimental multiple mirror support (nihen)
         - Fixed cpanm dependency to avoid cascading bug
