@@ -173,15 +173,15 @@ sub cmd_install {
 
     my $cpanfile = $self->has_cpanfile;
 
-    if ($self->{deployment} or not $cpanfile) {
-        $self->print("Installing modules using carton.lock (deployment mode)\n");
-        $self->carton->install_from_lock;
-    } elsif ($cpanfile) {
-        $self->print("Installing modules using $cpanfile\n");
+    if (!$cpanfile) {
+        $self->error("Can't locate cpanfile.\n");
+    } elsif ($self->{deployment}) {
+        $self->print("Installing modules using $cpanfile (deployment mode)\n");
         $self->carton->install_from_cpanfile($cpanfile);
-        $self->carton->update_lock_file($self->lock_file);
     } else {
-        $self->error("Can't locate build file or carton.lock\n");
+        $self->print("Installing modules using $cpanfile\n");
+        $self->carton->install_from_cpanfile($cpanfile, 1);
+        $self->carton->update_lock_file($self->lock_file);
     }
 
     $self->printf("Complete! Modules were installed into %s\n", $self->carton->{path}, SUCCESS);

@@ -45,16 +45,10 @@ sub download_from_cpanfile {
 }
 
 sub install_from_cpanfile {
-    my($self, $file) = @_;
+    my($self, $file, $cascade) = @_;
 
-    my @modules;
-    if ($self->lock) {
-        my $tree = $self->build_tree($self->lock->{modules});
-        push @modules, map $_->spec, $tree->children;
-    }
-
-    push @modules, $self->list_dependencies;
-    $self->install_conservative(\@modules, 1)
+    my @modules = $self->list_dependencies;
+    $self->install_conservative(\@modules, $cascade)
         or die "Installing modules failed\n";
 }
 
@@ -70,16 +64,6 @@ sub list_dependencies {
 
     my $hash = $reqs->as_string_hash;
     return map "$_~$hash->{$_}", keys %$hash; # TODO refactor to not rely on string representation
-}
-
-sub install_from_lock {
-    my($self) = @_;
-
-    my $tree = $self->build_tree($self->lock->{modules});
-    my @root = map $_->spec, $tree->children;
-
-    $self->install_conservative(\@root, 0)
-        or die "Installing modules failed\n";
 }
 
 sub dedupe_modules {
