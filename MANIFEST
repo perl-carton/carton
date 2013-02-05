@@ -14,7 +14,6 @@ docs/carton-version.pod
 docs/carton.pod
 inc/Module/CPANfile.pm
 inc/Module/Install.pm
-inc/Module/Install/AuthorRequires.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/CPANfile.pm
