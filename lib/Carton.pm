@@ -36,14 +36,6 @@ sub lock { $_[0]->{lock} }
 
 sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
 
-sub download_from_cpanfile {
-    my($self, $cpanfile, $local_mirror) = @_;
-
-    my @modules = $self->list_dependencies;
-    $self->download_conservative(\@modules, $local_mirror, 1)
-        or die "Bundling modules failed\n";
-}
-
 sub install_from_cpanfile {
     my($self, $file, $cascade) = @_;
 
@@ -80,30 +72,31 @@ sub dedupe_modules {
     return [ reverse @result ];
 }
 
-sub download_conservative {
-    my($self, $modules, $dir, $cascade) = @_;
 
-    $modules = $self->dedupe_modules($modules);
+sub download_from_cpanfile {
+    my($self, $cpanfile, $local_mirror) = @_;
+
+    my @modules = $self->list_dependencies;
+    my $modules = $self->dedupe_modules(\@modules);
+
+    my $index = $self->build_index($self->lock->{modules});
+    $self->build_mirror_file($index, $self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
 
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     $self->run_cpanm(
+        "-v",
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
+        "--mirror-index", $self->{mirror_file},
         "--no-skip-satisfied",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
-        ( $cascade ? "--cascade-search" : () ),
         "--scandeps",
-        "--save-dists", $dir,
+        "--save-dists", $local_mirror,
         @$modules,
     );
-
-    # write 02packages using local installations
-    my %installs = $self->find_installs;
-    my $index = $self->build_index(\%installs);
-    $self->build_mirror_file($index, $self->{mirror_file});
 }
 
 sub install_conservative {
