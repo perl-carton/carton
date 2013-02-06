@@ -1,5 +1,10 @@
 Revision history for carton
 
+v0.9_9  Wed Feb  6 11:02:46 PST 2013
+        - Fixed bundle command where it updated modules, not the versions specified in carton.lock.
+          bundle now builds mirror files like install --deployment, and downloads tarballs for the
+          specified versions. (vti)
+
 v0.9_8  Tue Feb  5 12:17:54 PST 2013
         - Do not use carton.lock to build extra dependencies. Everything has to be
           pulled out of cpanfile, even with the deployment mode. This makes the deployment
