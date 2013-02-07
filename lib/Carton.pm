@@ -87,7 +87,6 @@ sub download_from_cpanfile {
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     $self->run_cpanm(
-        "-v",
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
         "--mirror-index", $self->{mirror_file},
