@@ -81,6 +81,15 @@ This will look at the I<carton.lock> and install the exact same
 versions of the dependencies into I<local>, and now your application
 is ready to run.
 
+=head2 Build environment
+
+Using cpanfile you can specify different build environments to include
+additional dependencies such as author tools or test libraries. You can
+install those additional dependencies running the following command:
+
+  # Install "test" dependencies
+  > carton install --with test 
+
 =head2 Bundling modules
 
 carton can bundle all the tarballs for your dependencies into a

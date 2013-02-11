@@ -161,7 +161,7 @@ sub cmd_install {
 
     $self->parse_options(
         \@args,
-        "e|env=s"     => sub { $self->carton->{env} = $_[1] },
+        "with=s"      => sub { $self->carton->{build_environment} = $_[1] },
         "p|path=s"    => sub { $self->carton->{path} = $_[1] },
         "deployment!" => \$self->{deployment},
         "cached!"     => \$self->{use_local_mirror},
