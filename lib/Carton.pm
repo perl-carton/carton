@@ -51,8 +51,13 @@ sub list_dependencies {
     my $prereq = $cpanfile->prereq;
 
     my $reqs = CPAN::Meta::Requirements->new;
+
+    print STDERR "\n\n\n$self->{env}\n\n\n";
+    my @phases = qw(configure build runtime);
+    push @phases, $self->{env} if $self->{env};
+
     $reqs->add_requirements($prereq->requirements_for($_, 'requires'))
-        for qw( configure build runtime);
+        for @phases;
 
     my $hash = $reqs->as_string_hash;
     return map "$_~$hash->{$_}", keys %$hash; # TODO refactor to not rely on string representation
