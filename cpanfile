@@ -12,7 +12,7 @@ requires 'Getopt::Long', 2.36;
 requires 'Module::CPANfile', 0.9004;
 
 # MYMETA support
-requires 'App::cpanminus', 1.5020;
+requires 'App::cpanminus', 1.6000;
 requires 'ExtUtils::MakeMaker', 6.59;
 requires 'Module::Build', 0.38;
 requires 'CPAN::Meta', 2.120921;

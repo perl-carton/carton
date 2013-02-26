@@ -1,5 +1,8 @@
 Revision history for carton
 
+v0.9.10 Tue Feb 26 13:32:34 PST 2013
+        - Same as v0.9_9. Still considered pre-1.0!
+
 v0.9_9  Wed Feb  6 11:02:46 PST 2013
         - Fixed bundle command where it updated modules, not the versions specified in carton.lock.
           bundle now builds mirror files like install --deployment, and downloads tarballs for the
