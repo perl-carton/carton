@@ -1,7 +1,7 @@
 package Carton::TreeNode;
 use strict;
 use warnings;
-use version; our $VERSION = version->declare("v0.9.11");
+use version; our $VERSION = version->declare("v0.9.12");
 
 my %cache;
 

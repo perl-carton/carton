@@ -1,7 +1,7 @@
 package Carton::Util;
 use strict;
 use warnings;
-use version; our $VERSION = version->declare("v0.9.11");
+use version; our $VERSION = version->declare("v0.9.12");
 
 sub load_json {
     my $file = shift;

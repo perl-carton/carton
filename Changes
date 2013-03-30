@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.12  2013-03-30 15:01:55 PDT
+        - repackage to set $VERSION
+
 v0.9.11  2013-03-30 14:54:21 PDT
         - Ignore 'perl' requirements so as it won't fail, for now. #71
         - Install 'test' dependencies by default. #66
