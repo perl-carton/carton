@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.11  2013-03-30 14:54:21 PDT
+        - Ignore 'perl' requirements so as it won't fail, for now. #71
+        - Install 'test' dependencies by default. #66
+        - Convert to Milla, do not install carton-* man pages
+
 v0.9.10 Tue Feb 26 13:32:34 PST 2013
         - Same as v0.9_9. Still considered pre-1.0!
 
