@@ -20,8 +20,3 @@ requires 'CPAN::Meta::Requirements', 2.121;
 
 # bundle DarkPAN support
 requires 'IO::Compress::Gzip';
-
-on 'develop' => sub {
-    requires 'Module::Install';
-    requires 'Module::Install::CPANfile', 0.03;
-};
