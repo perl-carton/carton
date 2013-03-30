@@ -52,10 +52,12 @@ sub list_dependencies {
 
     my $reqs = CPAN::Meta::Requirements->new;
     $reqs->add_requirements($prereq->requirements_for($_, 'requires'))
-        for qw( configure build runtime);
+        for qw( configure build runtime ); # add test
 
     my $hash = $reqs->as_string_hash;
-    return map "$_~$hash->{$_}", keys %$hash; # TODO refactor to not rely on string representation
+    # TODO refactor to not rely on string representation
+    # TODO actually check 'perl' version
+    return map "$_~$hash->{$_}", grep { $_ ne 'perl' } keys %$hash;
 }
 
 sub dedupe_modules {
