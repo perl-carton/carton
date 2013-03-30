@@ -1,0 +1,70 @@
+{
+   "abstract" : "Perl module dependency manager (aka Bundler for Perl)",
+   "author" : [
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Milla version v0.9.2, Dist::Zilla version 4.300032, CPAN::Meta::Converter version 2.130880",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "carton",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Module::Build" : "0.3601"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.3601",
+            "version" : "0.77"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Module::Install" : "0",
+            "Module::Install::CPANfile" : "0.03",
+            "Test::Pod" : "1.41"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "App::cpanminus" : "1.6",
+            "CPAN::Meta" : "2.120921",
+            "CPAN::Meta::Requirements" : "2.121",
+            "Capture::Tiny" : "0",
+            "Exception::Class" : "1.32",
+            "ExtUtils::MakeMaker" : "6.59",
+            "Getopt::Long" : "2.36",
+            "IO::Compress::Gzip" : "0",
+            "JSON" : "2.53",
+            "Module::Build" : "0.38",
+            "Module::CPANfile" : "0.9004",
+            "Module::Metadata" : "1.000003",
+            "Term::ANSIColor" : "1.12",
+            "Try::Tiny" : "0.09",
+            "local::lib" : "1.008",
+            "parent" : "0.223"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/miyagawa/carton/issues"
+      },
+      "homepage" : "https://github.com/miyagawa/carton",
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/miyagawa/carton.git",
+         "web" : "https://github.com/miyagawa/carton"
+      }
+   },
+   "version" : "v0.9.10"
+}
+
