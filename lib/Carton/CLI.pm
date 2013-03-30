@@ -1,7 +1,7 @@
 package Carton::CLI;
 use strict;
 use warnings;
-use version; our $VERSION = version->declare("v0.9.12");
+use version; our $VERSION = version->declare("v0.9.13");
 
 use Cwd;
 use Config;

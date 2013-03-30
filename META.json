@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v0.9.2, Dist::Zilla version 4.300032, CPAN::Meta::Converter version 2.130880",
+   "generated_by" : "Dist::Milla version v0.9.3, Dist::Zilla version 4.300032, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -13,6 +13,16 @@
       "version" : "2"
    },
    "name" : "carton",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples"
+      ]
+   },
    "prereqs" : {
       "build" : {
          "requires" : {
@@ -65,6 +75,6 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.12"
+   "version" : "v0.9.13"
 }
 
