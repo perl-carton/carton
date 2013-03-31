@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.14  2013-03-30 18:25:39 PDT
+        - Unset $VERSION on PAUSE (Thanks andk)
+
 v0.9.13  2013-03-30 15:14:49 PDT
         - repackage for better META files with Milla v0.9.3
 

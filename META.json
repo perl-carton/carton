@@ -37,8 +37,6 @@
       },
       "develop" : {
          "requires" : {
-            "Module::Install" : "0",
-            "Module::Install::CPANfile" : "0.03",
             "Test::Pod" : "1.41"
          }
       },
@@ -75,6 +73,6 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.13"
+   "version" : "v0.9.14"
 }
 

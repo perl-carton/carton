@@ -3,7 +3,7 @@ package Carton;
 use strict;
 use warnings;
 use 5.008_001;
-use version; our $VERSION = version->declare("v0.9.13");
+use version; our $VERSION = version->declare("v0.9.14");
 
 use Cwd;
 use Config qw(%Config);
