@@ -1,3 +1,5 @@
+requires 'perl', '5.8.5';
+
 configure_requires 'version', 0.77;
 
 requires 'JSON', 2.53;
