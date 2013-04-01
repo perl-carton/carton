@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa <miyagawa\@bulknews.net>"
   ],
   "dist_name" => "carton",
-  "dist_version" => "v0.9.14",
+  "dist_version" => "v0.9.15",
   "license" => "perl",
   "module_name" => "carton",
   "recommends" => {},
@@ -39,7 +39,8 @@ my %module_build_args = (
     "Term::ANSIColor" => "1.12",
     "Try::Tiny" => "0.09",
     "local::lib" => "1.008",
-    "parent" => "0.223"
+    "parent" => "0.223",
+    "perl" => "v5.8.5"
   },
   "script_files" => [
     "script/carton"

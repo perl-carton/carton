@@ -57,7 +57,8 @@
             "Term::ANSIColor" : "1.12",
             "Try::Tiny" : "0.09",
             "local::lib" : "1.008",
-            "parent" : "0.223"
+            "parent" : "0.223",
+            "perl" : "v5.8.5"
          }
       }
    },
@@ -73,6 +74,6 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.14"
+   "version" : "v0.9.15"
 }
 

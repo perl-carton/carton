@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.15  2013-03-31 18:11:28 PDT
+        - Add minimum perl dependency
+
 v0.9.14  2013-03-30 18:25:39 PDT
         - Unset $VERSION on PAUSE (Thanks andk)
 
