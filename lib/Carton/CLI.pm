@@ -11,6 +11,7 @@ use Carton;
 use Carton::Util;
 use Carton::Error;
 use Carton::Tree;
+use Carton::Setup setup => 0;
 use Try::Tiny;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
@@ -311,11 +312,11 @@ sub cmd_exec {
     my @include;
     $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
 
-    my $path = $self->carton->{path};
-    my $lib  = join ",", @include, "$path/lib/perl5", ".";
-
-    local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$lib";
-    local $ENV{PATH} = "$path/bin:$ENV{PATH}";
+    local %ENV = %ENV;
+    Carton::Setup::setup_env(
+        path => $self->carton->{path},
+        includes => \@include,
+    );
 
     $system ? system(@args) : exec(@args);
 }
