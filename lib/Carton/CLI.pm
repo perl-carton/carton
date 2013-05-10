@@ -313,7 +313,7 @@ sub cmd_exec {
     $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
 
     local %ENV = %ENV;
-    Carton::Setup::setup_env(
+    Carton::Setup->setup_env(
         path => $self->carton->{path},
         includes => \@include,
     );
