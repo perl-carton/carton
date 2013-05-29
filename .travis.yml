@@ -4,5 +4,9 @@ perl:
   - 5.14
   - 5.12
   - 5.10
+before_install:
+  - cpanm -nq App::mymeta_requires
+install:
+  - (mymeta-requires --develop | cpanm -nq) || cat ~/.cpanm/build.log
 script:
   - prove -lr xt
