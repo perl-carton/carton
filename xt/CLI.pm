@@ -10,7 +10,7 @@ sub cli {
     chdir $dir;
 
     my $app = Carton::CLI::Tested->new(dir => $dir);
-    $app->carton->{mirror} = "$ENV{HOME}/minicpan";
+    $app->carton->{mirror} = "$ENV{HOME}/minicpan" if -e "$ENV{HOME}/minicpan";
 
     return $app;
 }
