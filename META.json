@@ -1,10 +1,10 @@
 {
    "abstract" : "Perl module dependency manager (aka Bundler for Perl)",
    "author" : [
-      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
+      "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v0.9.3, Dist::Zilla version 4.300032, CPAN::Meta::Converter version 2.130880",
+   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.130880",
    "license" : [
       "perl_5"
    ],
@@ -37,7 +37,10 @@
       },
       "develop" : {
          "requires" : {
-            "Test::Pod" : "1.41"
+            "Capture::Tiny" : "0",
+            "Directory::Scratch" : "0",
+            "Test::Pod" : "1.41",
+            "Test::Requires" : "0"
          }
       },
       "runtime" : {
@@ -52,7 +55,7 @@
             "IO::Compress::Gzip" : "0",
             "JSON" : "2.53",
             "Module::Build" : "0.38",
-            "Module::CPANfile" : "0.9004",
+            "Module::CPANfile" : "0.9031",
             "Module::Metadata" : "1.000003",
             "Term::ANSIColor" : "1.12",
             "Try::Tiny" : "0.09",
@@ -74,6 +77,16 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.15"
+   "version" : "v0.9.15",
+   "x_contributors" : [
+      "Christian Walde <walde.christian@googlemail.com>",
+      "David Golden <dagolden@cpan.org>",
+      "Masahiro Chiba <chiba@everqueue.com>",
+      "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
+      "Pedro Figueiredo <me@pedrofigueiredo.org>",
+      "Tatsuhiko Miyagawa <miyagawa@gmail.com>",
+      "Yanick Champoux <yanick@babyl.dyndns.org>",
+      "ikasam_a <masaki.nakagawa@gmail.com>"
+   ]
 }
 

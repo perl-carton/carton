@@ -15,7 +15,7 @@ my %module_build_args = (
   },
   "dist_abstract" => "Perl module dependency manager (aka Bundler for Perl)",
   "dist_author" => [
-    "Tatsuhiko Miyagawa <miyagawa\@bulknews.net>"
+    "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "carton",
   "dist_version" => "v0.9.15",
@@ -34,7 +34,7 @@ my %module_build_args = (
     "IO::Compress::Gzip" => 0,
     "JSON" => "2.53",
     "Module::Build" => "0.38",
-    "Module::CPANfile" => "0.9004",
+    "Module::CPANfile" => "0.9031",
     "Module::Metadata" => "1.000003",
     "Term::ANSIColor" => "1.12",
     "Try::Tiny" => "0.09",
