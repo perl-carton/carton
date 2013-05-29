@@ -4,7 +4,7 @@ Carton::Doc::Install - Install the dependencies
 
 =head1 SYNOPSIS
 
-  carton install [--deployment] [--path=PATH] [modules...]
+  carton install [--deployment] [--path=PATH]
 
 =head1 DESCRIPTION
 
@@ -15,7 +15,7 @@ modes and the behavior is slightly different.
 
 =over 4
 
-=item carton install (no arguments)
+=item carton install
 
 If you run C<carton install> without any arguments and if I<cpanfile>
 exists, carton will scan dependencies from I<cpanfile> and install
@@ -45,23 +45,6 @@ fetch all remote modules and use the dependencies specified in the
 I<carton.lock> instead of resolving dependencies.
 
 =head1 CONSERVATIVE UPDATE
-
-C<carton install> doesn't update the modules already installed into
-I<local> library path as long as the version is satisfied.
-
-For example, one day you install URI-1.50 from CPAN:
-
-  > carton install URI
-  Successfully installed URI-1.50
-
-Few weeks later, URI module is updated to 1.51 on CPAN. If you run the
-C<carton install URI> again:
-
-  > carton install URI
-  You have URI (1.50)
-
-because you haven't specified the version number, carton won't update
-the module in your local library path.
 
 B<WARNINGS: following commands are not implemented>
 
