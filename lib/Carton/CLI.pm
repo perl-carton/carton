@@ -143,13 +143,13 @@ sub cmd_bundle {
         mirror_file => $self->mirror_file,
     );
 
-    my $cpanfile = $self->has_cpanfile;
+    my $cpanfile = $self->find_cpanfile;
 
-    if ($cpanfile && $lock) {
+    if ($lock) {
         $self->print("Bundling modules using $cpanfile\n");
         $self->carton->download_from_cpanfile($cpanfile, $local_mirror);
     } else {
-        $self->error("Can't locate cpanfile and lock file. Run carton install first\n");
+        $self->error("Can't locate carton.lock file. Run carton install first\n");
     }
 
     $self->printf("Complete! Modules were bundled into %s\n", $local_mirror, SUCCESS);
@@ -174,11 +174,9 @@ sub cmd_install {
         ( $self->{use_local_mirror} && -d $local_mirror ? (mirror => $local_mirror) : () ),
     );
 
-    my $cpanfile = $self->has_cpanfile;
+    my $cpanfile = $self->find_cpanfile;
 
-    if (!$cpanfile) {
-        $self->error("Can't locate cpanfile.\n");
-    } elsif ($self->{deployment}) {
+    if ($self->{deployment}) {
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
         $self->carton->install_from_cpanfile($cpanfile);
     } else {
@@ -193,13 +191,6 @@ sub cmd_install {
 sub mirror_file {
     my $self = shift;
     return $self->work_file("02packages.details.txt");
-}
-
-sub has_cpanfile {
-    my $self = shift;
-
-    return 'cpanfile' if -e 'cpanfile';
-    return;
 }
 
 sub cmd_show {
@@ -230,8 +221,7 @@ sub cmd_list {
 sub cmd_check {
     my($self, @args) = @_;
 
-    my $file = $self->has_cpanfile
-        or $self->error("Can't find a build file: nothing to check.\n");
+    my $file = $self->find_cpanfile;
 
     $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
 
@@ -288,6 +278,16 @@ sub cmd_exec {
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $system ? system(@args) : exec(@args);
+}
+
+sub find_cpanfile {
+    my $self = shift;
+
+    if (-e 'cpanfile') {
+        return 'cpanfile';
+    } else {
+        $self->error("Can't locate cpanfile\n");
+    }
 }
 
 sub find_lock {
