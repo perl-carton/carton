@@ -36,14 +36,6 @@ sub lock { $_[0]->{lock} }
 
 sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
 
-sub install_from_cpanfile {
-    my($self, $file, $cascade) = @_;
-
-    my @modules = $self->list_dependencies;
-    $self->install_conservative(\@modules, $cascade)
-        or die "Installing modules failed\n";
-}
-
 sub list_dependencies {
     my $self = shift;
 
@@ -100,10 +92,11 @@ sub download_from_cpanfile {
     );
 }
 
-sub install_conservative {
-    my($self, $modules, $cascade) = @_;
+sub install {
+    my($self, $file, $cascade) = @_;
 
-    $modules = $self->dedupe_modules($modules);
+    my @modules = $self->list_dependencies;
+    my $modules = $self->dedupe_modules(\@modules);
 
     if ($self->lock) {
         my $index = $self->build_index($self->lock->{modules});
@@ -126,7 +119,7 @@ sub install_conservative {
         ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
         @$modules,
-    );
+    ) or die "Installing modules failed\n";
 }
 
 sub build_mirror_file {

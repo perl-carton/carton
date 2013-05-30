@@ -178,10 +178,10 @@ sub cmd_install {
 
     if ($self->{deployment}) {
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
-        $self->carton->install_from_cpanfile($cpanfile);
+        $self->carton->install($cpanfile);
     } else {
         $self->print("Installing modules using $cpanfile\n");
-        $self->carton->install_from_cpanfile($cpanfile, 1);
+        $self->carton->install($cpanfile, 1);
         $self->carton->update_lock_file($self->lock_file);
     }
 
