@@ -3,11 +3,10 @@ use strict;
 use base qw(Exporter);
 our @EXPORT = qw(run cli);
 
-use Test::Requires qw( Directory::Scratch Capture::Tiny );
+use Test::Requires qw( Directory::Scratch Capture::Tiny File::pushd );
 
 sub cli {
     my $dir = Directory::Scratch->new();
-    chdir $dir;
 
     my $app = Carton::CLI::Tested->new(dir => $dir);
     $app->carton->{mirror} = "$ENV{HOME}/minicpan" if -e "$ENV{HOME}/minicpan";
@@ -15,16 +14,11 @@ sub cli {
     return $app;
 }
 
-sub run {
-    my $app = cli();
-    $app->run(@_);
-    return $app;
-}
-
 package Carton::CLI::Tested;
 use parent qw(Carton::CLI);
 
 use Capture::Tiny qw(capture);
+use File::pushd;
 
 sub new {
     my($class, %args) = @_;
@@ -47,6 +41,7 @@ sub print {
 
 sub run {
     my($self, @args) = @_;
+    my $pushd = File::pushd::pushd $self->{dir};
     $self->{output} = '';
     ($self->{system_output}, $self->{system_error}) = capture {
         eval { $self->SUPER::run(@args) };

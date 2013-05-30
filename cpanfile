@@ -26,5 +26,5 @@ requires 'IO::Compress::Gzip';
 on develop => sub {
     requires 'Test::Requires';
     requires 'Directory::Scratch';
-    requires 'Capture::Tiny';
+    requires 'File::pushd';
 };
