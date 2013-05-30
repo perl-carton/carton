@@ -52,26 +52,11 @@ sub list_dependencies {
     return map "$_~$hash->{$_}", grep { $_ ne 'perl' } keys %$hash;
 }
 
-sub dedupe_modules {
-    my($self, $modules) = @_;
-
-    my %seen;
-    my @result;
-    for my $spec (reverse @$modules) {
-        my($mod, $ver) = split /~/, $spec;
-        next if $seen{$mod}++;
-        push @result, $spec;
-    }
-
-    return [ reverse @result ];
-}
-
 
 sub download_from_cpanfile {
     my($self, $cpanfile, $local_mirror) = @_;
 
     my @modules = $self->list_dependencies;
-    my $modules = $self->dedupe_modules(\@modules);
 
     my $index = $self->build_index($self->lock->{modules});
     $self->build_mirror_file($index, $self->{mirror_file});
@@ -88,7 +73,7 @@ sub download_from_cpanfile {
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         "--scandeps",
         "--save-dists", $local_mirror,
-        @$modules,
+        @modules,
     );
 }
 
@@ -96,7 +81,6 @@ sub install {
     my($self, $file, $cascade) = @_;
 
     my @modules = $self->list_dependencies;
-    my $modules = $self->dedupe_modules(\@modules);
 
     if ($self->lock) {
         my $index = $self->build_index($self->lock->{modules});
@@ -118,7 +102,7 @@ sub install {
         ( $is_default_mirror ? () : "--mirror-only" ),
         ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
-        @$modules,
+        @modules,
     ) or die "Installing modules failed\n";
 }
 
@@ -174,7 +158,6 @@ sub build_packages {
 
     return @packages;
 }
-
 
 sub build_index {
     my($self, $modules) = @_;
