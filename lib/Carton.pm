@@ -284,29 +284,6 @@ sub _check_satisfies {
     }
 }
 
-sub uninstall {
-    my($self, $lock, $module) = @_;
-
-    my $meta = $lock->{modules}{$module};
-    (my $path_name = $meta->{name}) =~ s!::!/!g;
-
-    my $path = Cwd::realpath($self->{path});
-    my $packlist = "$path/lib/perl5/$Config{archname}/auto/$path_name/.packlist";
-
-    open my $fh, "<", $packlist or die "Couldn't locate .packlist for $meta->{name}";
-    while (<$fh>) {
-        # EUMM merges with site and perl library paths
-        chomp;
-        next unless /^\Q$path\E/;
-        unlink $_ or warn "Couldn't unlink $_: $!";
-    }
-
-    unlink $packlist;
-    if ($meta->{dist}) { # safety guard not to rm -r auto/meta
-        File::Path::rmtree("$self->{path}/lib/perl5/$Config{archname}/.meta/$meta->{dist}");
-    }
-}
-
 1;
 __END__
 

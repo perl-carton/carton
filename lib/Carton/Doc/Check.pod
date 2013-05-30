@@ -21,21 +21,3 @@ your local environment, C<carton check> will warn you about this:
   JSON (2.00)
 
 You can run C<carton install> again to reinstall these missing dependencies.
-
-=head2 UNUSED MODULES
-
-If one of the modules in the local environment (i.e. I<local> library
-path) are not specified in your I<cpanfile>, you'll get a warning like
-this:
-
-  $ carton check
-  Following modules are found in local but couldn't be tracked from your cpanfile
-  CGI.pm-3.55
-    FCGI-0.73
-
-This means you probably installed this module in an ad-hoc mode so you
-have to add it to I<cpanfile>, or you originally declared the
-dependencies but found out that you don't need it, so deleted from
-your I<cpanfile>. In that case you can uninstall the module with the
-L<uninstall|Plack::Doc::Uninstall> command.
-
