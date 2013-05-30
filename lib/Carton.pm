@@ -224,18 +224,6 @@ sub build_deps {
     return @deps;
 }
 
-sub run_cpanm_output {
-    my($self, @args) = @_;
-
-    my $deps = capture {
-        local $ENV{PERL_CPANM_OPT};
-        system "cpanm", "--quiet", "-L", $self->{path}, @args;
-    };
-    my @deps = split $/, $deps;
-
-    return @deps;
-}
-
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
