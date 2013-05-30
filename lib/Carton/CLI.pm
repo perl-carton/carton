@@ -135,10 +135,7 @@ sub cmd_bundle {
     my($self, @args) = @_;
 
     $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
-
-    $self->carton->configure(
-        mirror_file => $self->mirror_file,
-    );
+    $self->carton->{mirror_file} = $self->mirror_file;
 
     my $lock = $self->find_lock;
     my $cpanfile = $self->find_cpanfile;
@@ -163,9 +160,7 @@ sub cmd_install {
         "cached!"     => \$self->{use_local_mirror},
     );
 
-    $self->carton->configure(
-        mirror_file => $self->mirror_file,
-    );
+    $self->carton->{mirror_file} = $self->mirror_file;
 
     if ($self->{use_local_mirror}) {
         $self->carton->use_local_mirror;

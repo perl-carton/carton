@@ -27,11 +27,6 @@ sub new {
     }, $class;
 }
 
-sub configure {
-    my($self, %args) = @_;
-    %{$self} = (%$self, %args);
-}
-
 sub use_local_mirror {
     my $self = shift;
     $self->{mirror} = $self->local_cache;
