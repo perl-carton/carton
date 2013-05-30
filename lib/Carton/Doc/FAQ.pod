@@ -8,12 +8,12 @@ Carton::Doc::FAQ - Frequently Asked Questions
 
 The particular problem that carton is trying to address is this:
 
-You develop a Perl web application with dozens of CPAN module
-dependencies. You install these modules on your development machine,
-and describe these dependencies in your I<Makefile.PL> or some other
-text format.
+You develop a Perl-based application, possibly but not limited to
+webapps, with dozens of CPAN module dependencies. You install these
+modules on your development machine, and describe these dependencies
+in your I<cpanfile>.
 
-Now you get a produciton environment on Cloud PaaS provider or some
+Now you get a produciton environment, either on PaaS provider or some
 VPS, you install the dependencies using C<cpanm --installdeps .> and
 it will pull all the latest releases from CPAN as of today and
 everything just works.
@@ -34,50 +34,29 @@ controlled system, so that every time you deploy from a checkout, it
 is guaranteed that all the same versions are installed into the local
 environment.
 
-=head2 How is this different from DPAN or CPAN::Mini::Inject?
-
-First of all, if you currently use L<DPAN|MyCPAN::App::DPAN>,
-L<CPAN::Mini::Inject>, L<Shipwright> or any other similar tools
-successfully, then that's totally fine. You don't need to switch to
-carton.
-
-If you experience difficulties with these tools, or are interested in
-what could be better in carton, keep on reading.
+=head2 How is this different from Pinto or CPAN::Mini::Inject?
 
 carton definitely shares the goal with these private CPAN repository
-management tool:
+management tool. But the main difference is that rather than creating
+an actual CPAN-like repository that works with any CPAN clients,
+Carton provides a way to install specific versions of distributions
+from CPAN, or any CPAN-like mirrors, as well as git repositories.
 
-=over 4
-
-=item *
-
-Manage the dependencies tree locally
-
-=item *
-
-Take snapshots/lock the versions
-
-=item *
-
-Inject private modules into the repository
-
-=back
-
-Existing tools are designed to work with existing CPAN clients such as
+Existing tools are designed to work I<with> CPAN clients such as
 L<CPAN> or L<CPANPLUS>, and have accomplished that by working around
 the CPAN mirror structure.
 
-carton internally does the same thing, but its user interface is
+carton I<internally> does the same thing, but its user interface is
 centerd around the installer, by implementing a wrapper for
 L<cpanm|App::cpanminus>, so you can use the same commands in the
 development mode and deployment mode.
 
 Carton automatically maintains the L<carton.lock> file, which is meant
 to be version controlled, inside your application directory. You don't
-need a separate database or a directory to maintain tarballs outside
-your application. The I<carton.lock> file can always be generated out
-of the local library path, and carton can reproduce the tree using the
-lock file on other machines.
+need a separate database, a directory or a web server to maintain
+tarballs outside your application. The I<carton.lock> file can always
+be generated with C<carton install> command, and C<carton install> on
+another machine can use the version in the lock.
 
 =head2 I'm already using perlbrew and local::lib. Can I use carton with this?
 
@@ -94,8 +73,8 @@ be this:
 
 =item *
 
-Install fresh perl using perlbrew. The version should be the same
-against the version you'll run on the production environment (if any).
+Install fresh perl using perlbrew. The version must be the same
+against the version you'll run on the production environment.
 
 =item *
 
@@ -111,11 +90,11 @@ possible.
 
 When you build a new project that you want to manage dependencies via
 Carton, turn off the I<devel> local::lib and create a new one, like
-I<carton>. Install L<Carton> and all of its dependencies to the
-I<carton> local::lib path. Then run C<carton install> like you
+I<myapp>. Install L<Carton> and all of its dependencies to the
+I<myapp> local::lib path. Then run C<carton install> like you
 normally do.
 
-Becuase I<devel> and I<carton> are isolated, the modules you installed
+Becuase I<devel> and I<myapp> are isolated, the modules you installed
 into I<devel> doesn't affect the process when carton builds the
 dependency tree for your new project at all. This could often be
 critical when you have a conditional dependency in your tree, like
