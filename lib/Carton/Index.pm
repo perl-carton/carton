@@ -8,7 +8,7 @@ sub new {
 
 sub add_package {
     my($self, $package) = @_;
-    $self->{packages}{$package->name} ||= $package;
+    $self->{packages}{$package->name} = $package; # XXX ||=
 }
 
 sub count {
