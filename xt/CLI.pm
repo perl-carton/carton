@@ -7,11 +7,7 @@ use Test::Requires qw( Directory::Scratch Capture::Tiny File::pushd );
 
 sub cli {
     my $dir = Directory::Scratch->new();
-
-    my $app = Carton::CLI::Tested->new(dir => $dir);
-    $app->carton->{mirror} = "$ENV{HOME}/minicpan" if -e "$ENV{HOME}/minicpan";
-
-    return $app;
+    Carton::CLI::Tested->new(dir => $dir);
 }
 
 package Carton::CLI::Tested;
