@@ -111,14 +111,7 @@ sub build_mirror_file {
 
     my @packages = $self->build_packages($index);
 
-    my $fh;
-    if ($file =~ /\.gz$/i) {
-        require IO::Compress::Gzip;
-        $fh = IO::Compress::Gzip->new($file) or die $IO::Compress::Gzip::GzipError;
-    } else {
-        open $fh, ">", $file or die $!;
-    }
-
+    open my $fh, ">", $file or die $!;
     print $fh <<EOF;
 File:         02packages.details.txt
 URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
