@@ -1,5 +1,6 @@
 package Carton::Lock;
 use strict;
+use Carton::Package;
 
 sub new {
     my($class, $data) = @_;
@@ -10,8 +11,8 @@ sub modules {
     values %{$_[0]->{modules} || {}};
 }
 
-sub write_mirror_index {
-    my($self, $file) = @_;
+sub packages {
+    my $self = shift;
 
     my $index;
     while (my($name, $metadata) = each %{$self->{modules}}) {
@@ -23,8 +24,16 @@ sub write_mirror_index {
     my @packages;
     for my $package (sort keys %$index) {
         my $module = $index->{$package};
-        push @packages, [ $package, $module->{version}, $module->{meta}{pathname} ];
+        push @packages, Carton::Package->new($package, $module->{version}, $module->{meta}{pathname});
     }
+
+    return @packages;
+}
+
+sub write_mirror_index {
+    my($self, $file) = @_;
+
+    my @packages = $self->packages;
 
     open my $fh, ">", $file or die $!;
     print $fh <<EOF;
@@ -39,7 +48,7 @@ Last-Updated: @{[ scalar localtime ]}
 
 EOF
     for my $p (@packages) {
-        print $fh sprintf "%s %s  %s\n", pad($p->[0], 32), pad($p->[1] || 'undef', 10, 1), $p->[2];
+        print $fh sprintf "%s %s  %s\n", pad($p->name, 32), pad($p->version || 'undef', 10, 1), $p->pathname;
     }
 }
 
