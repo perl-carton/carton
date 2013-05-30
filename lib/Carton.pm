@@ -61,9 +61,7 @@ sub bundle {
     my($self, $cpanfile, $lock) = @_;
 
     my @modules = $self->list_dependencies;
-
-    my $index = $self->build_index($lock->{modules});
-    $self->build_mirror_file($index, $self->{mirror_file});
+    $lock->write_mirror_index($self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
     my $local_cache = $self->local_cache; # because $self->{path} is localized
@@ -86,8 +84,7 @@ sub install {
     my @modules = $self->list_dependencies;
 
     if ($lock) {
-        my $index = $self->build_index($lock->{modules});
-        $self->build_mirror_file($index, $self->{mirror_file});
+        $lock->write_mirror_index($self->{mirror_file});
     }
 
     my $mirror = $self->{mirror} || $DefaultMirror;
@@ -109,40 +106,6 @@ sub install {
     ) or die "Installing modules failed\n";
 }
 
-sub build_mirror_file {
-    my($self, $index, $file) = @_;
-
-    my @packages = $self->build_packages($index);
-
-    open my $fh, ">", $file or die $!;
-    print $fh <<EOF;
-File:         02packages.details.txt
-URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
-Description:  Package names found in carton.lock
-Columns:      package name, version, path
-Intended-For: Automated fetch routines, namespace documentation.
-Written-By:   Carton $Carton::VERSION
-Line-Count:   @{[ scalar(@packages) ]}
-Last-Updated: @{[ scalar localtime ]}
-
-EOF
-    for my $p (@packages) {
-        print $fh sprintf "%s %s  %s\n", pad($p->[0], 32), pad($p->[1] || 'undef', 10, 1), $p->[2];
-    }
-
-    return $file;
-}
-
-sub pad {
-    my($str, $len, $left) = @_;
-
-    my $howmany = $len - length($str);
-    return $str if $howmany <= 0;
-
-    my $pad = " " x $howmany;
-    return $left ? "$pad$str" : "$str$pad";
-}
-
 sub build_packages {
     my($self, $index) = @_;
 
@@ -156,11 +119,11 @@ sub build_packages {
 }
 
 sub build_index {
-    my($self, $modules) = @_;
+    my($self, $lock) = @_;
 
     my $index;
 
-    while (my($name, $metadata) = each %$modules) {
+    while (my($name, $metadata) = each %{$lock->{modules}}) {
         for my $mod (keys %{$metadata->{provides}}) {
             $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
         }
@@ -279,7 +242,7 @@ sub check_satisfies {
     my($self, $lock, $deps) = @_;
 
     my @unsatisfied;
-    my $index = $self->build_index($lock->{modules});
+    my $index = $self->build_index($lock);
     my %pool = %{$lock->{modules}}; # copy
 
     my @root = map { [ split /~/, $_, 2 ] } @$deps;

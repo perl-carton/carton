@@ -196,7 +196,7 @@ sub cmd_show {
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install`\n");
-    my $index = $self->carton->build_index($lock->{modules});
+    my $index = $self->carton->build_index($lock);
 
     for my $module (@args) {
         my $meta = $index->{$module}{meta}
@@ -211,7 +211,7 @@ sub cmd_list {
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
-    for my $module (values %{$lock->{modules} || {}}) {
+    for my $module ($lock->modules) {
         $self->print("$module->{dist}\n");
     }
 }
