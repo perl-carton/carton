@@ -303,7 +303,7 @@ sub run_cpanm_output {
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
+    !system "cpanm", "--quiet", "-L", $self->{path}, ($self->{with_test} ? () : "--notest"), @args;
 }
 
 sub update_lock_file {

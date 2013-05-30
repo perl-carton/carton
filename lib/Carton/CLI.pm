@@ -159,11 +159,13 @@ sub cmd_bundle {
 sub cmd_install {
     my($self, @args) = @_;
 
+    my $with_test;
     $self->parse_options(
         \@args,
         "p|path=s"    => sub { $self->carton->{path} = $_[1] },
         "deployment!" => \$self->{deployment},
         "cached!"     => \$self->{use_local_mirror},
+        "with-test!"  => \$with_test,
     );
 
     my $lock = $self->find_lock;
@@ -173,6 +175,7 @@ sub cmd_install {
         lock => $lock,
         mirror_file => $self->mirror_file, # $lock object?
         ( $self->{use_local_mirror} && -d $local_mirror ? (mirror => $local_mirror) : () ),
+        with_test => $with_test,
     );
 
     my $cpanfile = $self->has_cpanfile;
