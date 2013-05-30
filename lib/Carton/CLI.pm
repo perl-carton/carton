@@ -136,7 +136,6 @@ sub cmd_bundle {
     $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
 
     my $lock = $self->find_lock;
-    my $local_mirror = $self->carton->local_mirror;
 
     $self->carton->configure(
         lock => $lock,
@@ -147,12 +146,12 @@ sub cmd_bundle {
 
     if ($lock) {
         $self->print("Bundling modules using $cpanfile\n");
-        $self->carton->download_from_cpanfile($cpanfile, $local_mirror);
+        $self->carton->download_from_cpanfile($cpanfile);
     } else {
         $self->error("Can't locate carton.lock file. Run carton install first\n");
     }
 
-    $self->printf("Complete! Modules were bundled into %s\n", $local_mirror, SUCCESS);
+    $self->printf("Complete! Modules were bundled into %s\n", $self->carton->local_cache, SUCCESS);
 }
 
 sub cmd_install {
@@ -166,13 +165,15 @@ sub cmd_install {
     );
 
     my $lock = $self->find_lock;
-    my $local_mirror = $self->carton->local_mirror;
 
     $self->carton->configure(
         lock => $lock,
-        mirror_file => $self->mirror_file, # $lock object?
-        ( $self->{use_local_mirror} && -d $local_mirror ? (mirror => $local_mirror) : () ),
+        mirror_file => $self->mirror_file,
     );
+
+    if ($self->{use_local_mirror}) {
+        $self->carton->use_local_mirror;
+    }
 
     my $cpanfile = $self->find_cpanfile;
 

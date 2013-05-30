@@ -32,9 +32,16 @@ sub configure {
     %{$self} = (%$self, %args);
 }
 
-sub lock { $_[0]->{lock} }
+sub use_local_mirror {
+    my $self = shift;
+    $self->{mirror} = $self->local_cache;
+}
 
-sub local_mirror { File::Spec->rel2abs("$_[0]->{path}/cache") }
+sub local_cache {
+    File::Spec->rel2abs("$_[0]->{path}/cache");
+}
+
+sub lock { $_[0]->{lock} }
 
 sub list_dependencies {
     my $self = shift;
@@ -52,9 +59,8 @@ sub list_dependencies {
     return map "$_~$hash->{$_}", grep { $_ ne 'perl' } keys %$hash;
 }
 
-
 sub download_from_cpanfile {
-    my($self, $cpanfile, $local_mirror) = @_;
+    my($self, $cpanfile) = @_;
 
     my @modules = $self->list_dependencies;
 
@@ -62,7 +68,7 @@ sub download_from_cpanfile {
     $self->build_mirror_file($index, $self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
-
+    my $local_cache = $self->local_cache; # because $self->{path} is localized
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     $self->run_cpanm(
@@ -72,7 +78,7 @@ sub download_from_cpanfile {
         "--no-skip-satisfied",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         "--scandeps",
-        "--save-dists", $local_mirror,
+        "--save-dists", $local_cache,
         @modules,
     );
 }
