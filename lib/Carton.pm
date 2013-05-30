@@ -66,7 +66,8 @@ sub bundle {
         "--mirror", $mirror,
         "--mirror", "http://backpan.perl.org/", # fallback
         "--mirror-index", $self->{mirror_file},
-        "--no-skip-satisfied",
+        "--skip-satisfied",
+        "--cascade-search",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         "--save-dists", $local_cache,
         @modules,
