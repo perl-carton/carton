@@ -106,18 +106,6 @@ sub install {
     ) or die "Installing modules failed\n";
 }
 
-sub build_packages {
-    my($self, $index) = @_;
-
-    my @packages;
-    for my $package (sort keys %$index) {
-        my $module = $index->{$package};
-        push @packages, [ $package, $module->{version}, $module->{meta}{pathname} ];
-    }
-
-    return @packages;
-}
-
 sub build_index {
     my($self, $lock) = @_;
 
