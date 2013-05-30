@@ -9,7 +9,6 @@ requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
 requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
-requires 'Capture::Tiny';
 requires 'Getopt::Long', 2.36;
 requires 'Module::CPANfile', 0.9031;
 
@@ -20,11 +19,9 @@ requires 'Module::Build', 0.38;
 requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
 
-# bundle DarkPAN support
-requires 'IO::Compress::Gzip';
-
 on develop => sub {
     requires 'Test::Requires';
     requires 'Directory::Scratch';
+    requires 'Capture::Tiny';
     requires 'File::pushd';
 };

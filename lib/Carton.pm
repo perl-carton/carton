@@ -13,7 +13,6 @@ use CPAN::Meta::Requirements;
 use File::Path ();
 use File::Spec ();
 use File::Temp ();
-use Capture::Tiny 'capture';
 use Module::CPANfile;
 
 use constant CARTON_LOCK_VERSION => '0.9';
