@@ -226,39 +226,6 @@ sub walk_down_tree {
     });
 }
 
-sub build_tree {
-    my($self, $modules, $root) = @_;
-
-    my $idx  = $self->build_index($modules);
-    my $pool = { %$modules }; # copy
-
-    my $tree = Carton::Tree->new;
-
-    while (my $pick = (keys %$pool)[0]) {
-        $self->_build_tree($pick, $tree, $tree, $pool, $idx);
-    }
-
-    $tree->finalize($root);
-
-    return $tree;
-}
-
-sub _build_tree {
-    my($self, $elem, $tree, $curr_node, $pool, $idx) = @_;
-
-    if (my $cached = Carton::TreeNode->cached($elem)) {
-        $curr_node->add_child($cached);
-        return;
-    }
-
-    my $node = Carton::TreeNode->new($elem, $pool);
-    $curr_node->add_child($node);
-
-    for my $child ( $self->build_deps($node->metadata, $idx) ) {
-        $self->_build_tree($child, $tree, $node, $pool, $idx);
-    }
-}
-
 sub merge_prereqs {
     my($self, $prereqs) = @_;
 
@@ -361,11 +328,8 @@ sub check_satisfies {
         $self->_check_satisfies($dep, \@unsatisfied, $index, \%pool);
     }
 
-    my $tree = keys %pool ? $self->build_tree(\%pool) : undef;
-
     return {
         unsatisfied => \@unsatisfied,
-        superflous  => $tree,
     };
 }
 

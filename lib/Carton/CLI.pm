@@ -10,7 +10,6 @@ use Term::ANSIColor qw(colored);
 use Carton;
 use Carton::Util;
 use Carton::Error;
-use Carton::Tree;
 use Try::Tiny;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
@@ -217,31 +216,14 @@ sub cmd_show {
     }
 }
 
-sub cmd_tree {
-    my $self = shift;
-    $self->cmd_list("--tree", @_);
-}
-
 sub cmd_list {
     my($self, @args) = @_;
-
-    my $tree_mode;
-    $self->parse_options(\@args, "tree!" => \$tree_mode);
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
-    if ($tree_mode) {
-        my $tree = $self->carton->build_tree($lock->{modules});
-        $self->carton->walk_down_tree($tree, sub {
-            my($module, $depth) = @_;
-            my $line = " " x $depth . "$module->{dist}\n";
-            $self->print($line);
-        });
-    } else {
-        for my $module (values %{$lock->{modules} || {}}) {
-            $self->print("$module->{dist}\n");
-        }
+    for my $module (values %{$lock->{modules} || {}}) {
+        $self->print("$module->{dist}\n");
     }
 }
 
@@ -267,17 +249,6 @@ sub cmd_check {
         $ok = 0;
     }
 
-    if ($res->{superflous}) {
-        $self->printf("Following modules are found in %s but couldn't be tracked from your $file\n",
-                      $self->carton->{path}, WARN);
-        $self->carton->walk_down_tree($res->{superflous}, sub {
-            my($module, $depth) = @_;
-            my $line = "  " x $depth . "$module->{dist}\n";
-            $self->print($line);
-        }, 1);
-        $ok = 0;
-    }
-
     if ($ok) {
         $self->printf("Dependencies specified in your $file are satisfied and matches with modules in %s.\n",
                       $self->carton->{path}, SUCCESS);
@@ -286,7 +257,6 @@ sub cmd_check {
 
 sub cmd_update {
     # "cleanly" update distributions in extlib
-    # rebuild the tree, update modules with DFS
     die <<EOF;
 carton update is not implemented yet.
 
