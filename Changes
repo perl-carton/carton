@@ -2,6 +2,14 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.50  2013-05-31 02:18:07 JST
+        - Documentation fixes
+        - remove bunch of code that is unused
+        - removed tree command for now
+        - Overhauled the way bundle command works
+        - refactored lock and index generation code
+        - Enabled Travis CI tests
+
 v0.9.15  2013-03-31 18:11:28 PDT
         - Add minimum perl dependency
 
