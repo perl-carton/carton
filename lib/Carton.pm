@@ -41,8 +41,6 @@ sub local_cache {
     File::Spec->rel2abs("$_[0]->{path}/cache");
 }
 
-sub lock { $_[0]->{lock} }
-
 sub list_dependencies {
     my $self = shift;
 
@@ -59,12 +57,12 @@ sub list_dependencies {
     return map "$_~$hash->{$_}", grep { $_ ne 'perl' } keys %$hash;
 }
 
-sub download_from_cpanfile {
-    my($self, $cpanfile) = @_;
+sub bundle {
+    my($self, $cpanfile, $lock) = @_;
 
     my @modules = $self->list_dependencies;
 
-    my $index = $self->build_index($self->lock->{modules});
+    my $index = $self->build_index($lock->{modules});
     $self->build_mirror_file($index, $self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
@@ -77,19 +75,18 @@ sub download_from_cpanfile {
         "--mirror-index", $self->{mirror_file},
         "--no-skip-satisfied",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
-        "--scandeps",
         "--save-dists", $local_cache,
         @modules,
     );
 }
 
 sub install {
-    my($self, $file, $cascade) = @_;
+    my($self, $file, $lock, $cascade) = @_;
 
     my @modules = $self->list_dependencies;
 
-    if ($self->lock) {
-        my $index = $self->build_index($self->lock->{modules});
+    if ($lock) {
+        my $index = $self->build_index($lock->{modules});
         $self->build_mirror_file($index, $self->{mirror_file});
     }
 
@@ -106,7 +103,7 @@ sub install {
         "--mirror", "http://backpan.perl.org/", # fallback
         "--skip-satisfied",
         ( $is_default_mirror ? () : "--mirror-only" ),
-        ( $self->lock ? ("--mirror-index", $self->{mirror_file}) : () ),
+        ( $lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
         @modules,
     ) or die "Installing modules failed\n";

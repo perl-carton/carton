@@ -8,6 +8,7 @@ use Getopt::Long;
 use Term::ANSIColor qw(colored);
 
 use Carton;
+use Carton::Lock;
 use Carton::Util;
 use Carton::Error;
 use Try::Tiny;
@@ -135,18 +136,16 @@ sub cmd_bundle {
 
     $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
 
-    my $lock = $self->find_lock;
-
     $self->carton->configure(
-        lock => $lock,
         mirror_file => $self->mirror_file,
     );
 
+    my $lock = $self->find_lock;
     my $cpanfile = $self->find_cpanfile;
 
     if ($lock) {
         $self->print("Bundling modules using $cpanfile\n");
-        $self->carton->download_from_cpanfile($cpanfile);
+        $self->carton->bundle($cpanfile, $lock);
     } else {
         $self->error("Can't locate carton.lock file. Run carton install first\n");
     }
@@ -164,10 +163,7 @@ sub cmd_install {
         "cached!"     => \$self->{use_local_mirror},
     );
 
-    my $lock = $self->find_lock;
-
     $self->carton->configure(
-        lock => $lock,
         mirror_file => $self->mirror_file,
     );
 
@@ -175,14 +171,15 @@ sub cmd_install {
         $self->carton->use_local_mirror;
     }
 
+    my $lock = $self->find_lock;
     my $cpanfile = $self->find_cpanfile;
 
     if ($self->{deployment}) {
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
-        $self->carton->install($cpanfile);
+        $self->carton->install($cpanfile, $lock);
     } else {
         $self->print("Installing modules using $cpanfile\n");
-        $self->carton->install($cpanfile, 1);
+        $self->carton->install($cpanfile, $lock, 1);
         $self->carton->update_lock_file($self->lock_file);
     }
 
@@ -295,7 +292,13 @@ sub find_lock {
     my $self = shift;
 
     if (-e $self->lock_file) {
-        return $self->lock_data; # TODO object
+        my $data;
+        try {
+            $data = Carton::Util::load_json($self->lock_file);
+        } catch {
+            $self->error("Can't parse carton.lock: $_\n");
+        };
+        return Carton::Lock->new($data);
     }
 
     return;
@@ -304,9 +307,9 @@ sub find_lock {
 sub lock_data {
     my $self = shift;
 
-    my $lock;
+    my $data;
     try {
-        $lock = Carton::Util::load_json($self->lock_file);
+        $data = Carton::Util::load_json($self->lock_file);
     } catch {
         if (/No such file/) {
             $self->error("Can't locate carton.lock\n");
@@ -315,7 +318,7 @@ sub lock_data {
         }
     };
 
-    return $lock;
+    return $data;
 }
 
 sub lock_file {
