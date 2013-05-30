@@ -2,6 +2,14 @@ package Carton::Lock;
 use strict;
 use Carton::Package;
 use Carton::Index;
+use Carton::Util;
+
+sub from_file {
+    my($class, $file) = @_;
+
+    my $data = Carton::Util::load_json($file);
+    return $class->new($data);
+}
 
 sub new {
     my($class, $data) = @_;

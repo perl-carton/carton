@@ -287,33 +287,17 @@ sub find_lock {
     my $self = shift;
 
     if (-e $self->lock_file) {
-        my $data;
+        my $lock;
         try {
-            $data = Carton::Util::load_json($self->lock_file);
+            $lock = Carton::Lock->from_file($self->lock_file);
         } catch {
             $self->error("Can't parse carton.lock: $_\n");
         };
-        return Carton::Lock->new($data);
+
+        return $lock;
     }
 
     return;
-}
-
-sub lock_data {
-    my $self = shift;
-
-    my $data;
-    try {
-        $data = Carton::Util::load_json($self->lock_file);
-    } catch {
-        if (/No such file/) {
-            $self->error("Can't locate carton.lock\n");
-        } else {
-            $self->error("Can't parse carton.lock: $_\n");
-        }
-    };
-
-    return $data;
 }
 
 sub lock_file {
