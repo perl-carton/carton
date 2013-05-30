@@ -14,17 +14,12 @@ sub modules {
 sub packages {
     my $self = shift;
 
-    my $index;
-    while (my($name, $metadata) = each %{$self->{modules}}) {
-        for my $mod (keys %{$metadata->{provides}}) {
-            $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
-        }
-    }
-
     my @packages;
-    for my $package (sort keys %$index) {
-        my $module = $index->{$package};
-        push @packages, Carton::Package->new($package, $module->{version}, $module->{meta}{pathname});
+    while (my($name, $metadata) = each %{$self->{modules}}) {
+        while (my($package, $provides) = each %{$metadata->{provides}}) {
+            # TODO what if duplicates?
+            push @packages, Carton::Package->new($package, $provides->{version}, $metadata->{pathname});
+        }
     }
 
     return @packages;
