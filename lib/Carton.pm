@@ -167,7 +167,7 @@ sub update_lock_file {
     my($self, $file) = @_;
 
     my $lock = $self->build_lock;
-    Carton::Util::dump_json($lock, $file);
+    Carton::Lock->new($lock)->write($file);
 
     return 1;
 }

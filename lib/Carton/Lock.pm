@@ -16,6 +16,11 @@ sub new {
     bless $data, $class;
 }
 
+sub write {
+    my($self, $file) = @_;
+    Carton::Util::dump_json({ %$self }, $file);
+}
+
 sub modules {
     values %{$_[0]->{modules} || {}};
 }
