@@ -133,22 +133,6 @@ sub is_core {
     return version->new($core_ver) >= version->new($want_ver);
 };
 
-sub walk_down_tree {
-    my($self, $tree, $cb, $no_warn) = @_;
-
-    my %seen;
-    $tree->walk_down(sub {
-        my($node, $depth, $parent) = @_;
-        return $tree->abort if $seen{$node->key}++;
-
-        if ($node->metadata->{dist}) {
-            $cb->($node->metadata, $depth);
-        } elsif (!$self->is_core($node->key, 0) && !$no_warn) {
-            warn "Couldn't find ", $node->key, "\n";
-        }
-    });
-}
-
 sub merge_prereqs {
     my($self, $prereqs) = @_;
 
