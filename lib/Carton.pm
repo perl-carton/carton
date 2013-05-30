@@ -61,7 +61,7 @@ sub bundle {
     my($self, $cpanfile, $lock) = @_;
 
     my @modules = $self->list_dependencies;
-    $lock->write_mirror_index($self->{mirror_file});
+    $lock->write_index($self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
     my $local_cache = $self->local_cache; # because $self->{path} is localized
@@ -84,7 +84,7 @@ sub install {
     my @modules = $self->list_dependencies;
 
     if ($lock) {
-        $lock->write_mirror_index($self->{mirror_file});
+        $lock->write_index($self->{mirror_file});
     }
 
     my $mirror = $self->{mirror} || $DefaultMirror;
