@@ -139,24 +139,6 @@ sub merge_prereqs {
     return \%requires;
 }
 
-sub build_deps {
-    my($self, $meta, $idx) = @_;
-
-    my $requires = $self->merge_prereqs($meta->{mymeta}{prereqs});
-
-    my @deps;
-    for my $module (keys %$requires) {
-        next if $module eq 'perl';
-        if (exists $idx->{$module}) {
-            push @deps, $idx->{$module}{meta}{name};
-        } else {
-            push @deps, $module;
-        }
-    }
-
-    return @deps;
-}
-
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
