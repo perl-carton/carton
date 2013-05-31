@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.51  2013-05-31 09:02:58 JST
+        - Documentation fixes
+        - Fixes test dependencies and build system
+
 v0.9.50  2013-05-31 02:18:07 JST
         - Documentation fixes
         - remove bunch of code that is unused
