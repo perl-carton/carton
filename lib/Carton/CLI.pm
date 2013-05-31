@@ -42,23 +42,13 @@ sub work_file {
 
 sub run {
     my($self, @args) = @_;
-
     $self->{work_dir} = $ENV{PERL_CARTON_HOME} || (Cwd::cwd() . "/.carton");
     mkdir $self->{work_dir}, 0777 unless -e $self->{work_dir};
 
-    local @ARGV = @args;
-    my @commands;
-    my $p = Getopt::Long::Parser->new(
-        config => [ "no_ignore_case", "pass_through" ],
-    );
-    $p->getoptions(
-        "h|help"    => sub { unshift @commands, 'help' },
-        "v|version" => sub { unshift @commands, 'version' },
-        "color!"    => \$self->{color},
-        "verbose!"  => \$self->{verbose},
-    );
+    $self->parse_carton_options(\@args)
+        or $self->error("Invalid option, see 'carton help'.\n");
 
-    push @commands, @ARGV;
+    my @commands = @args;
 
     my $cmd = shift @commands || 'install';
     my $call = $self->can("cmd_$cmd");
@@ -95,9 +85,65 @@ Run carton -h <command> for help.
 HELP
 }
 
+sub parse_carton_options {
+    my($self, $args) = @_;
+
+    my @options;
+
+    # carton itself's options has no arguments.
+    while (scalar(@$args) > 0) {
+        last unless $args->[0] =~ m!^-!;
+        push @options, (shift @$args);
+    }
+
+    local @ARGV = @options;
+    my $p = Getopt::Long::Parser->new(
+        config => [ "no_ignore_case" ],
+    );
+    $p->getoptions(
+        "h|help"    => sub { unshift @$args, 'help' },
+        "v|version" => sub { unshift @$args, 'version' },
+        "color!"    => \$self->{color},
+        "verbose!"  => \$self->{verbose},
+    );
+}
+
 sub parse_options {
     my($self, $args, @spec) = @_;
-    Getopt::Long::GetOptionsFromArray($args, @spec);
+
+    my $spec_index = 0;
+    my @spec_keys = grep { ! ($spec_index++ % 2) } @spec; # even number members are spec_key (0 origin)
+    my %opt_specs;
+    for my $def (@spec_keys) {
+        next if $def !~ /^([-a-zA-Z0-9]+)\|?([-a-zA-Z0-9]+)?(=?).*$/;
+        my $v = $3 ? 1 : 0; # option with values, or not
+        $opt_specs{$1} = $v;
+        $opt_specs{$2} = $v if $2;
+    }
+
+    # split string with single option name and value like '-Ilib' into '-I' and 'lib'
+    # bundling (ex: -abc) is disabled (by default)
+    my @fixedargs = map { /^-([^-])(.+)$/ && $opt_specs{$1} ? ("-".$1, $2) : $_ } @$args;
+
+    my $fence = 0;
+    while ( $fence < scalar(@fixedargs) ) {
+        last unless $fixedargs[$fence] =~ m!^--?([-a-zA-Z0-9]+)$!;
+        $fence++;
+        $fence++ if defined($opt_specs{$1}) && $opt_specs{$1}; # option with values
+    }
+    my @options = splice(@fixedargs, 0, $fence);
+
+    unshift @$args, @fixedargs;
+    splice @$args, scalar(@fixedargs);
+
+    local @ARGV = @options;
+    my $p = Getopt::Long::Parser->new(
+        config => [ "no_ignore_case" ],
+    );
+    $p->getoptions(@spec)
+        or return undef; # unknown options or invalid parse result
+    shift @$args if $args->[0] and $args->[0] eq '--';
+    1; # success to parse
 }
 
 sub printf {
@@ -134,7 +180,8 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] });
+    $self->parse_options(\@args, "p|path=s" => sub { $self->carton->{path} = $_[1] })
+        or $self->error("Invalid option for 'bundle', see 'carton help bundle'.\n");
 
     my $lock = $self->find_lock;
     my $local_mirror = $self->carton->local_mirror;
@@ -164,7 +211,8 @@ sub cmd_install {
         "p|path=s"    => sub { $self->carton->{path} = $_[1] },
         "deployment!" => \$self->{deployment},
         "cached!"     => \$self->{use_local_mirror},
-    );
+    )
+        or $self->error("Invalid option for 'install', see 'carton help install'.\n") and return;
 
     my $lock = $self->find_lock;
     my $local_mirror = $self->carton->local_mirror;
@@ -226,7 +274,8 @@ sub cmd_list {
     my($self, @args) = @_;
 
     my $tree_mode;
-    $self->parse_options(\@args, "tree!" => \$tree_mode);
+    $self->parse_options(\@args, "tree!" => \$tree_mode)
+        or $self->error("Invalid option for 'list', see 'carton help list'.\n") and return;
 
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
@@ -251,7 +300,8 @@ sub cmd_check {
     my $file = $self->has_cpanfile
         or $self->error("Can't find a build file: nothing to check.\n");
 
-    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] });
+    $self->parse_options(\@args, "p|path=s", sub { $self->carton->{path} = $_[1] })
+        or $self->error("Invalid option for 'check', see 'carton help check'.\n");
 
     my $lock = $self->carton->build_lock;
     my @deps = $self->carton->list_dependencies;
@@ -304,12 +354,10 @@ EOF
 sub cmd_exec {
     my($self, @args) = @_;
 
-    # allows -Ilib
-    @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
-
     my $system; # for unit testing
     my @include;
-    $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
+    $self->parse_options(\@args, 'I=s@', \@include, "system", \$system)
+        or $self->error("Invalid option for 'exec', see 'carton help exec'.\n") and return;
 
     my $path = $self->carton->{path};
     my $lib  = join ",", @include, "$path/lib/perl5", ".";
