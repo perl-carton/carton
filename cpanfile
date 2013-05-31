@@ -9,7 +9,7 @@ requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
 requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
-requires 'Getopt::Long', 2.36;
+requires 'Getopt::Long', 2.39;
 requires 'Module::CPANfile', 0.9031;
 
 # MYMETA support
