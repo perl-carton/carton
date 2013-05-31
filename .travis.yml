@@ -5,8 +5,8 @@ perl:
   - 5.12
   - 5.10
 before_install:
-  - cpanm -nq App::mymeta_requires
+  - perlbrew install-cpanm -f
 install:
-  - (mymeta-requires --develop | cpanm -nq) || cat ~/.cpanm/build.log
+  - (cpanm --installdeps --with-develop -nq .) || cat ~/.cpanm/build.log
 script:
   - prove -lr xt
