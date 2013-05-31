@@ -54,7 +54,6 @@ sub list_dependencies {
 sub bundle {
     my($self, $cpanfile, $lock) = @_;
 
-    my @modules = $self->list_dependencies;
     $lock->write_index($self->{mirror_file});
 
     my $mirror = $self->{mirror} || $DefaultMirror;
@@ -69,15 +68,14 @@ sub bundle {
         "--cascade-search",
         ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         "--save-dists", $local_cache,
-        @modules,
+        "--installdeps", ".",
     );
 }
 
 sub install {
     my($self, $file, $lock, $cascade) = @_;
 
-    my @modules = $self->list_dependencies;
-
+    # TODO merge CPANfile git to mirror even if lock doesn't exist
     if ($lock) {
         $lock->write_index($self->{mirror_file});
     }
@@ -97,7 +95,7 @@ sub install {
         ( $is_default_mirror ? () : "--mirror-only" ),
         ( $lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
-        @modules,
+        "--installdeps", ".",
     ) or die "Installing modules failed\n";
 }
 
