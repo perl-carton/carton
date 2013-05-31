@@ -15,6 +15,8 @@ use Try::Tiny;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
+our $UseSystem = 0; # 1 for unit testing
+
 our $Colors = {
     SUCCESS, => 'green',
     WARN,    => 'yellow',
@@ -98,6 +100,18 @@ HELP
 sub parse_options {
     my($self, $args, @spec) = @_;
     Getopt::Long::GetOptionsFromArray($args, @spec);
+}
+
+sub parse_options_pass_through {
+    my($self, $args, @spec) = @_;
+
+    my $p = Getopt::Long::Parser->new(
+        config => [ "no_auto_abbrev", "no_ignore_case", "pass_through" ],
+    );
+    $p->getoptionsfromarray($args, @spec);
+
+    # with pass_through keeps -- in args
+    shift @$args if $args->[0] && $args->[0] eq '--';
 }
 
 sub printf {
@@ -260,9 +274,8 @@ sub cmd_exec {
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
 
-    my $system; # for unit testing
     my @include;
-    $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
+    $self->parse_options_pass_through(\@args, 'I=s@', \@include);
 
     my $path = $self->carton->{path};
     my $lib  = join ",", @include, "$path/lib/perl5", ".";
@@ -270,7 +283,7 @@ sub cmd_exec {
     local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$lib";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
-    $system ? system(@args) : exec(@args);
+    $UseSystem ? system(@args) : exec(@args);
 }
 
 sub find_cpanfile {

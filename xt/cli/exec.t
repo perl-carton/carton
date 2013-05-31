@@ -5,7 +5,7 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->run("exec", "--system", "--", "perl", "-e", "use Try::Tiny");
+    $app->run("exec", "--", "perl", "-e", "use Try::Tiny");
     like $app->system_error, qr/Can't locate Try\/Tiny.pm/;
 
     $app->dir->touch("cpanfile", <<EOF);
@@ -13,7 +13,7 @@ requires 'Try::Tiny';
 EOF
 
     $app->run("install");
-    $app->run("exec", "--system", "--", "perl", "-e", 'use Try::Tiny; print "OK\n"');
+    $app->run("exec", "--", "perl", "-e", 'use Try::Tiny; print "OK\n"');
 
     like $app->system_output, qr/OK/;
 
@@ -23,7 +23,7 @@ requires 'Mojolicious';
 EOF
 
     $app->run("install");
-    $app->run("exec", "--system", "--", "mojo", "version");
+    $app->run("exec", "--", "mojo", "version");
 
     like $app->system_output, qr/Mojolicious/;
 }

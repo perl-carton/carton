@@ -13,6 +13,8 @@ sub cli {
 package Carton::CLI::Tested;
 use parent qw(Carton::CLI);
 
+$Carton::CLI::UseSystem = 1;
+
 use Capture::Tiny qw(capture);
 use File::pushd;
 
