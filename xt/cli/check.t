@@ -2,6 +2,8 @@ use strict;
 use Test::More;
 use xt::CLI;
 
+plan skip_all => "check is unimplemented";
+
 {
     my $app = cli();
 

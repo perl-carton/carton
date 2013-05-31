@@ -25,6 +25,11 @@ sub modules {
     values %{$_[0]->{modules} || {}};
 }
 
+sub find {
+    my($self, $module) = @_;
+    $self->{modules}{$module};
+}
+
 sub index {
     my $self = shift;
 

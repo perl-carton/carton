@@ -99,20 +99,6 @@ sub install {
     ) or die "Installing modules failed\n";
 }
 
-sub build_index {
-    my($self, $lock) = @_;
-
-    my $index;
-
-    while (my($name, $metadata) = each %{$lock->{modules}}) {
-        for my $mod (keys %{$metadata->{provides}}) {
-            $index->{$mod} = { %{$metadata->{provides}{$mod}}, meta => $metadata };
-        }
-    }
-
-    return $index;
-}
-
 sub is_core {
     my($self, $module, $want_ver, $perl_version) = @_;
     $perl_version ||= $];
@@ -125,17 +111,6 @@ sub is_core {
     return 1 unless $want_ver;
     return version->new($core_ver) >= version->new($want_ver);
 };
-
-sub merge_prereqs {
-    my($self, $prereqs) = @_;
-
-    my %requires;
-    for my $phase (qw( configure build test runtime )) {
-        %requires = (%requires, %{$prereqs->{$phase}{requires} || {}});
-    }
-
-    return \%requires;
-}
 
 sub run_cpanm {
     my($self, @args) = @_;
@@ -183,52 +158,6 @@ sub find_installs {
         my $module = Carton::Util::load_json($_->[0]);
         my $mymeta = -f $_->[1] ? CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" }) : {};
         ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
-}
-
-sub check_satisfies {
-    my($self, $lock, $deps) = @_;
-
-    my @unsatisfied;
-    my $index = $self->build_index($lock);
-    my %pool = %{$lock->{modules}}; # copy
-
-    my @root = map { [ split /~/, $_, 2 ] } @$deps;
-
-    for my $dep (@root) {
-        $self->_check_satisfies($dep, \@unsatisfied, $index, \%pool);
-    }
-
-    return {
-        unsatisfied => \@unsatisfied,
-    };
-}
-
-sub _check_satisfies {
-    my($self, $dep, $unsatisfied, $index, $pool) = @_;
-
-    my($mod, $ver) = @$dep;
-
-    my $found = $index->{$mod};
-    if ($found) {
-        delete $pool->{$found->{meta}{name}};
-    } elsif ($self->is_core($mod, $ver)) {
-        return;
-    }
-
-    unless ($found and (!$ver or version->new($found->{version}) >= version->new($ver))) {
-        push @$unsatisfied, {
-            module => $mod,
-            version => $ver,
-            found => $found ? $found->{version} : undef,
-        };
-        return;
-    }
-
-    my $requires = $self->merge_prereqs($found->{meta}{mymeta}{prereqs});
-    for my $module (keys %$requires) {
-        next if $module eq 'perl';
-        $self->_check_satisfies([ $module, $requires->{$module} ], $unsatisfied, $index, $pool);
-    }
 }
 
 1;
