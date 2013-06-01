@@ -2,6 +2,16 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.52  2013-06-01 17:01:51 JST
+        - carton exec doesn't need '--' before perl anymore #77
+        - remove even more unused code
+        - backed out color output support
+        - stopped collecting dependencies from cpanfile, since cpanm installdeps can read it directly
+        - Temporarily disabled check command for now
+        - Upped cpanm dependency
+        - Use vendor/cache for bundling since local is most likely gitignored #88
+        - carton exec now requires carton install beforehand
+
 v0.9.51  2013-05-31 09:02:58 JST
         - Documentation fixes
         - Fixes test dependencies and build system

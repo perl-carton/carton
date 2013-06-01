@@ -3,7 +3,7 @@ package Carton;
 use strict;
 use warnings;
 use 5.008_005;
-use version; our $VERSION = version->declare("v0.9.51");
+use version; our $VERSION = version->declare("v0.9.52");
 
 use Config qw(%Config);
 use Carton::Util;
