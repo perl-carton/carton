@@ -26,11 +26,6 @@ sub local_cache {
     File::Spec->rel2abs("vendor/cache");
 }
 
-sub use_darkpan {
-    my $self = shift;
-    $self->{mirror} ne $Carton::Mirror::DefaultMirror;
-}
-
 sub bundle {
     my($self, $cpanfile, $lock) = @_;
 
