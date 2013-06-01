@@ -5,7 +5,6 @@ use warnings;
 use 5.008_005;
 use version; our $VERSION = version->declare("v0.9.51");
 
-use Cwd;
 use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
