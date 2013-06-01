@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.53  2013-06-01 23:54:53 JST
+        - use Moo
+        - refactored installer/downloader as Carton::Builder
+
 v0.9.52  2013-06-01 17:01:51 JST
         - carton exec doesn't need '--' before perl anymore #77
         - remove even more unused code
