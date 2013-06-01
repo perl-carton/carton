@@ -3,7 +3,6 @@ requires 'perl', '5.8.5';
 configure_requires 'version', 0.77;
 
 requires 'JSON', 2.53;
-requires 'Term::ANSIColor', 1.12;
 requires 'Module::Metadata', 1.000003;
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
