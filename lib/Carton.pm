@@ -80,19 +80,6 @@ sub install {
     ) or die "Installing modules failed\n";
 }
 
-sub is_core {
-    my($self, $module, $want_ver, $perl_version) = @_;
-    $perl_version ||= $];
-
-    require Module::CoreList;
-    my $is_core  = exists $Module::CoreList::version{$perl_version + 0}{$module}
-        or return;
-
-    my $core_ver = $Module::CoreList::version{$perl_version + 0}{$module};
-    return 1 unless $want_ver;
-    return version->new($core_ver) >= version->new($want_ver);
-};
-
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
