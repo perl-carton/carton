@@ -5,7 +5,6 @@ use warnings;
 use Cwd;
 use Config;
 use Getopt::Long;
-use Term::ANSIColor qw(colored);
 
 use Carton;
 use Carton::Lock;
@@ -17,17 +16,9 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $UseSystem = 0; # 1 for unit testing
 
-our $Colors = {
-    SUCCESS, => 'green',
-    WARN,    => 'yellow',
-    INFO,    => 'cyan',
-    ERROR,   => 'red',
-};
-
 sub new {
     my $class = shift;
     bless {
-        color => 1,
         verbose => 0,
     }, $class;
 }
@@ -56,7 +47,6 @@ sub run {
     $p->getoptions(
         "h|help"    => sub { unshift @commands, 'help' },
         "v|version" => sub { unshift @commands, 'version' },
-        "color!"    => \$self->{color},
         "verbose!"  => \$self->{verbose},
     );
 
@@ -123,7 +113,6 @@ sub printf {
 
 sub print {
     my($self, $msg, $type) = @_;
-    $msg = colored $msg, $Colors->{$type} if defined $type && $self->{color};
     my $fh = $type && $type >= WARN ? *STDERR : *STDOUT;
     print {$fh} $msg;
 }
