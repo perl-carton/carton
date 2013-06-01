@@ -16,7 +16,8 @@ use parent qw(Carton::CLI);
 $Carton::CLI::UseSystem = 1;
 
 use Capture::Tiny qw(capture);
-use File::pushd;
+use File::pushd ();
+use File::Path ();
 
 sub new {
     my($class, %args) = @_;
@@ -59,6 +60,11 @@ sub system_output {
 sub system_error {
     my $self = shift;
     $self->{system_error};
+}
+
+sub clean_local {
+    my $self = shift;
+    File::Path::rmtree("$self->{dir}/local", 1);
 }
 
 1;

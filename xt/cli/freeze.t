@@ -2,8 +2,6 @@ use strict;
 use Test::More;
 use xt::CLI;
 
-use File::Path qw(rmtree);
-
 {
     my $app = cli();
 
@@ -15,7 +13,7 @@ EOF
     $app->run("list");
     like $app->output, qr/Try-Tiny-0\.11/;
 
-    rmtree($app->dir . "/local", 1);
+    $app->clean_local;
 
     $app->run("install");
     $app->run("list");
