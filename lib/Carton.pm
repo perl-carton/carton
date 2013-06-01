@@ -6,6 +6,8 @@ use 5.008_005;
 use version; our $VERSION = version->declare("v0.9.52");
 
 use Config qw(%Config);
+use Carton::Builder;
+use Carton::Mirror;
 use Carton::Util;
 use CPAN::Meta;
 use File::Path ();
@@ -14,13 +16,12 @@ use File::Temp ();
 use Module::CPANfile;
 
 use constant CARTON_LOCK_VERSION => '0.9';
-our $DefaultMirror = 'http://cpan.metacpan.org/';
 
 sub new {
     my($class, %args) = @_;
     bless {
         path => $ENV{PERL_CARTON_PATH} || 'local',
-        mirror => $ENV{PERL_CARTON_MIRROR} || $DefaultMirror,
+        mirror => $ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror,
     }, $class;
 }
 
@@ -28,21 +29,9 @@ sub local_cache {
     File::Spec->rel2abs("vendor/cache");
 }
 
-sub effective_mirrors {
-    my($self, $cached) = @_;
-
-    # push default CPAN mirror always, as a fallback
-    my @mirrors;
-    push @mirrors, ($cached ? $self->local_cache : $self->{mirror});
-    push @mirrors, $DefaultMirror if $self->use_darkpan;
-    push @mirrors, 'http://backpan.perl.org/';
-
-    @mirrors;
-}
-
 sub use_darkpan {
     my $self = shift;
-    $self->{mirror} ne $DefaultMirror;
+    $self->{mirror} ne $Carton::Mirror::DefaultMirror;
 }
 
 sub bundle {
@@ -50,15 +39,12 @@ sub bundle {
 
     $lock->write_index($self->{mirror_file});
 
-    local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
-
-    $self->run_cpanm(
-        (map { ("--mirror", $_) } $self->effective_mirrors),
-        "--mirror-index", $self->{mirror_file},
-        "--skip-satisfied",
-        "--save-dists", $self->local_cache,
-        "--installdeps", ".",
+    my $builder = Carton::Builder->new(
+        mirror => Carton::Mirror->new($self->{mirror}),
+        index  => $self->{mirror_file},
     );
+
+    $builder->bundle($self->local_cache);
 }
 
 sub install {
@@ -69,20 +55,13 @@ sub install {
         $lock->write_index($self->{mirror_file});
     }
 
-    $self->run_cpanm(
-        (map { ("--mirror", $_) } $self->effective_mirrors($cached)),
-        "--skip-satisfied",
-        ( $lock ? ("--mirror-index", $self->{mirror_file}) : () ),
-        ( $cascade ? "--cascade-search" : () ),
-        ( $self->use_darkpan ? "--mirror-only" : () ),
-        "--installdeps", ".",
-    ) or die "Installing modules failed\n";
-}
+    my $mirror  = Carton::Mirror->new($cached ? $self->local_cache : $self->{mirror});
+    my $builder = Carton::Builder->new(
+        mirror => $mirror,
+        index  => $lock ? $self->{mirror_file} : undef,
+    );
 
-sub run_cpanm {
-    my($self, @args) = @_;
-    local $ENV{PERL_CPANM_OPT};
-    !system "cpanm", "--quiet", "-L", $self->{path}, "--notest", @args;
+    $builder->install($self->{path}, $cascade);
 }
 
 sub update_lock_file {
