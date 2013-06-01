@@ -1,5 +1,6 @@
 package Carton::Builder;
 use strict;
+use File::Temp;
 use Moo;
 
 has mirror  => (is => 'ro');

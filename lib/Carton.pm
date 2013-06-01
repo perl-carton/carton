@@ -10,9 +10,7 @@ use Carton::Builder;
 use Carton::Mirror;
 use Carton::Util;
 use CPAN::Meta;
-use File::Path ();
 use File::Spec ();
-use File::Temp ();
 
 use constant CARTON_LOCK_VERSION => '0.9';
 
