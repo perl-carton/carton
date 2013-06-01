@@ -16,7 +16,6 @@ requires 'App::cpanminus', 1.6915;
 requires 'ExtUtils::MakeMaker', 6.59;
 requires 'Module::Build', 0.38;
 requires 'CPAN::Meta', 2.120921;
-requires 'CPAN::Meta::Requirements', 2.121;
 
 on develop => sub {
     requires 'Test::Requires';

@@ -8,7 +8,6 @@ use version; our $VERSION = version->declare("v0.9.52");
 use Config qw(%Config);
 use Carton::Util;
 use CPAN::Meta;
-use CPAN::Meta::Requirements;
 use File::Path ();
 use File::Spec ();
 use File::Temp ();
