@@ -4,6 +4,14 @@ use xt::CLI;
 
 {
     my $app = cli();
+    $app->run("exec", "perl", "-e", 1);
+    like $app->output, qr/carton\.lock/;
+}
+
+{
+    my $app = cli();
+    $app->dir->touch("cpanfile", '');
+    $app->run("install");
 
     $app->run("exec", "--", "perl", "-e", "use Try::Tiny");
     like $app->system_error, qr/Can't locate Try\/Tiny.pm/;

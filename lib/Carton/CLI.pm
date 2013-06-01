@@ -235,6 +235,9 @@ EOF
 sub cmd_exec {
     my($self, @args) = @_;
 
+    my $lock = $self->find_lock
+        or $self->error("Can't find carton.lock: Run `carton install` to build the lock file.\n");
+
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
 
