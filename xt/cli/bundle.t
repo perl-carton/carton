@@ -12,7 +12,7 @@ EOF
     $app->run("install");
     $app->run("bundle");
 
-    ok -f ($app->dir . "/local/cache/authors/id/D/DO/DOY/Try-Tiny-0.12.tar.gz");
+    ok -f ($app->dir . "/vendor/cache/authors/id/D/DO/DOY/Try-Tiny-0.12.tar.gz");
 }
 
 done_testing;

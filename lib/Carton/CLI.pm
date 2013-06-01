@@ -159,25 +159,21 @@ sub cmd_install {
     $self->parse_options(
         \@args,
         "p|path=s"    => sub { $self->carton->{path} = $_[1] },
-        "deployment!" => \$self->{deployment},
-        "cached!"     => \$self->{use_local_mirror},
+        "deployment!" => \my $deployment,
+        "cached!"     => \my $cached,
     );
 
     $self->carton->{mirror_file} = $self->mirror_file;
 
-    if ($self->{use_local_mirror}) {
-        $self->carton->use_local_mirror;
-    }
-
     my $lock = $self->find_lock;
     my $cpanfile = $self->find_cpanfile;
 
-    if ($self->{deployment}) {
+    if ($deployment) {
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
-        $self->carton->install($cpanfile, $lock);
+        $self->carton->install($cpanfile, $lock, 0, $cached);
     } else {
         $self->print("Installing modules using $cpanfile\n");
-        $self->carton->install($cpanfile, $lock, 1);
+        $self->carton->install($cpanfile, $lock, 1, $cached);
         $self->carton->update_lock_file($self->lock_file);
     }
 

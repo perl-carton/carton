@@ -25,20 +25,16 @@ sub new {
     }, $class;
 }
 
-sub use_local_mirror {
-    my $self = shift;
-    $self->{mirror} = $self->local_cache;
-}
-
 sub local_cache {
-    File::Spec->rel2abs("$_[0]->{path}/cache");
+    File::Spec->rel2abs("vendor/cache");
 }
 
 sub effective_mirrors {
-    my $self = shift;
+    my($self, $cached) = @_;
 
     # push default CPAN mirror always, as a fallback
-    my @mirrors = ($self->{mirror});
+    my @mirrors;
+    push @mirrors, ($cached ? $self->local_cache : $self->{mirror});
     push @mirrors, $DefaultMirror if $self->use_darkpan;
     push @mirrors, 'http://backpan.perl.org/';
 
@@ -55,20 +51,19 @@ sub bundle {
 
     $lock->write_index($self->{mirror_file});
 
-    my $local_cache = $self->local_cache; # because $self->{path} is localized
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     $self->run_cpanm(
         (map { ("--mirror", $_) } $self->effective_mirrors),
         "--mirror-index", $self->{mirror_file},
         "--skip-satisfied",
-        "--save-dists", $local_cache,
+        "--save-dists", $self->local_cache,
         "--installdeps", ".",
     );
 }
 
 sub install {
-    my($self, $file, $lock, $cascade) = @_;
+    my($self, $file, $lock, $cascade, $cached) = @_;
 
     # TODO merge CPANfile git to mirror even if lock doesn't exist
     if ($lock) {
@@ -76,7 +71,7 @@ sub install {
     }
 
     $self->run_cpanm(
-        (map { ("--mirror", $_) } $self->effective_mirrors),
+        (map { ("--mirror", $_) } $self->effective_mirrors($cached)),
         "--skip-satisfied",
         ( $lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
