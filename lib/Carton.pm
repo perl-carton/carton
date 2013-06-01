@@ -34,22 +34,34 @@ sub local_cache {
     File::Spec->rel2abs("$_[0]->{path}/cache");
 }
 
+sub effective_mirrors {
+    my $self = shift;
+
+    # push default CPAN mirror always, as a fallback
+    my @mirrors = ($self->{mirror});
+    push @mirrors, $DefaultMirror if $self->use_darkpan;
+    push @mirrors, 'http://backpan.perl.org/';
+
+    @mirrors;
+}
+
+sub use_darkpan {
+    my $self = shift;
+    $self->{mirror} ne $DefaultMirror;
+}
+
 sub bundle {
     my($self, $cpanfile, $lock) = @_;
 
     $lock->write_index($self->{mirror_file});
 
-    my $mirror = $self->{mirror} || $DefaultMirror;
     my $local_cache = $self->local_cache; # because $self->{path} is localized
     local $self->{path} = File::Temp::tempdir(CLEANUP => 1); # ignore installed
 
     $self->run_cpanm(
-        "--mirror", $mirror,
-        "--mirror", "http://backpan.perl.org/", # fallback
+        (map { ("--mirror", $_) } $self->effective_mirrors),
         "--mirror-index", $self->{mirror_file},
         "--skip-satisfied",
-        "--cascade-search",
-        ( $mirror ne $DefaultMirror ? "--mirror-only" : () ),
         "--save-dists", $local_cache,
         "--installdeps", ".",
     );
@@ -63,21 +75,12 @@ sub install {
         $lock->write_index($self->{mirror_file});
     }
 
-    my $mirror = $self->{mirror} || $DefaultMirror;
-
-    my $is_default_mirror = 0;
-    if ( !ref $mirror ) {
-        $is_default_mirror = $mirror eq $DefaultMirror ? 1 : 0;
-        $mirror = [split /,/, $mirror];
-    }
-
     $self->run_cpanm(
-        (map { ("--mirror", $_) } @{$mirror}),
-        "--mirror", "http://backpan.perl.org/", # fallback
+        (map { ("--mirror", $_) } $self->effective_mirrors),
         "--skip-satisfied",
-        ( $is_default_mirror ? () : "--mirror-only" ),
         ( $lock ? ("--mirror-index", $self->{mirror_file}) : () ),
         ( $cascade ? "--cascade-search" : () ),
+        ( $self->use_darkpan ? "--mirror-only" : () ),
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
 }

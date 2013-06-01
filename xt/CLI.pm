@@ -6,7 +6,7 @@ our @EXPORT = qw(run cli);
 use Test::Requires qw( Directory::Scratch Capture::Tiny File::pushd );
 
 sub cli {
-    my $dir = Directory::Scratch->new();
+    my $dir = Directory::Scratch->new(CLEANUP => !$ENV{NO_CLEANUP});
     Carton::CLI::Tested->new(dir => $dir);
 }
 
