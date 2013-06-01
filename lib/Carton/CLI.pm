@@ -204,8 +204,8 @@ sub cmd_list {
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
-    for my $module ($lock->modules) {
-        $self->print("$module->{dist}\n");
+    for my $dependency ($lock->dependencies) {
+        $self->print($dependency->distname . "\n");
     }
 }
 

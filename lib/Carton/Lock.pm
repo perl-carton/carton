@@ -1,8 +1,13 @@
 package Carton::Lock;
 use strict;
+use Carton::Dependency;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
+use Moo;
+
+has version => (is => 'ro');
+has modules => (is => 'ro', default => sub { +{} });
 
 sub from_file {
     my($class, $file) = @_;
@@ -11,23 +16,19 @@ sub from_file {
     return $class->new($data);
 }
 
-sub new {
-    my($class, $data) = @_;
-    bless $data, $class;
-}
-
 sub write {
     my($self, $file) = @_;
     Carton::Util::dump_json({ %$self }, $file);
 }
 
-sub modules {
-    values %{$_[0]->{modules} || {}};
+sub dependencies {
+    map Carton::Dependency->new(meta => $_->{mymeta}),
+      values %{$_[0]->modules}
 }
 
 sub find {
     my($self, $module) = @_;
-    $self->{modules}{$module};
+    $self->modules->{$module};
 }
 
 sub index {
@@ -45,7 +46,7 @@ sub packages {
     my $self = shift;
 
     my @packages;
-    while (my($name, $metadata) = each %{$self->{modules}}) {
+    while (my($name, $metadata) = each %{$self->modules}) {
         while (my($package, $provides) = each %{$metadata->{provides}}) {
             # TODO what if duplicates?
             push @packages, Carton::Package->new($package, $provides->{version}, $metadata->{pathname});

@@ -1,18 +1,15 @@
 package Carton::Package;
 use strict;
+use Moo;
 
-sub new {
-    my($class, $name, $version, $pathname) = @_;
-    bless {
-        name => $name,
-        version => $version,
-        pathname => $pathname,
-    }, $class;
+has name     => (is => 'ro');
+has version  => (is => 'ro');
+has pathname => (is => 'ro');
+
+sub BUILDARGS {
+    my($class, @args) = @_;
+    return { name => $args[0], version => $args[1], pathname => $args[2] };
 }
-
-sub name     { $_[0]->{name} }
-sub version  { $_[0]->{version} }
-sub pathname { $_[0]->{pathname} }
 
 1;
 

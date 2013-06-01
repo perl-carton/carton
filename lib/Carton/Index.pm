@@ -1,24 +1,22 @@
 package Carton::Index;
 use strict;
+use Moo;
 
-sub new {
-    my($class, $packages) = @_;
-    bless { packages => {} }, $class;
-}
+has _packages => (is => 'rw', default => sub { +{} });
 
 sub add_package {
     my($self, $package) = @_;
-    $self->{packages}{$package->name} = $package; # XXX ||=
+    $self->_packages->{$package->name} = $package; # XXX ||=
 }
 
 sub count {
     my $self = shift;
-    scalar keys %{$self->{packages}};
+    scalar keys %{$self->_packages};
 }
 
 sub packages {
     my $self = shift;
-    sort { $a->name cmp $b->name } values %{$self->{packages}};
+    sort { $a->name cmp $b->name } values %{$self->_packages};
 }
 
 sub write {
