@@ -9,6 +9,8 @@ sub effective_mirrors {
     my $self = shift;
 
     # push default CPAN mirror always, as a fallback
+    # TODO don't pass fallback if --cached is set?
+
     my @mirrors = ($self->mirror);
     push @mirrors, Carton::Mirror->default if $self->use_darkpan;
     push @mirrors, Carton::Mirror->new('http://backpan.perl.org/');
