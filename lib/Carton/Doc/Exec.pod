@@ -4,7 +4,7 @@ Carton::Doc::Exec - execute your script in a carton local environment
 
 =head1 SYNOPSIS
 
-  carton exec -Ilib -- perl myscript.pl
+  carton exec perl myscript.pl
 
 =head1 DESCRIPTION
 
@@ -17,17 +17,3 @@ This is useful to make sure your scripts and application use the exact
 same versions of the modules in your lirbary path, and are not using
 any of the modules you accidentally installed into your system perl or
 perlbrew's site library path.
-
-=head1 OPTIONS
-
-=over 4
-
-=item -Ilib
-
-Like perl's C<-I> option, this allows you to specify the library path
-you want to pass to the script you're going to run. Because of the
-complexity of how perl's C<PERL5OPT> and C<-M> and C<-I> command line
-options are handled, you have to pass this option to the C<carton
-exec> command instead of the actual C<perl> command.
-
-=back
