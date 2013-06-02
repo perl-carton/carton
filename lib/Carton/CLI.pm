@@ -11,46 +11,48 @@ use Carton::Lock;
 use Carton::Util;
 use Carton::Error;
 use Try::Tiny;
+use Moo;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $UseSystem = 0; # 1 for unit testing
 
-sub new {
-    my $class = shift;
-    bless {
-        verbose => 0,
-    }, $class;
-}
+has verbose => (is => 'rw');
+has carton  => (is => 'lazy');
+has workdir => (is => 'lazy');
 
-sub carton {
-    my $self = shift;
-    $self->{carton} ||= Carton->new;
+sub _build_carton {
+    Carton->new;
 }
 
 sub work_file {
     my($self, $file) = @_;
-    return "$self->{work_dir}/$file";
+    return join "/", $self->workdir, $file;
+}
+
+sub _build_workdir {
+    my $self = shift;
+    $ENV{PERL_CARTON_HOME} || (Cwd::cwd() . "/.carton");
 }
 
 sub run {
     my($self, @args) = @_;
 
-    $self->{work_dir} = $ENV{PERL_CARTON_HOME} || (Cwd::cwd() . "/.carton");
-    mkdir $self->{work_dir}, 0777 unless -e $self->{work_dir};
+    my $dir = $self->workdir;
+    mkdir $dir, 0777 unless -e $dir;
 
-    local @ARGV = @args;
     my @commands;
     my $p = Getopt::Long::Parser->new(
         config => [ "no_ignore_case", "pass_through" ],
     );
-    $p->getoptions(
+    $p->getoptionsfromarray(
+        \@args,
         "h|help"    => sub { unshift @commands, 'help' },
         "v|version" => sub { unshift @commands, 'version' },
-        "verbose!"  => \$self->{verbose},
+        "verbose!"  => sub { $self->verbose($_[1]) },
     );
 
-    push @commands, @ARGV;
+    push @commands, @args;
 
     my $cmd = shift @commands || 'install';
     my $call = $self->can("cmd_$cmd");
@@ -89,7 +91,10 @@ HELP
 
 sub parse_options {
     my($self, $args, @spec) = @_;
-    Getopt::Long::GetOptionsFromArray($args, @spec);
+    my $p = Getopt::Long::Parser->new(
+        config => [ "no_auto_abbrev", "no_ignore_case" ],
+    );
+    $p->getoptionsfromarray($args, @spec);
 }
 
 sub parse_options_pass_through {
