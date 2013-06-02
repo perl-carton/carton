@@ -74,7 +74,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.53",
+   "version" : "v0.9.54",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
