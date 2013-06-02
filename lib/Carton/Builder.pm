@@ -36,6 +36,7 @@ sub bundle {
         "--mirror-index", $self->index,
         "--skip-satisfied",
         "--save-dists", $path,
+        "--with-develop",
         "--installdeps", ".",
     );
 }
@@ -50,6 +51,7 @@ sub install {
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
         ( $self->use_darkpan ? "--mirror-only" : () ),
+        "--with-develop",
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
 }
