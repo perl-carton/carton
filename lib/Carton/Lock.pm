@@ -1,13 +1,18 @@
 package Carton::Lock;
 use strict;
+use Config;
 use Carton::Dependency;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
+use CPAN::Meta;
+use File::Find ();
 use Moo;
 
 has version => (is => 'ro');
 has modules => (is => 'ro', default => sub { +{} });
+
+use constant CARTON_LOCK_VERSION => '0.9';
 
 sub from_file {
     my($class, $file) = @_;
@@ -61,6 +66,37 @@ sub write_index {
 
     open my $fh, ">", $file or die $!;
     $self->index->write($fh);
+}
+
+sub build_from_local {
+    my($class, $path) = @_;
+
+    my %installs = $class->find_installs($path);
+
+    return $class->new(
+        modules => \%installs,
+        version => CARTON_LOCK_VERSION,
+    );
+}
+
+sub find_installs {
+    my($class, $path) = @_;
+
+    my $libdir = "$path/lib/perl5/$Config{archname}/.meta";
+    return unless -e $libdir;
+
+    my @installs;
+    my $wanted = sub {
+        if ($_ eq 'install.json') {
+            push @installs, [ $File::Find::name, "$File::Find::dir/MYMETA.json" ];
+        }
+    };
+    File::Find::find($wanted, $libdir);
+
+    return map {
+        my $module = Carton::Util::load_json($_->[0]);
+        my $mymeta = -f $_->[1] ? CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" }) : {};
+        ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
 }
 
 1;

@@ -3,8 +3,9 @@ use strict;
 use File::Temp;
 use Moo;
 
-has mirror  => (is => 'ro');
-has index   => (is => 'ro');
+has mirror  => (is => 'rw');
+has index   => (is => 'rw');
+has cascade => (is => 'rw', default => sub { 1 });
 
 sub effective_mirrors {
     my $self = shift;
@@ -40,14 +41,14 @@ sub bundle {
 }
 
 sub install {
-    my($self, $path, $cascade) = @_;
+    my($self, $path) = @_;
 
     $self->run_cpanm(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         "--skip-satisfied",
         ( $self->index ? ("--mirror-index", $self->index) : () ),
-        ( $cascade ? "--cascade-search" : () ),
+        ( $self->cascade ? "--cascade-search" : () ),
         ( $self->use_darkpan ? "--mirror-only" : () ),
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
