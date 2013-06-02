@@ -277,13 +277,11 @@ sub cmd_exec {
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
 
-    my @include;
-    $self->parse_options_pass_through(\@args, 'I=s@', \@include);
+    $self->parse_options_pass_through(\@args, 'I=s@', sub { die "exec -Ilib is deprecated.\n" });
 
+    # PERL5LIB takes care of arch
     my $path = $self->install_path;
-    my $lib  = join ",", @include, "$path/lib/perl5", ".";
-
-    local $ENV{PERL5OPT} = "-Mlib::core::only -Mlib=$lib";
+    local $ENV{PERL5LIB} = "$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $UseSystem ? system(@args) : exec(@args);
