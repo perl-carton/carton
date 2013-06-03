@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "carton",
-  "dist_version" => "v0.9.54",
+  "dist_version" => "v0.9.55",
   "license" => "perl",
   "module_name" => "carton",
   "recommends" => {},
@@ -26,11 +26,13 @@ my %module_build_args = (
   "requires" => {
     "App::cpanminus" => "1.6915",
     "CPAN::Meta" => "2.120921",
+    "CPAN::Meta::Requirements" => "2.121",
     "Exception::Class" => "1.32",
     "ExtUtils::MakeMaker" => "6.59",
     "Getopt::Long" => "2.39",
     "JSON" => "2.53",
     "Module::Build" => "0.38",
+    "Module::CPANfile" => "0.9031",
     "Module::Metadata" => "1.000003",
     "Moo" => "1.002",
     "Try::Tiny" => "0.09",

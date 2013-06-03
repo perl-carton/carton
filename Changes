@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.55  2013-06-03 23:43:52 JST
+        - Added back carton tree command
+        - Added --distfile option to list command
+
 v0.9.54  2013-06-02 12:38:20 JST
         - Install develop phase dependencies by default with carton install
         - carton exec now doesn't set PERL5OPT with lib::core::only, so as not to mess with

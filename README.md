@@ -15,7 +15,7 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
 
     # Other developer's machine, or on a deployment box
     > carton install
-    > carton exec -Ilib -- starman -p 8080 myapp.psgi
+    > carton exec starman -p 8080 myapp.psgi
 
 # WARNING
 
@@ -89,13 +89,13 @@ available on CPAN, such as internal distribution aka DarkPAN.
 
     > carton bundle
 
-will bundle these tarballs into _local/cache_ directory, and
+will bundle these tarballs into _vendor/cache_ directory, and
 
     > carton install --cached
 
-will install modules using this local cache. This way you can avoid a
-dependency on CPAN meta DB and search.cpan.org at a deploy time, or
-you can have dependencies onto private CPAN modules aka DarkPAN.
+will install modules using this local cache. This way you can avoid
+querying for a database like CPAN Meta DB or CPAN mirrors upon
+deployment time.
 
 # COMMUNITY
 
