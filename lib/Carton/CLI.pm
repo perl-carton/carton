@@ -237,11 +237,18 @@ sub cmd_show {
 sub cmd_list {
     my($self, @args) = @_;
 
+    my $format = 'dist';
+
+    $self->parse_options(
+        \@args,
+        "distfile" => sub { $format = 'distfile' },
+    );
+
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
     for my $dependency ($lock->dependencies) {
-        $self->print($dependency->distname . "\n");
+        $self->print($dependency->$format . "\n");
     }
 }
 

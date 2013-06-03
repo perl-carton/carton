@@ -3,11 +3,17 @@ use strict;
 use CPAN::Meta;
 use Moo;
 
-has meta => (is => 'ro', coerce => sub { CPAN::Meta->new($_[0], { lazy_validation => 1 }) });
+has name     => (is => 'ro');
+has pathname => (is => 'ro');
+has provides => (is => 'ro');
+has version  => (is => 'ro');
+has target   => (is => 'ro');
+has dist     => (is => 'ro');
+has mymeta   => (is => 'ro', coerce => sub { CPAN::Meta->new($_[0], { lazy_validation => 1 }) });
 
-sub distname {
+sub distfile {
     my $self = shift;
-    sprintf '%s-%s', $self->meta->name, $self->meta->version;
+    $self->pathname;
 }
 
 1;

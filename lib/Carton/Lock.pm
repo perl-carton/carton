@@ -27,8 +27,7 @@ sub write {
 }
 
 sub dependencies {
-    map Carton::Dependency->new(meta => $_->{mymeta}),
-      values %{$_[0]->modules}
+    map Carton::Dependency->new($_), values %{$_[0]->modules}
 }
 
 sub find {
