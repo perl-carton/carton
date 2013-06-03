@@ -16,4 +16,9 @@ sub distfile {
     $self->pathname;
 }
 
+sub prereqs {
+    my $self = shift;
+    $self->mymeta->effective_prereqs;
+}
+
 1;
