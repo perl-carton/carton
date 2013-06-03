@@ -264,29 +264,33 @@ sub cmd_tree {
     my $cpanfile = Module::CPANfile->load($self->find_cpanfile);
     my $prereqs = $cpanfile->prereqs;
 
-    my $level = 0;
-    $self->dump_tree($lock, undef, $prereqs, $level);
+    my $dumper = $self->_make_dumper($lock);
+    $dumper->(undef, $prereqs, 0);
 }
 
-sub dump_tree {
-    my($self, $lock, $name, $prereqs, $level) = @_;
+sub _make_dumper {
+    my($self, $lock) = @_;
 
-    my $req = CPAN::Meta::Requirements->new;
-    $req->add_requirements($prereqs->requirements_for($_, 'requires'))
-      for qw( configure build runtime test);
+    my $dumper; $dumper = sub {
+        my($name, $prereqs, $level) = @_;
 
-    if ($name) {
-        $self->print( (" " x ($level - 1)) . "$name\n" );
-    }
+        my $req = CPAN::Meta::Requirements->new;
+        $req->add_requirements($prereqs->requirements_for($_, 'requires'))
+          for qw( configure build runtime test);
 
-    my $requirements = $req->as_string_hash;
-    while (my($module, $version) = each %$requirements) {
-        if (my $dependency = $lock->find($module)) {
-            $self->dump_tree($lock, $dependency->dist, $dependency->prereqs, $level + 1);
-        } else {
-            # TODO: probably core, what if otherwise?
+        if ($name) {
+            $self->print( (" " x ($level - 1)) . "$name\n" );
         }
-    }
+
+        my $requirements = $req->as_string_hash;
+        while (my($module, $version) = each %$requirements) {
+            if (my $dependency = $lock->find($module)) {
+                $dumper->($dependency->dist, $dependency->prereqs, $level + 1);
+            } else {
+                # TODO: probably core, what if otherwise?
+            }
+        }
+    };
 }
 
 sub cmd_check {
