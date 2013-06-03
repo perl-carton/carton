@@ -276,7 +276,7 @@ sub dump_tree {
       for qw( configure build runtime test);
 
     if ($name) {
-        $self->print( (" " x ($level - 1)) . "\\_ $name\n" );
+        $self->print( (" " x ($level - 1)) . "$name\n" );
     }
 
     my $requirements = $req->as_string_hash;
