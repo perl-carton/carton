@@ -97,13 +97,13 @@ available on CPAN, such as internal distribution aka DarkPAN.
 
   > carton bundle
 
-will bundle these tarballs into I<local/cache> directory, and
+will bundle these tarballs into I<vendor/cache> directory, and
 
   > carton install --cached
 
-will install modules using this local cache. This way you can avoid a
-dependency on CPAN meta DB and search.cpan.org at a deploy time, or
-you can have dependencies onto private CPAN modules aka DarkPAN.
+will install modules using this local cache. This way you can avoid
+querying for a database like CPAN Meta DB or CPAN mirrors upon
+deployment time.
 
 =head1 COMMUNITY
 
