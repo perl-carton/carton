@@ -32,7 +32,14 @@ sub dependencies {
 
 sub find {
     my($self, $module) = @_;
-    $self->modules->{$module};
+
+    for my $meta (values %{$_[0]->modules}) {
+        if ($meta->{provides}{$module}) {
+            return Carton::Dependency->new( $self->modules->{$meta->{name}} );
+        }
+    }
+
+    return;
 }
 
 sub index {

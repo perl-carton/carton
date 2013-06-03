@@ -228,9 +228,9 @@ sub cmd_show {
         or $self->error("Can't find carton.lock: Run `carton install`\n");
 
     for my $module (@args) {
-        my $meta = $lock->find($module)
+        my $dependency = $lock->find($module)
             or $self->error("Couldn't locate $module in carton.lock\n");
-        $self->print( Carton::Util::to_json($meta) );
+        $self->print( $dependency->dist . "\n" );
     }
 }
 
