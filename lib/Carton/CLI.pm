@@ -265,14 +265,14 @@ sub cmd_tree {
     my $prereqs = $cpanfile->prereqs;
 
     my $dumper = $self->_make_dumper($lock);
-    $dumper->(undef, $prereqs, 0);
+    $dumper->(undef, $prereqs, 0, {});
 }
 
 sub _make_dumper {
     my($self, $lock) = @_;
 
     my $dumper; $dumper = sub {
-        my($name, $prereqs, $level) = @_;
+        my($name, $prereqs, $level, $seen) = @_;
 
         my $req = CPAN::Meta::Requirements->new;
         $req->add_requirements($prereqs->requirements_for($_, 'requires'))
@@ -285,7 +285,8 @@ sub _make_dumper {
         my $requirements = $req->as_string_hash;
         while (my($module, $version) = each %$requirements) {
             if (my $dependency = $lock->find($module)) {
-                $dumper->($dependency->dist, $dependency->prereqs, $level + 1);
+                next if $seen->{$dependency->dist}++;
+                $dumper->($dependency->dist, $dependency->prereqs, $level + 1, $seen);
             } else {
                 # TODO: probably core, what if otherwise?
             }
