@@ -7,13 +7,14 @@ use Cwd;
     my $app = cli();
 
     $app->dir->touch("cpanfile", <<EOF);
-requires 'Test::TCP';
+requires 'HTML::Parser';
 EOF
 
     $app->run("install");
     $app->run("tree");
 
-    like $app->output, qr/^Test-TCP-.*\n Test-SharedFork-.*\n  Test-Requires-.*/;
+    like $app->output, qr/^HTML-Parser-.*/m;
+    like $app->output, qr/^ HTML-Tagset-.*/m;
 }
 
 done_testing;
