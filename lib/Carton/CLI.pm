@@ -12,12 +12,11 @@ use Carton::Mirror;
 use Carton::Lock;
 use Carton::Util;
 use Carton::Error;
-use Scalar::Util;
+use Carton::Requirements;
 use Try::Tiny;
 use Moo;
 
 use Module::CPANfile;
-use CPAN::Meta::Requirements;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
@@ -231,9 +230,9 @@ sub cmd_show {
         or $self->error("Can't find carton.lock: Run `carton install`\n");
 
     for my $module (@args) {
-        my $dependency = $lock->find($module)
+        my $dist = $lock->find($module)
             or $self->error("Couldn't locate $module in carton.lock\n");
-        $self->print( $dependency->dist . "\n" );
+        $self->print( $dist->dist . "\n" );
     }
 }
 
@@ -250,8 +249,8 @@ sub cmd_list {
     my $lock = $self->find_lock
         or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
-    for my $dependency ($lock->dependencies) {
-        $self->print($dependency->$format . "\n");
+    for my $dist ($lock->distributions) {
+        $self->print($dist->$format . "\n");
     }
 }
 
@@ -262,35 +261,14 @@ sub cmd_tree {
       or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
     my $cpanfile = Module::CPANfile->load($self->find_cpanfile);
+    my $requirements = Carton::Requirements->new(lock => $lock, cpanfile => $cpanfile);
 
-    my $dumper = $self->_make_dumper($lock);
-    $dumper->(undef, $cpanfile->prereqs, 0, {});
+    $requirements->walk_down(sub { $self->_dump_requirement(@_) });
 }
 
-sub _make_dumper {
-    my($self, $lock) = @_;
-
-    my $dumper; $dumper = sub {
-        my($dependency, $prereqs, $level, $seen) = @_;
-
-        my $req = CPAN::Meta::Requirements->new;
-        $req->add_requirements($prereqs->requirements_for($_, 'requires'))
-          for qw( configure build runtime test);
-
-        if ($dependency) {
-            $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->name, $dependency->dist, INFO );
-        }
-
-        my $requirements = $req->as_string_hash;
-        while (my($module, $version) = each %$requirements) {
-            if (my $dependency = $lock->find($module)) {
-                next if $seen->{$dependency->dist}++;
-                $dumper->($dependency, $dependency->prereqs, $level + 1, $seen);
-            } else {
-                # TODO: probably core, what if otherwise?
-            }
-        }
-    };
+sub _dump_requirement {
+    my($self, $dependency, $level) = @_;
+    $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->module, $dependency->distname, INFO );
 }
 
 sub cmd_check {

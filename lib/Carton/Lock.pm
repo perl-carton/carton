@@ -1,7 +1,7 @@
 package Carton::Lock;
 use strict;
 use Config;
-use Carton::Dependency;
+use Carton::Dist;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
@@ -26,8 +26,8 @@ sub write {
     Carton::Util::dump_json({ %$self }, $file);
 }
 
-sub dependencies {
-    map Carton::Dependency->new($_), values %{$_[0]->modules}
+sub distributions {
+    map Carton::Dist->new($_), values %{$_[0]->modules}
 }
 
 sub find {
@@ -35,7 +35,7 @@ sub find {
 
     for my $meta (values %{$_[0]->modules}) {
         if ($meta->{provides}{$module}) {
-            return Carton::Dependency->new( $self->modules->{$meta->{name}} );
+            return Carton::Dist->new( $self->modules->{$meta->{name}} );
         }
     }
 
