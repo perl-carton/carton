@@ -1,6 +1,8 @@
-requires 'perl', '5.8.5';
+on configure => sub {
+    requires 'version', 0.77;
+};
 
-configure_requires 'version', 0.77;
+requires 'perl', '5.8.5';
 
 requires 'JSON', 2.53;
 requires 'Module::Metadata', 1.000003;
