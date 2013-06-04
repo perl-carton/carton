@@ -262,31 +262,30 @@ sub cmd_tree {
       or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
     my $cpanfile = Module::CPANfile->load($self->find_cpanfile);
-    my $prereqs = $cpanfile->prereqs;
 
     my $dumper = $self->_make_dumper($lock);
-    $dumper->(undef, $prereqs, 0, {});
+    $dumper->(undef, $cpanfile->prereqs, 0, {});
 }
 
 sub _make_dumper {
     my($self, $lock) = @_;
 
     my $dumper; $dumper = sub {
-        my($name, $prereqs, $level, $seen) = @_;
+        my($dependency, $prereqs, $level, $seen) = @_;
 
         my $req = CPAN::Meta::Requirements->new;
         $req->add_requirements($prereqs->requirements_for($_, 'requires'))
           for qw( configure build runtime test);
 
-        if ($name) {
-            $self->print( (" " x ($level - 1)) . "$name\n" );
+        if ($dependency) {
+            $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->name, $dependency->dist, INFO );
         }
 
         my $requirements = $req->as_string_hash;
         while (my($module, $version) = each %$requirements) {
             if (my $dependency = $lock->find($module)) {
                 next if $seen->{$dependency->dist}++;
-                $dumper->($dependency->dist, $dependency->prereqs, $level + 1, $seen);
+                $dumper->($dependency, $dependency->prereqs, $level + 1, $seen);
             } else {
                 # TODO: probably core, what if otherwise?
             }
