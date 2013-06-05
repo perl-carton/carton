@@ -40,7 +40,7 @@ sub run {
 
 sub clean_local {
     my $self = shift;
-    Path::Tiny->new("$self->{dir}/local")->remove_tree({ safe => 0 });
+    $self->dir->child("local")->remove_tree({ safe => 0 });
 }
 
 1;
