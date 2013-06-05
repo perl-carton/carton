@@ -15,11 +15,8 @@ EOF
     $app->run("install");
     $app->clean_local;
 
-    TODO: {
-        local $TODO = "collect installs";
-        $app->run("install", "--deployment");
-        unlike $app->stderr, qr/JSON::PP is not in range/;
-    }
+    $app->run("install", "--deployment");
+    unlike $app->stderr, qr/JSON::PP is not in range/;
 }
 
 done_testing;
