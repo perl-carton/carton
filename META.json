@@ -38,8 +38,8 @@
       "develop" : {
          "requires" : {
             "Capture::Tiny" : "0",
-            "Directory::Scratch" : "0",
             "File::pushd" : "0",
+            "Test::More" : "0.88",
             "Test::Pod" : "1.41",
             "Test::Requires" : "0"
          }
@@ -57,6 +57,7 @@
             "Module::CPANfile" : "0.9031",
             "Module::Metadata" : "1.000003",
             "Moo" : "1.002",
+            "Path::Tiny" : "0.022",
             "Try::Tiny" : "0.09",
             "local::lib" : "1.008",
             "parent" : "0.223",
@@ -76,7 +77,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.56",
+   "version" : "v0.9.57",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
