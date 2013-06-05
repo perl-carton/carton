@@ -36,11 +36,11 @@ sub walk_down {
 sub dependency_for {
     my($self, $module, $reqs) = @_;
 
-    my $version = $reqs->requirements_for_module($module);
+    my $requirement = $reqs->requirements_for_module($module);
 
     my $dep = Carton::Dependency->new;
     $dep->module($module);
-    $dep->version($version);
+    $dep->requirement($requirement);
 
     if (my $dist = $self->lock->find($module)) {
         $dep->dist($dist);

@@ -3,7 +3,7 @@ use strict;
 use Moo;
 
 has module  => (is => 'rw');
-has version => (is => 'rw');
+has requirement => (is => 'rw');
 has dist    => (is => 'rw', handles => [ qw(prereqs) ]);
 
 sub distname {
