@@ -127,7 +127,17 @@ sub find_installs {
         my $module = Carton::Util::load_json($file->[0]);
         my $mymeta = -f $file->[1] ? CPAN::Meta->load_file($file->[1])->as_struct({ version => "2" }) : {};
         if ($reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version})) {
-            $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
+            if (my $exist = $installs{$module->{name}}) {
+                my $old_ver = version->new($exist->{provides}{$module->{name}}{version});
+                my $new_ver = version->new($module->{provides}{$module->{name}}{version});
+                if ($new_ver >= $old_ver) {
+                    $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
+                } else {
+                    # Ignore same distributions older than the one we have
+                }
+            } else {
+                $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
+            }
         } else {
             # Ignore installs because cpanfile doesn't accept it
         }
