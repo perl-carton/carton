@@ -32,8 +32,8 @@ sub run {
     my $pushd = File::pushd::pushd $self->dir;
 
     my @capture = capture {
-        my $code = $self->SUPER::run(@args);
-        $self->exit_code($code);
+        my $code = eval { $self->SUPER::run(@args) };
+        $self->exit_code($@ ? 255 : $code);
     };
 
     $self->stdout($capture[0]);
