@@ -2,26 +2,40 @@ use strict;
 use Test::More;
 use xt::CLI;
 
-plan skip_all => "check is unimplemented";
-
 {
     my $app = cli();
 
     $app->dir->child("cpanfile")->spew(<<EOF);
-requires 'Try::Tiny';
+requires 'Try::Tiny', '== 0.11';
 EOF
 
     $app->run("check");
-    like $app->stdout, qr/Following dependencies are not satisfied.*Try::Tiny/s;
-    unlike $app->stdout, qr/found in local but/;
+    like $app->stderr, qr/find carton\.lock/;
 
     $app->run("install");
 
     $app->run("check");
-    like $app->stdout, qr/matches/;
+    like $app->stdout, qr/are satisfied/;
 
     $app->run("list");
-    like $app->stdout, qr/Try-Tiny-/;
+    like $app->stdout, qr/Try-Tiny-0\.11/;
+
+    $app->dir->child("cpanfile")->spew(<<EOF);
+requires 'Try::Tiny', '0.12';
+EOF
+
+    $app->run("check");
+    like $app->stdout, qr/not satisfied/;
+
+    # TODO run exec and it will fail again
+
+    $app->run("install");
+
+    $app->run("check");
+    like $app->stdout, qr/are satisfied/;
+
+    $app->run("list");
+    like $app->stdout, qr/Try-Tiny-0\.12/;
 }
 
 

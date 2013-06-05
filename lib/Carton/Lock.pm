@@ -2,11 +2,13 @@ package Carton::Lock;
 use strict;
 use Config;
 use Carton::Dist;
+use Carton::Dist::Core;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
 use CPAN::Meta;
 use File::Find ();
+use Module::CoreList;
 use Moo;
 
 has version => (is => 'ro');
@@ -37,6 +39,22 @@ sub find {
         if ($meta->{provides}{$module}) {
             return Carton::Dist->new( $self->modules->{$meta->{name}} );
         }
+    }
+
+    return;
+}
+
+sub find_or_core {
+    my($self, $module) = @_;
+    $self->find($module) || $self->find_in_core($module);
+}
+
+sub find_in_core {
+    my($self, $module) = @_;
+
+    if (exists $Module::CoreList::version{$]}{$module}) {
+        my $version = $Module::CoreList::version{$]}{$module}; # maybe undef
+        return Carton::Dist::Core->new(name => $module, version => $version);
     }
 
     return;

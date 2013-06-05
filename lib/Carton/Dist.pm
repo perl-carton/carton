@@ -11,6 +11,8 @@ has target   => (is => 'ro');
 has dist     => (is => 'ro');
 has mymeta   => (is => 'ro', coerce => sub { CPAN::Meta->new($_[0], { lazy_validation => 1 }) });
 
+sub is_perl { 0 }
+
 sub distfile {
     my $self = shift;
     $self->pathname;

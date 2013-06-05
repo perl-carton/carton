@@ -6,6 +6,7 @@ use xt::CLI;
     my $app = cli();
     $app->run("exec", "perl", "-e", 1);
     like $app->stderr, qr/carton\.lock/;
+    is $app->exit_code, 255;
 }
 
 {

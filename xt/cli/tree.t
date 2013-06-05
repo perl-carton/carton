@@ -12,6 +12,7 @@ EOF
     $app->run("install");
     $app->run("tree");
 
+    is $app->exit_code, 0;
     like $app->stdout, qr/^HTML::Parser \(HTML-Parser-/m;
     like $app->stdout, qr/^ HTML::Tagset \(HTML-Tagset-/m;
 }

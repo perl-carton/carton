@@ -24,6 +24,7 @@ $Carton::CLI::UseSystem = 1;
 has dir => (is => 'rw');
 has stdout => (is => 'rw');
 has stderr => (is => 'rw');
+has exit_code => (is => 'rw');
 
 sub run {
     my($self, @args) = @_;
@@ -31,7 +32,8 @@ sub run {
     my $pushd = File::pushd::pushd $self->dir;
 
     my @capture = capture {
-        eval { $self->SUPER::run(@args) };
+        my $code = $self->SUPER::run(@args);
+        $self->exit_code($code);
     };
 
     $self->stdout($capture[0]);
