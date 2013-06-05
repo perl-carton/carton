@@ -13,6 +13,7 @@ use Carton::Lock;
 use Carton::Util;
 use Carton::Error;
 use Carton::Requirements;
+use Path::Tiny;
 use Try::Tiny;
 use Moo;
 
@@ -24,14 +25,8 @@ our $UseSystem = 0; # 1 for unit testing
 
 has verbose => (is => 'rw');
 has carton  => (is => 'lazy');
-has workdir => (is => 'lazy');
 has mirror  => (is => 'rw', builder => 1,
                 coerce => sub { Carton::Mirror->new($_[0]) });
-
-sub _build_workdir {
-    my $self = shift;
-    $ENV{PERL_CARTON_HOME} || (Cwd::cwd() . "/.carton");
-}
 
 sub _build_mirror {
     my $self = shift;
@@ -39,18 +34,22 @@ sub _build_mirror {
 }
 
 sub install_path {
-    $ENV{PERL_CARTON_PATH} || File::Spec->rel2abs('local');
+    Path::Tiny->new($ENV{PERL_CARTON_PATH} || 'local')->absolute;
+}
+
+sub work_file {
+    my($self, $file) = @_;
+    my $wf = $self->install_path->child($file);
+    $wf->parent->mkpath;
+    $wf;
 }
 
 sub vendor_cache {
-    File::Spec->rel2abs("vendor/cache");
+    Path::Tiny->new("vendor/cache")->absolute;
 }
 
 sub run {
     my($self, @args) = @_;
-
-    my $dir = $self->workdir;
-    mkdir $dir, 0777 unless -e $dir;
 
     my @commands;
     my $p = Getopt::Long::Parser->new(
@@ -343,14 +342,9 @@ sub lock_file {
     return 'carton.lock';
 }
 
-sub work_file {
-    my($self, $file) = @_;
-    return join "/", $self->workdir, $file;
-}
-
 sub index_file {
     my $self = shift;
-    $self->work_file("02packages.details.txt");
+    $self->work_file("cache/modules/02packages.details.txt");
 }
 
 1;

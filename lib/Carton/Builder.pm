@@ -1,8 +1,5 @@
 package Carton::Builder;
 use strict;
-use File::Path ();
-use File::Basename ();
-use File::Copy ();
 use Moo;
 
 has mirror  => (is => 'rw');
@@ -31,13 +28,13 @@ sub bundle {
     my($self, $path, $cache_path, $lock) = @_;
 
     for my $dist ($lock->distributions) {
-        my $source = "$path/cache/authors/id/" . $dist->pathname;
-        my $target = "$cache_path/authors/id/" . $dist->pathname;
+        my $source = $path->child("cache/authors/id/" . $dist->pathname);
+        my $target = $cache_path->child("authors/id/" . $dist->pathname);
 
-        if (-f $source) {
+        if ($source->exists) {
             warn "Copying ", $dist->pathname, "\n";
-            File::Path::mkpath([ File::Basename::dirname($target) ], 0, 0777);
-            File::Copy::copy($source, $target) or warn "$target: $!";
+            $target->parent->mkpath;
+            $source->copy($target) or warn "$target: $!";
         } else {
             warn "Couldn't find @{[ $dist->pathname ]}\n";
         }

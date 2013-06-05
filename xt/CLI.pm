@@ -6,32 +6,21 @@ our @EXPORT = qw(run cli);
 use Test::Requires qw( Directory::Scratch Capture::Tiny File::pushd );
 
 sub cli {
-    my $dir = Directory::Scratch->new(CLEANUP => !$ENV{NO_CLEANUP});
-    Carton::CLI::Tested->new(dir => $dir);
+    my $cli = Carton::CLI::Tested->new;
+    $cli->dir( Directory::Scratch->new(CLEANUP => !$ENV{NO_CLEANUP}) );
+    $cli;
 }
 
 package Carton::CLI::Tested;
-use parent qw(Carton::CLI);
-
-$Carton::CLI::UseSystem = 1;
-
 use Capture::Tiny qw(capture);
 use File::pushd ();
-use File::Path ();
+use Path::Tiny;
+use Moo;
 
-sub new {
-    my($class, %args) = @_;
+extends 'Carton::CLI';
+$Carton::CLI::UseSystem = 1;
 
-    my $self = $class->SUPER::new;
-    $self->{dir} = $args{dir};
-
-    return $self;
-}
-
-sub dir {
-    my $self = shift;
-    $self->{dir};
-}
+has dir => (is => 'rw');
 
 sub print {
     my $self = shift;
@@ -64,7 +53,7 @@ sub system_error {
 
 sub clean_local {
     my $self = shift;
-    File::Path::rmtree("$self->{dir}/local", 1);
+    Path::Tiny->new("$self->{dir}/local")->remove_tree({ safe => 0 });
 }
 
 1;
