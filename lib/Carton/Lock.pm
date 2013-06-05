@@ -108,7 +108,7 @@ sub find_installs {
     my($class, $path, $prereqs) = @_;
 
     my $libdir = "$path/lib/perl5/$Config{archname}/.meta";
-    return unless -e $libdir;
+    return {} unless -e $libdir;
 
     my $reqs = CPAN::Meta::Requirements->new;
     $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
