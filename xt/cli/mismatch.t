@@ -12,6 +12,8 @@ EOF
 
     $app->run("install");
     $app->run("list");
+    use Data::Dumper;
+    warn Dumper $app;
     like $app->stdout, qr/Data-Dumper-2\.139/;
     like $app->stdout, qr/Test-Differences-0\.61/;
 }
