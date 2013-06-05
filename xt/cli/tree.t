@@ -13,8 +13,8 @@ EOF
     $app->run("install");
     $app->run("tree");
 
-    like $app->output, qr/^HTML::Parser \(HTML-Parser-/m;
-    like $app->output, qr/^ HTML::Tagset \(HTML-Tagset-/m;
+    like $app->stdout, qr/^HTML::Parser \(HTML-Parser-/m;
+    like $app->stdout, qr/^ HTML::Tagset \(HTML-Tagset-/m;
 }
 
 done_testing;

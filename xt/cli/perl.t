@@ -14,10 +14,10 @@ requires 'Hash::MultiValue';
 EOF
 
     $app->run("install");
-    like $app->output, qr/Complete/;
+    like $app->stdout, qr/Complete/;
 
     $app->run("list");
-    like $app->output, qr/Hash-MultiValue-/;
+    like $app->stdout, qr/Hash-MultiValue-/;
 }
 
 done_testing;

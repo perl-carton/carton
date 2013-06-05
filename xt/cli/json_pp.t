@@ -18,7 +18,7 @@ EOF
     TODO: {
         local $TODO = "collect installs";
         $app->run("install", "--deployment");
-        unlike $app->system_error, qr/JSON::PP is not in range/;
+        unlike $app->stderr, qr/JSON::PP is not in range/;
     }
 }
 

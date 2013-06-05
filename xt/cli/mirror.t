@@ -16,7 +16,7 @@ EOF
     $app->run("install");
 
     $app->run("list");
-    is $app->output, "Hash-MultiValue-0.08\n";
+    is $app->stdout, "Hash-MultiValue-0.08\n";
 }
 
 {
@@ -30,7 +30,7 @@ EOF
     $app->run("install");
 
     $app->run("list");
-    like $app->output, qr/^PSGI-/;
+    like $app->stdout, qr/^PSGI-/;
 }
 
 done_testing;

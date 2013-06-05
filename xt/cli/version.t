@@ -6,7 +6,7 @@ use xt::CLI;
 my $app = cli();
 $app->run("version");
 
-like $app->output, qr/carton $Carton::VERSION/;
+like $app->stdout, qr/carton $Carton::VERSION/;
 
 done_testing;
 

@@ -17,7 +17,7 @@ EOF
     $app->run("install");
 
     $app->run("list");
-    like $app->output, qr/Test-NoWarnings/;
+    like $app->stdout, qr/Test-NoWarnings/;
 }
 
 done_testing;

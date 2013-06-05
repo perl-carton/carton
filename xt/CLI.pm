@@ -21,28 +21,20 @@ extends 'Carton::CLI';
 $Carton::CLI::UseSystem = 1;
 
 has dir => (is => 'rw');
-has output => (is => 'rw');
-has system_output => (is => 'rw');
-has system_error  => (is => 'rw');
-
-sub print {
-    my $self = shift;
-    $self->{output} .= $_[0];
-}
+has stdout => (is => 'rw');
+has stderr => (is => 'rw');
 
 sub run {
     my($self, @args) = @_;
 
     my $pushd = File::pushd::pushd $self->dir;
 
-    $self->{output} = '';
-
     my @capture = capture {
         eval { $self->SUPER::run(@args) };
     };
 
-    $self->system_output($capture[0]);
-    $self->system_error($capture[1]);
+    $self->stdout($capture[0]);
+    $self->stderr($capture[1]);
 }
 
 sub clean_local {

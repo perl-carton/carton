@@ -12,16 +12,16 @@ requires 'Try::Tiny';
 EOF
 
     $app->run("check");
-    like $app->output, qr/Following dependencies are not satisfied.*Try::Tiny/s;
-    unlike $app->output, qr/found in local but/;
+    like $app->stdout, qr/Following dependencies are not satisfied.*Try::Tiny/s;
+    unlike $app->stdout, qr/found in local but/;
 
     $app->run("install");
 
     $app->run("check");
-    like $app->output, qr/matches/;
+    like $app->stdout, qr/matches/;
 
     $app->run("list");
-    like $app->output, qr/Try-Tiny-/;
+    like $app->stdout, qr/Try-Tiny-/;
 }
 
 
