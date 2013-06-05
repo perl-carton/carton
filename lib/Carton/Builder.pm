@@ -1,6 +1,8 @@
 package Carton::Builder;
 use strict;
-use File::Temp;
+use File::Path ();
+use File::Basename ();
+use File::Copy ();
 use Moo;
 
 has mirror  => (is => 'rw');
@@ -26,19 +28,20 @@ sub custom_mirror {
 }
 
 sub bundle {
-    my($self, $path) = @_;
+    my($self, $path, $cache_path, $lock) = @_;
 
-    my $temp = File::Temp::tempdir(CLEANUP => 1); # ignore installed
+    for my $dist ($lock->distributions) {
+        my $source = "$path/cache/authors/id/" . $dist->pathname;
+        my $target = "$cache_path/authors/id/" . $dist->pathname;
 
-    $self->run_cpanm(
-        "-L", $temp,
-        (map { ("--mirror", $_->url) } $self->effective_mirrors),
-        "--mirror-index", $self->index,
-        "--skip-satisfied",
-        "--save-dists", $path,
-        "--with-develop",
-        "--installdeps", ".",
-    );
+        if (-f $source) {
+            warn "Copying ", $dist->pathname, "\n";
+            File::Path::mkpath([ File::Basename::dirname($target) ], 0, 0777);
+            File::Copy::copy($source, $target) or warn "$target: $!";
+        } else {
+            warn "Couldn't find @{[ $dist->pathname ]}\n";
+        }
+    }
 }
 
 sub install {
@@ -51,6 +54,7 @@ sub install {
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
         ( $self->custom_mirror ? "--mirror-only" : () ),
+        "--save-dists", "$path/cache",
         "--with-develop",
         "--installdeps", ".",
     ) or die "Installing modules failed\n";

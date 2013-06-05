@@ -159,14 +159,10 @@ sub cmd_bundle {
     if ($lock) {
         $self->print("Bundling modules using $cpanfile\n");
 
-        my $index = $self->index_file;
-        $lock->write_index($index);
-
         my $builder = Carton::Builder->new(
             mirror => $self->mirror,
-            index  => $index,
         );
-        $builder->bundle($self->vendor_cache);
+        $builder->bundle($self->install_path, $self->vendor_cache, $lock);
     } else {
         $self->error("Can't locate carton.lock file. Run carton install first\n");
     }
@@ -187,6 +183,11 @@ sub cmd_install {
     );
 
     my $lock = $self->find_lock;
+
+    if ($deployment && !$lock) {
+        $self->error("--deployment requires carton.lock: Run `carton install` and make sure carton.lock is checked into your version control.\n");
+    }
+
     my $cpanfile = $self->find_cpanfile;
 
     my $builder = Carton::Builder->new(
@@ -195,9 +196,6 @@ sub cmd_install {
     );
 
     if ($deployment) {
-        unless ($lock) {
-            $self->error("--deployment requires carton.lock: Run `carton install` and make sure carton.lock is checked into your version control.\n"); # TODO test
-        }
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
         $builder->cascade(0);
     } else {
