@@ -8,7 +8,7 @@ v0.9.57  2013-06-05 19:21:17 JST
         - carton install now saves tarballs in local/cache, then carton bundle copies from there
         - Implement carton check which checks if cpanfile requirements is satisfied locally with lock
         - Implement carton update!
-        - Fi the installation collector logic to ignore dists that don't satisfy cpanfile
+        - Fix the installation collector logic to ignore dists that don't satisfy cpanfile
 
 v0.9.56  2013-06-04 00:21:53 JST
         - Fixed carton tree output to avoid duplicates
