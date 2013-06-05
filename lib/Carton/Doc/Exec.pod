@@ -14,6 +14,6 @@ only ones from perl's core library path, carton's library path
 (i.e. C<local/lib/perl5>) and the current directory.
 
 This is useful to make sure your scripts and application use the exact
-same versions of the modules in your lirbary path, and are not using
+same versions of the modules in your library path, and are not using
 any of the modules you accidentally installed into your system perl or
 perlbrew's site library path.

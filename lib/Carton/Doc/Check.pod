@@ -8,7 +8,7 @@ Carton::Doc::Check - Check if your cpanfile and local environment are in sync
 
 =head1 DESCRIPTION
 
-This command checks the consistency between yoru cpanfile and the
+This command checks the consistency between your cpanfile and the
 local environment.
 
 =head2 MISSING MODULES
@@ -18,7 +18,8 @@ found in your local environment, C<carton check> will warn you about
 this:
 
   $ carton check
-  Following dependencies are not satisfied. Run `carton install` to install them.
-  JSON (2.00)
+  Following dependencies are not satisfied.
+    JSON has version 2.51. Needs 2.52
+  Run `carton install` to install them.
 
 You can run C<carton install> again to reinstall these missing dependencies.
