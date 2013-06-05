@@ -264,7 +264,7 @@ sub cmd_tree {
     my %seen;
     my $dumper = sub {
         my($dependency, $level) = @_;
-        return if $dependency->dist->is_perl;
+        return if $dependency->dist->is_core;
         return if $seen{$dependency->distname}++;
         $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->module, $dependency->distname, INFO );
     };

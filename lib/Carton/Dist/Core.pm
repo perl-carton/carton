@@ -11,7 +11,7 @@ sub BUILDARGS {
     \%args;
 }
 
-sub is_perl { 1 }
+sub is_core { 1 }
 
 sub prereqs {
     my $self = shift;
