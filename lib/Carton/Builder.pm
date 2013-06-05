@@ -14,13 +14,13 @@ sub effective_mirrors {
     # TODO don't pass fallback if --cached is set?
 
     my @mirrors = ($self->mirror);
-    push @mirrors, Carton::Mirror->default if $self->use_darkpan;
+    push @mirrors, Carton::Mirror->default if $self->custom_mirror;
     push @mirrors, Carton::Mirror->new('http://backpan.perl.org/');
 
     @mirrors;
 }
 
-sub use_darkpan {
+sub custom_mirror {
     my $self = shift;
     ! $self->mirror->is_default;
 }
@@ -50,7 +50,7 @@ sub install {
         "--skip-satisfied",
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
-        ( $self->use_darkpan ? "--mirror-only" : () ),
+        ( $self->custom_mirror ? "--mirror-only" : () ),
         "--with-develop",
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
