@@ -21,6 +21,9 @@ extends 'Carton::CLI';
 $Carton::CLI::UseSystem = 1;
 
 has dir => (is => 'rw');
+has output => (is => 'rw');
+has system_output => (is => 'rw');
+has system_error  => (is => 'rw');
 
 sub print {
     my $self = shift;
@@ -29,26 +32,17 @@ sub print {
 
 sub run {
     my($self, @args) = @_;
-    my $pushd = File::pushd::pushd $self->{dir};
+
+    my $pushd = File::pushd::pushd $self->dir;
+
     $self->{output} = '';
-    ($self->{system_output}, $self->{system_error}) = capture {
+
+    my @capture = capture {
         eval { $self->SUPER::run(@args) };
     };
-}
 
-sub output {
-    my $self = shift;
-    $self->{output};
-}
-
-sub system_output {
-    my $self = shift;
-    $self->{system_output};
-}
-
-sub system_error {
-    my $self = shift;
-    $self->{system_error};
+    $self->system_output($capture[0]);
+    $self->system_error($capture[1]);
 }
 
 sub clean_local {
