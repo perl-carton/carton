@@ -68,7 +68,7 @@ L<CPAN> or L<CPANPLUS>, and have accomplished that by working around
 the CPAN mirror structure.
 
 carton internally does the same thing, but its user interface is
-centerd around the installer, by implementing a wrapper for
+centered around the installer, by implementing a wrapper for
 L<cpanm|App::cpanminus>, so you can use the same commands in the
 development mode and deployment mode.
 
