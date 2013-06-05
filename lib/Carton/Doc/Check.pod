@@ -8,7 +8,7 @@ Carton::Doc::Check - Check if your cpanfile and local environment are in sync
 
 =head1 DESCRIPTION
 
-This command checks the consisntency between yoru cpanfile and the
+This command checks the consistency between your cpanfile and the
 local environment.
 
 =head2 MISSING MODULES
