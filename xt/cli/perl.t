@@ -8,7 +8,7 @@ my $cwd = Cwd::cwd();
 {
     my $app = cli();
 
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'perl', '5.8.5';
 requires 'Hash::MultiValue';
 EOF

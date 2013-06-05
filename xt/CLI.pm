@@ -3,11 +3,12 @@ use strict;
 use base qw(Exporter);
 our @EXPORT = qw(run cli);
 
-use Test::Requires qw( Directory::Scratch Capture::Tiny File::pushd );
+use Test::Requires qw( Capture::Tiny File::pushd );
 
 sub cli {
     my $cli = Carton::CLI::Tested->new;
-    $cli->dir( Directory::Scratch->new(CLEANUP => !$ENV{NO_CLEANUP}) );
+    $cli->dir( Path::Tiny->tempdir(CLEANUP => !$ENV{NO_CLEANUP}) );
+    warn "Temp directory: ", $cli->dir, "\n" if $ENV{NO_CLEANUP};
     $cli;
 }
 

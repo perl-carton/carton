@@ -7,7 +7,7 @@ plan skip_all => "check is unimplemented";
 {
     my $app = cli();
 
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'Try::Tiny';
 EOF
 

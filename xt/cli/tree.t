@@ -6,7 +6,7 @@ use Cwd;
 {
     my $app = cli();
 
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'HTML::Parser';
 EOF
 

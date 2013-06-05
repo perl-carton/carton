@@ -8,7 +8,7 @@ my $cwd = Cwd::cwd();
 {
     my $app = cli();
 
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'Hash::MultiValue';
 EOF
 
@@ -22,7 +22,7 @@ EOF
 {
     # fallback to CPAN
     my $app = cli();
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'PSGI';
 EOF
 

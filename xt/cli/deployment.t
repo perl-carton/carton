@@ -4,7 +4,7 @@ use xt::CLI;
 
 {
     my $app = cli();
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 requires 'Try::Tiny', '== 0.11';
 EOF
 

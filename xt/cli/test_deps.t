@@ -8,7 +8,7 @@ my $cwd = Cwd::cwd();
 {
     my $app = cli();
 
-    $app->dir->touch("cpanfile", <<EOF);
+    $app->dir->child("cpanfile")->spew(<<EOF);
 on test => sub {
     requires 'Test::NoWarnings';
 };
