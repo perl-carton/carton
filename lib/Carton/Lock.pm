@@ -7,6 +7,7 @@ use Carton::Package;
 use Carton::Index;
 use Carton::Util;
 use CPAN::Meta;
+use CPAN::Meta::Requirements;
 use File::Find ();
 use Module::CoreList;
 use Moo;
@@ -93,21 +94,25 @@ sub write_index {
 }
 
 sub build_from_local {
-    my($class, $path) = @_;
+    my($class, $path, $prereqs) = @_;
 
-    my %installs = $class->find_installs($path);
+    my $installs = $class->find_installs($path, $prereqs);
 
     return $class->new(
-        modules => \%installs,
+        modules => $installs,
         version => CARTON_LOCK_VERSION,
     );
 }
 
 sub find_installs {
-    my($class, $path) = @_;
+    my($class, $path, $prereqs) = @_;
 
     my $libdir = "$path/lib/perl5/$Config{archname}/.meta";
     return unless -e $libdir;
+
+    my $reqs = CPAN::Meta::Requirements->new;
+    $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
+      for qw( configure build runtime test );
 
     my @installs;
     my $wanted = sub {
@@ -117,10 +122,18 @@ sub find_installs {
     };
     File::Find::find($wanted, $libdir);
 
-    return map {
-        my $module = Carton::Util::load_json($_->[0]);
-        my $mymeta = -f $_->[1] ? CPAN::Meta->load_file($_->[1])->as_struct({ version => "2" }) : {};
-        ($module->{name} => { %$module, mymeta => $mymeta }) } @installs;
+    my %installs;
+    for my $file (@installs) {
+        my $module = Carton::Util::load_json($file->[0]);
+        my $mymeta = -f $file->[1] ? CPAN::Meta->load_file($file->[1])->as_struct({ version => "2" }) : {};
+        if ($reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version})) {
+            $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
+        } else {
+            # Ignore installs because cpanfile doesn't accept it
+        }
+    }
+
+    return \%installs;
 }
 
 1;

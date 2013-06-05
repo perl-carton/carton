@@ -214,7 +214,8 @@ sub cmd_install {
     $builder->install($path);
 
     unless ($deployment) {
-        Carton::Lock->build_from_local($path)->write($self->lock_file);
+        my $prereqs = Module::CPANfile->load($cpanfile)->prereqs;
+        Carton::Lock->build_from_local($path, $prereqs)->write($self->lock_file);
     }
 
     $self->print("Complete! Modules were installed into $path\n", SUCCESS);
