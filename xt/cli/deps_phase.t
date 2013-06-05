@@ -8,6 +8,10 @@ use xt::CLI;
     $app->dir->child("cpanfile")->spew(<<EOF);
 on test => sub {
     requires 'Test::NoWarnings';
+    recommends 'Test::Pretty';
+};
+on develop => sub {
+    requires 'Path::Tiny';
 };
 EOF
 
@@ -15,6 +19,8 @@ EOF
 
     $app->run("list");
     like $app->stdout, qr/Test-NoWarnings/;
+    like $app->stdout, qr/Path-Tiny/;
+    unlike $app->stdout, qr/Test-Pretty/;
 }
 
 done_testing;

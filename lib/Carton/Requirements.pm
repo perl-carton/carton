@@ -17,7 +17,7 @@ sub walk_down {
         $cb->($dependency, $level) if $dependency;
 
         my @phase = qw( configure build runtime );
-        push @phase, 'test' unless $dependency;
+        push @phase, qw( test develop ) unless $dependency;
 
         my $reqs = CPAN::Meta::Requirements->new;
         $reqs->add_requirements($prereqs->requirements_for($_, 'requires')) for @phase;

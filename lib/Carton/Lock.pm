@@ -112,7 +112,7 @@ sub find_installs {
 
     my $reqs = CPAN::Meta::Requirements->new;
     $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
-      for qw( configure build runtime test );
+      for qw( configure build runtime test develop );
 
     my @installs;
     my $wanted = sub {
