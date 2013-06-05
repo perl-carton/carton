@@ -3,6 +3,8 @@ use strict;
 use CPAN::Meta;
 use Moo;
 
+# XXX name here means the name of main module
+# XXX dist means the name of dist
 has name     => (is => 'ro');
 has pathname => (is => 'ro');
 has provides => (is => 'ro');
