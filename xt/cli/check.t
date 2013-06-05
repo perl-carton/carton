@@ -36,6 +36,19 @@ EOF
 
     $app->run("list");
     like $app->stdout, qr/Try-Tiny-0\.12/;
+
+    $app->dir->child("cpanfile")->spew(<<EOF);
+requires 'Try::Tiny', '10.00';
+EOF
+
+    $app->run("check");
+    like $app->stdout, qr/not satisfied/;
+
+    $app->run("install");
+    like $app->stderr, qr/failed/;
+
+    $app->run("check");
+    like $app->stdout, qr/not satisfied/;
 }
 
 
