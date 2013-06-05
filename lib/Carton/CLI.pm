@@ -316,19 +316,34 @@ sub cmd_check {
 }
 
 sub cmd_update {
-    # "cleanly" update distributions in extlib
-    die <<EOF;
-carton update is not implemented yet.
+    my($self, @args) = @_;
 
-The command is supposed to update all the dependencies to the latest
-version as if you don't have the current local environment doesn't
-exist.
+    my $cpanfile = Module::CPANfile->load($self->find_cpanfile);
+    my $prereqs = $cpanfile->prereqs;
 
-For now, you can remove the local environment and re-run carton install
-to get the similar functionality.
+    my $reqs = CPAN::Meta::Requirements->new;
+    $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
+      for qw( configure build runtime test develop );
 
-EOF
+    @args = grep { $_ ne 'perl' } $reqs->required_modules unless @args;
 
+    my $lock = $self->find_lock
+        or $self->error("Can't find carton.lock: Run `carton install` to build the lock file.\n");
+
+    my @modules;
+    for my $module (@args) {
+        my $dist = $lock->find_or_core($module)
+            or $self->error("Could not find module $module.\n");
+        next if $dist->is_core;
+        push @modules, "$module~" . $reqs->requirements_for_module($module);
+    }
+
+    my $builder = Carton::Builder->new(
+        mirror => $self->mirror,
+    );
+    $builder->update($self->install_path, @modules);
+
+    Carton::Lock->build_from_local($self->install_path, $prereqs)->write($self->lock_file);
 }
 
 sub cmd_exec {

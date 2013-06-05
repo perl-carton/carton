@@ -47,7 +47,6 @@ sub install {
     $self->run_cpanm(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
-        "--skip-satisfied",
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
         ( $self->custom_mirror ? "--mirror-only" : () ),
@@ -55,6 +54,18 @@ sub install {
         "--with-develop",
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
+}
+
+sub update {
+    my($self, $path, @modules) = @_;
+
+    $self->run_cpanm(
+        "-L", $path,
+        (map { ("--mirror", $_->url) } $self->effective_mirrors),
+        ( $self->custom_mirror ? "--mirror-only" : () ),
+        "--save-dists", "$path/cache",
+        @modules
+    ) or die "Updating modules failed\n";
 }
 
 sub run_cpanm {
