@@ -17,8 +17,6 @@ use Path::Tiny;
 use Try::Tiny;
 use Moo;
 
-use Module::CPANfile;
-
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $UseSystem = 0; # 1 for unit testing
@@ -257,9 +255,7 @@ sub cmd_tree {
     my $lock = $self->find_lock
       or $self->error("Can't find carton.lock: Run `carton install` to rebuild the lock file.\n");
 
-    my $cpanfile = Module::CPANfile->load($self->find_cpanfile);
-    my $requirements = Carton::Requirements->new(lock => $lock, cpanfile => $cpanfile);
-
+    my $requirements = Carton::Requirements->new(lock => $lock, cpanfile => $self->find_cpanfile);
     $requirements->walk_down(sub { $self->_dump_requirement(@_) });
 }
 

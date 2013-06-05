@@ -3,9 +3,10 @@ use strict;
 use Carton::Dependency;
 use Moo;
 use CPAN::Meta::Requirements;
+use Module::CPANfile;
 
 has lock => (is => 'ro');
-has cpanfile => (is => 'ro');
+has cpanfile => (is => 'ro', coerce => sub { Module::CPANfile->load($_[0]) });
 
 sub walk_down {
     my($self, $cb) = @_;
