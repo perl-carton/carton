@@ -1,7 +1,6 @@
 use strict;
 use Test::More;
 use xt::CLI;
-use Cwd;
 
 {
     my $app = cli();

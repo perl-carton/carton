@@ -2,7 +2,6 @@ package Carton::CLI;
 use strict;
 use warnings;
 
-use Cwd;
 use Config;
 use Getopt::Long;
 
