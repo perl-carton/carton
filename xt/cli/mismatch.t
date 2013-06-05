@@ -14,6 +14,9 @@ EOF
     $app->run("list");
     like $app->stdout, qr/Data-Dumper-2\.139/;
     like $app->stdout, qr/Test-Differences-0\.61/;
+
+    $app->run("check");
+    like $app->stdout, qr/are satisfied/;
 }
 
 done_testing;
