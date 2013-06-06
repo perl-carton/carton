@@ -24,7 +24,7 @@ requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
 
 on develop => sub {
-    requires 'Test::More', 0.88;
+    requires 'Test::More', 0.90;
     requires 'Test::Requires';
     requires 'Capture::Tiny';
     requires 'File::pushd';
