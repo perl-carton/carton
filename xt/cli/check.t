@@ -61,5 +61,24 @@ EOF
     like $app->stdout, qr/not satisfied/;
 };
 
+subtest 'detect unused modules' => sub {
+    my $app = cli;
+    $app->write_cpanfile("requires 'Try::Tiny';");
+
+    $app->run("install");
+    $app->write_cpanfile("");
+
+
+ TODO: {
+        local $TODO = "Can't detect superflous modules";
+        $app->run("install");
+        $app->run("list");
+        is $app->stdout, "";
+
+        $app->run("check");
+        like $app->stdout, qr/unused/;
+    }
+};
+
 done_testing;
 
