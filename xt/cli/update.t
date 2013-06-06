@@ -5,7 +5,7 @@ use xt::CLI;
 subtest 'carton update NonExistentModule' => sub {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '== 0.09';
 EOF
 
@@ -17,7 +17,7 @@ EOF
 subtest 'carton update upgrades a dist' => sub {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '== 0.09';
 EOF
 
@@ -25,7 +25,7 @@ EOF
     $app->run("list");
     like $app->stdout, qr/Try-Tiny-0\.09/;
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '>= 0.09, <= 0.12';
 EOF
 
@@ -49,14 +49,14 @@ EOF
 subtest 'downgrade a distribution' => sub {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '0.12';
 EOF
     $app->run("install");
     $app->run("list");
     like $app->stdout, qr/Try-Tiny-0\.12/;
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '== 0.09';
 EOF
     $app->run("update");
@@ -65,7 +65,7 @@ EOF
 
  TODO: {
         local $TODO = 'collecting wrong install info';
-        $app->dir->child("cpanfile")->spew(<<EOF);
+        $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '0.09';
 EOF
         $app->run("install");

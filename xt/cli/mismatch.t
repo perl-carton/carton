@@ -5,7 +5,7 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->dir->child('cpanfile')->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Data::Dumper' => '== 2.139';
 requires 'Test::Differences' => '== 0.61';
 EOF

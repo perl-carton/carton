@@ -11,7 +11,7 @@ use xt::CLI;
 
 {
     my $app = cli();
-    $app->dir->child("cpanfile")->spew('');
+    $app->write_cpanfile('');
     $app->run("install");
 
  TODO: {
@@ -20,7 +20,7 @@ use xt::CLI;
         like $app->stderr, qr/Can't locate Try\/Tiny.pm/;
     }
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '== 0.11';
 EOF
 
@@ -35,7 +35,7 @@ EOF
     $app->run("exec", "perl", "-MTry::Tiny", "-e", 'print $Try::Tiny::VERSION, "\n"');
     like $app->stdout, qr/0\.11/;
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny';
 requires 'Mojolicious', '== 4.01';
 EOF

@@ -5,7 +5,7 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '== 0.12';
 EOF
 

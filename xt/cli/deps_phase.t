@@ -5,7 +5,7 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 on test => sub {
     requires 'Test::NoWarnings';
     recommends 'Test::Pretty';

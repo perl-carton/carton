@@ -5,7 +5,7 @@ use xt::CLI;
 {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'perl', '5.8.5';
 requires 'Hash::MultiValue';
 EOF

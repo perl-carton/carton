@@ -7,7 +7,7 @@ my $cwd = Path::Tiny->cwd;
 {
     my $app = cli();
 
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'Hash::MultiValue';
 EOF
 
@@ -21,7 +21,7 @@ EOF
 {
     # fallback to CPAN
     my $app = cli();
-    $app->dir->child("cpanfile")->spew(<<EOF);
+    $app->write_cpanfile(<<EOF);
 requires 'PSGI';
 EOF
 

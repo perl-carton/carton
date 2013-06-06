@@ -26,6 +26,11 @@ has stdout => (is => 'rw');
 has stderr => (is => 'rw');
 has exit_code => (is => 'rw');
 
+sub write_cpanfile {
+    my($self, @args) = @_;
+    $self->dir->child('cpanfile')->spew(@args);
+}
+
 sub run {
     my($self, @args) = @_;
 
