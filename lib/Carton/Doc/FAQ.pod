@@ -13,7 +13,7 @@ webapps, with dozens of CPAN module dependencies. You install these
 modules on your development machine, and describe these dependencies
 in your I<cpanfile>.
 
-Now you get a produciton environment, either on PaaS provider or some
+Now you get a production environment, either on PaaS provider or some
 VPS, you install the dependencies using C<cpanm --installdeps .> and
 it will pull all the latest releases from CPAN as of today and
 everything just works.
@@ -47,7 +47,7 @@ L<CPAN> or L<CPANPLUS>, and have accomplished that by working around
 the CPAN mirror structure.
 
 carton I<internally> does the same thing, but its user interface is
-centerd around the installer, by implementing a wrapper for
+centered around the installer, by implementing a wrapper for
 L<cpanm|App::cpanminus>, so you can use the same commands in the
 development mode and deployment mode.
 
