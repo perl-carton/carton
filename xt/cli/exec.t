@@ -2,14 +2,23 @@ use strict;
 use Test::More;
 use xt::CLI;
 
-{
+subtest 'carton exec without a command', sub {
+    my $app = cli();
+    $app->write_cpanfile('');
+    $app->run("install");
+    $app->run("exec");
+    like $app->stderr, qr/carton exec needs a command/;
+    is $app->exit_code, 255;
+};
+
+subtest 'exec without a lock', sub {
     my $app = cli();
     $app->run("exec", "perl", "-e", 1);
     like $app->stderr, qr/carton\.lock/;
     is $app->exit_code, 255;
-}
+};
 
-{
+subtest 'carton exec', sub {
     my $app = cli();
     $app->write_cpanfile('');
     $app->run("install");
@@ -44,7 +53,7 @@ EOF
     $app->run("exec", "--", "mojo", "version");
 
     like $app->stdout, qr/Mojolicious \(4\.01/;
-}
+};
 
 done_testing;
 

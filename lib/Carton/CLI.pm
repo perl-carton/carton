@@ -357,6 +357,10 @@ sub cmd_exec {
 
     $self->parse_options_pass_through(\@args, 'I=s@', sub { die "exec -Ilib is deprecated.\n" });
 
+    unless (@args) {
+        $self->error("carton exec needs a command to run.");
+    }
+
     # PERL5LIB takes care of arch
     my $path = $self->install_path;
     local $ENV{PERL5LIB} = "$path/lib/perl5";
