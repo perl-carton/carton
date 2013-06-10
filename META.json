@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.131490",
+   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.131560",
    "license" : [
       "perl_5"
    ],
@@ -39,7 +39,7 @@
          "requires" : {
             "Capture::Tiny" : "0",
             "File::pushd" : "0",
-            "Test::More" : "0.88",
+            "Test::More" : "0.9",
             "Test::Pod" : "1.41",
             "Test::Requires" : "0"
          }
@@ -77,10 +77,11 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.57",
+   "version" : "v0.9.58",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
+      "David Steinbrunner <dsteinbrunner@pobox.com>",
       "Masahiro Chiba <chiba@everqueue.com>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",

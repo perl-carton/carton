@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.58  2013-06-10 03:17:23 PDT
+        - Fix tests
+        - carton exec without an arg should raise an error
+        - typo fixes
+
 v0.9.57  2013-06-05 19:21:17 JST
         - Changed the output of carton tree command to include module and dist versions
         - Bunch of refactorings around requirements
