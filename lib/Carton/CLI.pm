@@ -355,7 +355,16 @@ sub cmd_exec {
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
 
-    $self->parse_options_pass_through(\@args, 'I=s@', sub { die "exec -Ilib is deprecated.\n" });
+    while (@args) {
+        if ($args[0] eq '-I') {
+            warn "exec -Ilib is deprecated. Just run the following command with -I.\n";
+            splice(@args, 0, 2);
+        } else {
+            last;
+        }
+    }
+
+    $self->parse_options_pass_through(\@args); # to handle --
 
     unless (@args) {
         $self->error("carton exec needs a command to run.\n");

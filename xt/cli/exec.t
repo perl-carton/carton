@@ -55,5 +55,22 @@ EOF
     like $app->stdout, qr/Mojolicious \(4\.01/;
 };
 
+subtest 'carton exec perl -Ilib', sub {
+    my $app = cli();
+    $app->write_cpanfile('');
+    $app->run("install");
+
+    $app->dir->child("lib")->mkpath;
+    $app->dir->child("lib/FooBarBaz.pm")->spew("package FooBarBaz; 1");
+
+    $app->run("exec", "perl", "-Ilib", "-e", 'use FooBarBaz; print "foo"');
+    like $app->stdout, qr/foo/;
+    unlike $app->stderr, qr/exec -Ilib is deprecated/;
+
+    $app->run("exec", "-Ilib", "perl", "-e", 'print "foo"');
+    like $app->stdout, qr/foo/;
+    like $app->stderr, qr/exec -Ilib is deprecated/;
+};
+
 done_testing;
 
