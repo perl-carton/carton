@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.59  2013-06-17 17:13:21 PDT
+        - carton exec -Ilib gives a warning, while carton exec perl -Ilib won't #97
+
 v0.9.58  2013-06-10 03:17:23 PDT
         - Fix tests
         - carton exec without an arg should raise an error
