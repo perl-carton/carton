@@ -309,7 +309,12 @@ sub cmd_exec {
 
     my $system; # for unit testing
     my @include;
-    $self->parse_options(\@args, 'I=s@', \@include, "system", \$system);
+    $self->parse_options(
+        \@args,
+        "p|path=s"  => sub { $self->carton->{path} = $_[1] },
+        'I=s@'      =>\@include,
+        "system"    => \$system,
+    );
 
     my $path = $self->carton->{path};
     my $lib  = join ",", @include, "$path/lib/perl5", ".";
