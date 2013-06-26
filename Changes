@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.60  2013-06-26 12:22:21 PDT
+        - Bump MakeMaker and Module::Build dependencies to support test requires
+
 v0.9.59  2013-06-17 17:13:21 PDT
         - carton exec -Ilib gives a warning, while carton exec perl -Ilib won't #97
 

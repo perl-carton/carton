@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
    "license" : [
       "perl_5"
    ],
@@ -77,7 +77,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.59",
+   "version" : "v0.9.60",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
