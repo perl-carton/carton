@@ -46,13 +46,13 @@ EOF
 
     $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny';
-requires 'Mojolicious', '== 4.01';
+requires 'App::Ack', '== 2.02';
 EOF
 
     $app->run("install");
-    $app->run("exec", "--", "mojo", "version");
+    $app->run("exec", "--", "ack", "--version");
 
-    like $app->stdout, qr/Mojolicious \(4\.01/;
+    like $app->stdout, qr/ack 2\.02/;
 };
 
 subtest 'carton exec perl -Ilib', sub {
