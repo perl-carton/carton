@@ -197,6 +197,8 @@ sub cmd_install {
         without => \@without,
     );
 
+    # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
+
     if ($deployment) {
         $self->print("Installing modules using $cpanfile (deployment mode)\n");
         $builder->cascade(0);
