@@ -27,7 +27,7 @@ EOF
     like $app->stdout, qr/Try-Tiny-0\.11/;
 
     $app->write_cpanfile(<<EOF);
-requires 'Try::Tiny', '0.12';
+requires 'Try::Tiny', '0.16';
 EOF
 
     $app->run("check");
@@ -45,7 +45,7 @@ EOF
     like $app->stdout, qr/are satisfied/;
 
     $app->run("list");
-    like $app->stdout, qr/Try-Tiny-0\.12/;
+    like $app->stdout, qr/Try-Tiny-0\.16/;
 
     $app->write_cpanfile(<<EOF);
 requires 'Try::Tiny', '10.00';
