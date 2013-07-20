@@ -40,25 +40,9 @@ commit the changes as you update your dependencies.
 =head2 DEPLOYMENT MODE
 
 If you specify the C<--deployment> command line option or the
-I<carton.lock> exists and I<cpanfile> does not exist, carton will
-fetch all remote modules and use the dependencies specified in the
-I<carton.lock> instead of resolving dependencies.
-
-=head1 CONSERVATIVE UPDATE
-
-B<WARNINGS: following commands are not implemented>
-
-If you want to update to the latest version of CPAN, you can either
-use C<carton update> command, or specify the required version either
-in your I<cpanfile>.
-
- > carton update URI
-
- > cat cpanfile
- requires 'URI', 1.51;
-
-Any of those will upgrade URI to the latest one from CPAN, and the
-version specified in the I<carton.lock> will be bumped.
+I<carton.lock> exists, carton will fetch all remote modules and use
+the dependencies specified in the I<carton.lock> instead of resolving
+dependencies.
 
 =head1 OPTIONS
 
