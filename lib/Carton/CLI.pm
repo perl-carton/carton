@@ -173,10 +173,12 @@ sub cmd_install {
     my($self, @args) = @_;
 
     my $path = $self->install_path;
+    my @without;
 
     $self->parse_options(
         \@args,
         "p|path=s"    => \$path,
+        "without=s"   => sub { @without = split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
     );
@@ -191,7 +193,8 @@ sub cmd_install {
 
     my $builder = Carton::Builder->new(
         cascade => 1,
-        mirror => $self->mirror,
+        mirror  => $self->mirror,
+        without => \@without,
     );
 
     if ($deployment) {

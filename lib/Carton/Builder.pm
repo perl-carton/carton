@@ -5,6 +5,7 @@ use Moo;
 has mirror  => (is => 'rw');
 has index   => (is => 'rw');
 has cascade => (is => 'rw', default => sub { 1 });
+has without => (is => 'rw', default => sub { [] });
 
 sub effective_mirrors {
     my $self = shift;
@@ -51,9 +52,20 @@ sub install {
         ( $self->cascade ? "--cascade-search" : () ),
         ( $self->custom_mirror ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
-        "--with-develop",
+        $self->groups,
         "--installdeps", ".",
     ) or die "Installing modules failed\n";
+}
+
+sub groups {
+    my $self = shift;
+
+    my @options;
+    unless (grep $_ eq 'develop', @{$self->without}) {
+        push @options, '--with-develop';
+    }
+
+    return @options;
 }
 
 sub update {
