@@ -4,7 +4,7 @@ Carton::Doc::Install - Install the dependencies
 
 =head1 SYNOPSIS
 
-  carton install [--deployment] [--path=PATH]
+  carton install [--deployment] [--path=PATH] [--without develop]
 
 =head1 DESCRIPTION
 
@@ -55,5 +55,13 @@ Force the deployment mode and carton will ignore I<cpanfile> contents.
 =item --path
 
 Specify the path to install modules to. Defaults to I<local> in the current directory.
+
+=item --without
+
+By default, C<carton install> will install all the phases for
+dependencies, including C<develop>. You can specify phases or features
+to exclude, in the comma separated list.
+
+  carton install --without develop
 
 =back
