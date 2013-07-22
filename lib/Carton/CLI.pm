@@ -178,7 +178,7 @@ sub cmd_install {
     $self->parse_options(
         \@args,
         "p|path=s"    => \$path,
-        "without=s"   => sub { @without = split /,/, $_[1] },
+        "without=s"   => sub { push @without,  split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
     );

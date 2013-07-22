@@ -62,6 +62,9 @@ By default, C<carton install> will install all the phases for
 dependencies, including C<develop>. You can specify phases or features
 to exclude, in the comma separated list.
 
-  carton install --without develop
+  carton install --deployment --without develop
+
+B<NOTE>: C<--without> for the initial installation (without
+carton.lock) is not supported at this moment.
 
 =back
