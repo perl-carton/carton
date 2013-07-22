@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.61  2013-07-22 10:24:35 PDT
+        - Implemented experimental --without option for carton install
+
 v0.9.60  2013-06-26 12:22:21 PDT
         - Bump MakeMaker and Module::Build dependencies to support test requires
 
