@@ -63,11 +63,8 @@ sub groups {
     my @options = ('--with-all-features', '--with-develop');
 
     for my $group (@{$self->without}) {
-        if ($group eq 'develop') {
-            push @options, '--without-develop';
-        } else {
-            push @options, "--without-feature=$group";
-        }
+        push @options, '--without-develop' if $group eq 'develop';
+        push @options, "--without-feature=$group";
     }
 
     return @options;
