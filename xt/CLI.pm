@@ -31,6 +31,12 @@ sub write_cpanfile {
     $self->dir->child('cpanfile')->spew(@args);
 }
 
+sub run_in_dir {
+    my($self, $dir, @args) = @_;
+    local $self->{dir} = $self->dir->child($dir);
+    $self->run(@args);
+}
+
 sub run {
     my($self, @args) = @_;
 

@@ -164,6 +164,7 @@ sub cmd_bundle {
 
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
+        cpanfile => $self->cpanfile,
     );
     $builder->bundle($self->install_path, $self->vendor_cache, $lock);
 
@@ -196,6 +197,7 @@ sub cmd_install {
         cascade => 1,
         mirror  => $self->mirror,
         without => \@without,
+        cpanfile => $self->cpanfile,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
@@ -341,6 +343,7 @@ sub cmd_update {
 
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
+        cpanfile => $self->cpanfile,
     );
     $builder->update($self->install_path, @modules);
 

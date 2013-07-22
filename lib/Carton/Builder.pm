@@ -6,6 +6,7 @@ has mirror  => (is => 'rw');
 has index   => (is => 'rw');
 has cascade => (is => 'rw', default => sub { 1 });
 has without => (is => 'rw', default => sub { [] });
+has cpanfile => (is => 'rw');
 
 sub effective_mirrors {
     my $self = shift;
@@ -53,7 +54,7 @@ sub install {
         ( $self->custom_mirror ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
         $self->groups,
-        "--installdeps", ".",
+        "--installdeps", $self->cpanfile->dirname,
     ) or die "Installing modules failed\n";
 }
 
