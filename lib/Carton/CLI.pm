@@ -9,12 +9,14 @@ use Path::Tiny;
 use Try::Tiny;
 use Moo;
 use Module::CoreList;
+use Scalar::Util qw(blessed);
 
 use Carton;
 use Carton::Builder;
 use Carton::Mirror;
 use Carton::Lock;
 use Carton::Util;
+use Carton::Environment;
 use Carton::Error;
 use Carton::Requirements;
 
@@ -26,14 +28,16 @@ has verbose => (is => 'rw');
 has carton  => (is => 'lazy');
 has mirror  => (is => 'rw', builder => 1,
                 coerce => sub { Carton::Mirror->new($_[0]) });
+has environment => (is => 'lazy',
+                    handles => [ qw( cpanfile lockfile install_path vendor_cache )]);
 
 sub _build_mirror {
     my $self = shift;
     $ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror;
 }
 
-sub install_path {
-    Path::Tiny->new($ENV{PERL_CARTON_PATH} || 'local')->absolute;
+sub _build_environment {
+    Carton::Environment->build;
 }
 
 sub work_file {
@@ -41,10 +45,6 @@ sub work_file {
     my $wf = $self->install_path->child($file);
     $wf->parent->mkpath;
     $wf;
-}
-
-sub vendor_cache {
-    Path::Tiny->new("vendor/cache")->absolute;
 }
 
 sub run {
@@ -64,16 +64,21 @@ sub run {
     push @commands, @args;
 
     my $cmd = shift @commands || 'install';
-    my $call = $self->can("cmd_$cmd");
 
     my $code = try {
-        $self->error("Could not find command '$cmd'\n")
-            unless $call;
+        my $call = $self->can("cmd_$cmd")
+          or Carton::Error::CommandNotFound->throw(error => "Could not find command '$cmd'");
         $self->$call(@commands);
         return 0;
     } catch {
-        ref =~ /Carton::Error::CommandExit/ and return 255;
-        die $_;
+        die $_ unless blessed $_ && $_->can('rethrow');
+
+        if ($_->isa('Carton::Error::CommandExit')) {
+            return $_->code || 255;
+        } elsif ($_->isa('Carton::Error')) {
+            warn $_->error;
+            return 255;
+        }
     };
 
     return $code;
@@ -220,7 +225,7 @@ sub cmd_install {
 
     unless ($deployment) {
         my $prereqs = Module::CPANfile->load($cpanfile)->prereqs;
-        Carton::Lock->build_from_local($path, $prereqs)->write($self->lock_file);
+        Carton::Lock->build_from_local($path, $prereqs)->write($self->lockfile);
     }
 
     $self->print("Complete! Modules were installed into $path\n", SUCCESS);
@@ -348,7 +353,7 @@ sub cmd_update {
     );
     $builder->update($self->install_path, @modules);
 
-    Carton::Lock->build_from_local($self->install_path, $prereqs)->write($self->lock_file);
+    Carton::Lock->build_from_local($self->install_path, $prereqs)->write($self->lockfile);
 }
 
 sub cmd_exec {
@@ -385,21 +390,16 @@ sub cmd_exec {
 
 sub find_cpanfile {
     my $self = shift;
-
-    if (-e 'cpanfile') {
-        return 'cpanfile';
-    } else {
-        $self->error("Can't locate cpanfile\n");
-    }
+    $self->cpanfile;
 }
 
 sub find_lock {
     my $self = shift;
 
-    if (-e $self->lock_file) {
+    if (-e $self->lockfile) {
         my $lock;
         try {
-            $lock = Carton::Lock->from_file($self->lock_file);
+            $lock = Carton::Lock->from_file($self->lockfile);
         } catch {
             $self->error("Can't parse carton.lock: $_\n");
         };
@@ -408,11 +408,6 @@ sub find_lock {
     }
 
     return;
-}
-
-sub lock_file {
-    my $self = shift;
-    return 'carton.lock';
 }
 
 sub index_file {

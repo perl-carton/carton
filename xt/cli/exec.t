@@ -11,8 +11,16 @@ subtest 'carton exec without a command', sub {
     is $app->exit_code, 255;
 };
 
+subtest 'exec without cpanfile', sub {
+    my $app = cli();
+    $app->run("exec", "perl", "-e", 1);
+    like $app->stderr, qr/Can't locate cpanfile/;
+    is $app->exit_code, 255;
+};
+
 subtest 'exec without a lock', sub {
     my $app = cli();
+    $app->write_cpanfile();
     $app->run("exec", "perl", "-e", 1);
     like $app->stderr, qr/carton\.lock/;
     is $app->exit_code, 255;
