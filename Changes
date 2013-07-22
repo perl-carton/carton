@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.62  2013-07-22 14:33:11 PDT
+        - Now all carton commands can be run from a subdirectory #69
+        - Refactored the way cpanfile/carton.lock files are detected
+
 v0.9.61  2013-07-22 10:24:35 PDT
         - Implemented experimental --without option for carton install
 
