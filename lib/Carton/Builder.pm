@@ -60,9 +60,14 @@ sub install {
 sub groups {
     my $self = shift;
 
-    my @options;
-    unless (grep $_ eq 'develop', @{$self->without}) {
-        push @options, '--with-develop';
+    my @options = ('--with-all-features', '--with-develop');
+
+    for my $group (@{$self->without}) {
+        if ($group eq 'develop') {
+            push @options, '--without-develop';
+        } else {
+            push @options, "--without-feature=$group";
+        }
     }
 
     return @options;
