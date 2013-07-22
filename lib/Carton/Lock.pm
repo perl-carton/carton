@@ -3,12 +3,14 @@ use strict;
 use Config;
 use Carton::Dist;
 use Carton::Dist::Core;
+use Carton::Error;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
 use CPAN::Meta;
 use CPAN::Meta::Requirements;
 use File::Find ();
+use Try::Tiny;
 use Module::CoreList;
 use Moo;
 
@@ -20,7 +22,9 @@ use constant CARTON_LOCK_VERSION => '0.9';
 sub from_file {
     my($class, $file) = @_;
 
-    my $data = Carton::Util::load_json($file);
+    my $data = try { Carton::Util::load_json($file) }
+        catch { Carton::Error::LockfileParseError->throw(error => "Can't parse carton.lock", path => $file) };
+
     return $class->new($data);
 }
 

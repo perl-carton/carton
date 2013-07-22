@@ -2,6 +2,7 @@ package Carton::Environment;
 use strict;
 use Moo;
 
+use Carton::Lockfile;
 use Carton::Error;
 use Path::Tiny;
 
@@ -12,7 +13,7 @@ has vendor_cache  => (is => 'lazy');
 
 sub _build_lockfile {
     my $self = shift;
-    Path::Tiny->new($self->cpanfile->dirname . "/carton.lock");
+    Carton::Lockfile->new($self->cpanfile->dirname . "/carton.lock");
 }
 
 sub _build_install_path {
