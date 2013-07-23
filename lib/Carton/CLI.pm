@@ -28,7 +28,7 @@ has verbose => (is => 'rw');
 has carton  => (is => 'lazy');
 has mirror  => (is => 'rw', builder => 1,
                 coerce => sub { Carton::Mirror->new($_[0]) });
-has environment => (is => 'lazy',
+has environment => (is => 'rw', builder => 1, lazy => 1,
                     handles => [ qw( cpanfile lockfile install_path vendor_cache )]);
 
 sub _build_mirror {
@@ -174,16 +174,19 @@ sub cmd_bundle {
 sub cmd_install {
     my($self, @args) = @_;
 
-    my $path = $self->install_path;
-    my @without;
+    my($install_path, $cpanfile_path, @without);
 
     $self->parse_options(
         \@args,
-        "p|path=s"    => \$path,
-        "without=s"   => sub { push @without,  split /,/, $_[1] },
+        "p|path=s"    => \$install_path,
+        "cpanfile=s"  => \$cpanfile_path,
+        "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
     );
+
+    my $environment = Carton::Environment->build($cpanfile_path, $install_path);
+    $self->environment($environment);
 
     my $lock = $self->lockfile->load_if_exists;
 
@@ -219,14 +222,14 @@ sub cmd_install {
         $builder->mirror(Carton::Mirror->new($self->vendor_cache));
     }
 
-    $builder->install($path);
+    $builder->install($self->install_path);
 
     unless ($deployment) {
         my $prereqs = Module::CPANfile->load($cpanfile)->prereqs;
-        Carton::Lock->build_from_local($path, $prereqs)->write($self->lockfile);
+        Carton::Lock->build_from_local($self->install_path, $prereqs)->write($self->lockfile);
     }
 
-    $self->print("Complete! Modules were installed into $path\n", SUCCESS);
+    $self->print("Complete! Modules were installed into @{[$self->install_path]}\n", SUCCESS);
 }
 
 sub cmd_show {

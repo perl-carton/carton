@@ -10,13 +10,13 @@ sub new {
 
 sub load_if_exists {
     my $self = shift;
-    Carton::Lock->from_file($self) if $self->exists;
+    Carton::Lock->from_file($self) if $self->is_file;
 }
 
 sub load {
     my $self = shift;
 
-    if ($self->exists) {
+    if ($self->is_file) {
         Carton::Lock->from_file($self);
     } else {
         Carton::Error::LockfileNotFound->throw(

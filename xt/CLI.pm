@@ -26,9 +26,14 @@ has stdout => (is => 'rw');
 has stderr => (is => 'rw');
 has exit_code => (is => 'rw');
 
+sub write_file {
+    my($self, $file, @args) = @_;
+    $self->dir->child($file)->spew(@args);
+}
+
 sub write_cpanfile {
     my($self, @args) = @_;
-    $self->dir->child('cpanfile')->spew(@args);
+    $self->write_file(cpanfile => @args);
 }
 
 sub run_in_dir {

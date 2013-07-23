@@ -54,6 +54,7 @@ sub install {
         ( $self->custom_mirror ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
         $self->groups,
+        "--cpanfile", $self->cpanfile,
         "--installdeps", $self->cpanfile->dirname,
     ) or die "Installing modules failed\n";
 }
