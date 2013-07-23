@@ -1,5 +1,6 @@
 package Carton::Builder;
 use strict;
+use File::ShareDir 'dist_file';
 use Moo;
 
 has mirror  => (is => 'rw');
@@ -87,7 +88,8 @@ sub update {
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    !system "cpanm", "--quiet", "--notest", @args;
+    my $bin = dist_file('App-cpanminus', 'cpanm');
+    !system $^X, $bin, "--quiet", "--notest", @args;
 }
 
 1;

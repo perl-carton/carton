@@ -15,9 +15,10 @@ requires 'Exception::Class', 1.32;
 requires 'Getopt::Long', 2.39;
 requires 'Moo', 1.002;
 requires 'Path::Tiny', 0.022;
+requires 'File::ShareDir', 1.03;
 
 # MYMETA support
-requires 'App::cpanminus', 1.6927;
+requires 'App::cpanminus', 1.6928;
 requires 'ExtUtils::MakeMaker', 6.64;
 requires 'Module::Build', 0.4004;
 requires 'CPAN::Meta', 2.120921;
