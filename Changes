@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.63  2013-07-23 02:26:04 PDT
+        - Bump cpanminus requirement
+        - Support --cpanfile for carton install
+        - Support PERL_CARTON_CPANFILE (for commands other than install)
+
 v0.9.62  2013-07-22 14:33:11 PDT
         - Now all carton commands can be run from a subdirectory #69
         - Refactored the way cpanfile/carton.lock files are detected
