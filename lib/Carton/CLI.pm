@@ -28,23 +28,10 @@ has verbose => (is => 'rw');
 has carton  => (is => 'lazy');
 has mirror  => (is => 'rw', builder => 1,
                 coerce => sub { Carton::Mirror->new($_[0]) });
-has environment => (is => 'rw', builder => 1, lazy => 1,
-                    handles => [ qw( cpanfile lockfile install_path vendor_cache )]);
 
 sub _build_mirror {
     my $self = shift;
     $ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror;
-}
-
-sub _build_environment {
-    Carton::Environment->build;
-}
-
-sub work_file {
-    my($self, $file) = @_;
-    my $wf = $self->install_path->child($file);
-    $wf->parent->mkpath;
-    $wf;
 }
 
 sub run {
@@ -157,18 +144,18 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    $self->lockfile->load;
-    my $cpanfile = $self->cpanfile;
+    my $env = Carton::Environment->build;
+    $env->lockfile->load;
 
-    $self->print("Bundling modules using $cpanfile\n");
+    $self->print("Bundling modules using @{[$env->cpanfile]}\n");
 
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
-        cpanfile => $self->cpanfile,
+        cpanfile => $env->cpanfile,
     );
-    $builder->bundle($self->install_path, $self->vendor_cache, $self->lockfile);
+    $builder->bundle($env->install_path, $env->vendor_cache, $env->lockfile);
 
-    $self->printf("Complete! Modules were bundled into %s\n", $self->vendor_cache, SUCCESS);
+    $self->printf("Complete! Modules were bundled into %s\n", $env->vendor_cache, SUCCESS);
 }
 
 sub cmd_install {
@@ -185,61 +172,61 @@ sub cmd_install {
         "cached!"     => \my $cached,
     );
 
-    my $environment = Carton::Environment->build($cpanfile_path, $install_path);
-    $self->environment($environment);
+    my $env = Carton::Environment->build($cpanfile_path, $install_path);
+    $env->lockfile->load_if_exists;
 
-    $self->lockfile->load_if_exists;
-
-    if ($deployment && !$self->lockfile->loaded) {
+    if ($deployment && !$env->lockfile->loaded) {
         $self->error("--deployment requires carton.lock: Run `carton install` and make sure carton.lock is checked into your version control.\n");
     }
-
-    my $cpanfile = $self->cpanfile;
 
     my $builder = Carton::Builder->new(
         cascade => 1,
         mirror  => $self->mirror,
         without => \@without,
-        cpanfile => $self->cpanfile,
+        cpanfile => $env->cpanfile,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
 
     if ($deployment) {
-        $self->print("Installing modules using $cpanfile (deployment mode)\n");
+        $self->print("Installing modules using @{[$env->cpanfile]} (deployment mode)\n");
         $builder->cascade(0);
     } else {
-        $self->print("Installing modules using $cpanfile\n");
+        $self->print("Installing modules using @{[$env->cpanfile]}\n");
     }
 
     # TODO merge CPANfile git to mirror even if lock doesn't exist
-    if ($self->lockfile->loaded) {
-        $self->lockfile->write_index($self->index_file);
-        $builder->index($self->index_file);
+    if ($env->lockfile->loaded) {
+        my $index_file = $env->install_path->child("cache/modules/02packages.details.txt");
+           $index_file->parent->mkpath;
+
+        $env->lockfile->write_index($index_file);
+        $builder->index($index_file);
     }
 
     if ($cached) {
-        $builder->mirror(Carton::Mirror->new($self->vendor_cache));
+        $builder->mirror(Carton::Mirror->new($env->vendor_cache));
     }
 
-    $builder->install($self->install_path);
+    $builder->install($env->install_path);
 
     unless ($deployment) {
-        my $prereqs = Module::CPANfile->load($cpanfile)->prereqs;
-        $self->lockfile->find_installs($self->install_path, $prereqs);
-        $self->lockfile->save;
+        my $prereqs = Module::CPANfile->load($env->cpanfile)->prereqs;
+        $env->lockfile->find_installs($env->install_path, $prereqs);
+        $env->lockfile->save;
     }
 
-    $self->print("Complete! Modules were installed into @{[$self->install_path]}\n", SUCCESS);
+    $self->print("Complete! Modules were installed into @{[$env->install_path]}\n", SUCCESS);
 }
 
 sub cmd_show {
     my($self, @args) = @_;
 
-    $self->lockfile->load;
+    my $env = Carton::Environment->build;
+    $env->lockfile->load;
 
     for my $module (@args) {
-        my $dist = $self->lockfile->find($module)
+        my $dist = $env->lockfile->find($module)
             or $self->error("Couldn't locate $module in carton.lock\n");
         $self->print( $dist->dist . "\n" );
     }
@@ -255,9 +242,10 @@ sub cmd_list {
         "distfile" => sub { $format = 'distfile' },
     );
 
-    $self->lockfile->load;
+    my $env = Carton::Environment->build;
+    $env->lockfile->load;
 
-    for my $dist ($self->lockfile->distributions) {
+    for my $dist ($env->lockfile->distributions) {
         $self->print($dist->$format . "\n");
     }
 }
@@ -265,10 +253,11 @@ sub cmd_list {
 sub cmd_tree {
     my($self, @args) = @_;
 
-    $self->lockfile->load;
+    my $env = Carton::Environment->build;
+    $env->lockfile->load;
 
-    my $cpanfile = Module::CPANfile->load($self->cpanfile);
-    my $requirements = Carton::Requirements->new(lock => $self->lockfile, prereqs => $cpanfile->prereqs);
+    my $cpanfile = Module::CPANfile->load($env->cpanfile);
+    my $requirements = Carton::Requirements->new(lock => $env->lockfile, prereqs => $cpanfile->prereqs);
 
     my %seen;
     my $dumper = sub {
@@ -289,21 +278,19 @@ sub cmd_check {
         "cpanfile=s"  => \$cpanfile_path,
     );
 
-    my $environment = Carton::Environment->build($cpanfile_path);
-    $self->environment($environment);
+    my $env = Carton::Environment->build($cpanfile_path);
+    $env->lockfile->load;
 
-    $self->lockfile->load;
-
-    my $prereqs = Module::CPANfile->load($self->cpanfile)->prereqs;
+    my $prereqs = Module::CPANfile->load($env->cpanfile)->prereqs;
 
     # TODO remove lockfile
     # TODO pass git spec to Requirements?
-    my $requirements = Carton::Requirements->new(lock => $self->lockfile, prereqs => $prereqs);
+    my $requirements = Carton::Requirements->new(lock => $env->lockfile, prereqs => $prereqs);
     $requirements->walk_down(sub { });
 
     my @missing;
     for my $module ($requirements->all->required_modules) {
-        my $install = $self->lockfile->find_or_core($module);
+        my $install = $env->lockfile->find_or_core($module);
         if ($install) {
             unless ($requirements->all->accepts_module($module => $install->version)) {
                 push @missing, [ $module, 1, $install->version ];
@@ -335,7 +322,9 @@ sub cmd_check {
 sub cmd_update {
     my($self, @args) = @_;
 
-    my $cpanfile = Module::CPANfile->load($self->cpanfile);
+    my $env = Carton::Environment->build;
+
+    my $cpanfile = Module::CPANfile->load($env->cpanfile);
     my $prereqs = $cpanfile->prereqs;
 
     my $reqs = CPAN::Meta::Requirements->new;
@@ -344,11 +333,11 @@ sub cmd_update {
 
     @args = grep { $_ ne 'perl' } $reqs->required_modules unless @args;
 
-    $self->lockfile->load;
+    $env->lockfile->load;
 
     my @modules;
     for my $module (@args) {
-        my $dist = $self->lockfile->find_or_core($module)
+        my $dist = $env->lockfile->find_or_core($module)
             or $self->error("Could not find module $module.\n");
         next if $dist->is_core;
         push @modules, "$module~" . $reqs->requirements_for_module($module);
@@ -356,18 +345,19 @@ sub cmd_update {
 
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
-        cpanfile => $self->cpanfile,
+        cpanfile => $env->cpanfile,
     );
-    $builder->update($self->install_path, @modules);
+    $builder->update($env->install_path, @modules);
 
-    $self->lockfile->find_installs($self->install_path, $prereqs);
-    $self->lockfile->save;
+    $env->lockfile->find_installs($env->install_path, $prereqs);
+    $env->lockfile->save;
 }
 
 sub cmd_exec {
     my($self, @args) = @_;
 
-    $self->lockfile->load;
+    my $env = Carton::Environment->build;
+    $env->lockfile->load;
 
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;
@@ -388,16 +378,11 @@ sub cmd_exec {
     }
 
     # PERL5LIB takes care of arch
-    my $path = $self->install_path;
+    my $path = $env->install_path;
     local $ENV{PERL5LIB} = "$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
     $UseSystem ? system(@args) : exec(@args);
-}
-
-sub index_file {
-    my $self = shift;
-    $self->work_file("cache/modules/02packages.details.txt");
 }
 
 1;
