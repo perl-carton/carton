@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.64  2013-07-23 14:39:54 PDT
+        - Locate cpanm within a dist share dir so that cpanm in user's $PATH is not executed.
+          This will solve issues with cpanm in /usr/bin, perlbrew or with bad shebang #92
+
 v0.9.63  2013-07-23 02:26:04 PDT
         - Bump cpanminus requirement
         - Support --cpanfile for carton install
