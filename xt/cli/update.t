@@ -37,7 +37,7 @@ EOF
     like $app->stdout, qr/Try-Tiny-0\.09/;
 
     $app->run("update", "Try::Tiny");
-    like $app->stderr, qr/installed Try-Tiny-0\.12.*upgraded from 0\.09/;
+    like $app->stdout, qr/installed Try-Tiny-0\.12.*upgraded from 0\.09/;
 
     $app->run("check");
     like $app->stdout, qr/are satisfied/;
