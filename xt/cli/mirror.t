@@ -11,7 +11,7 @@ my $cwd = Path::Tiny->cwd;
 requires 'Hash::MultiValue';
 EOF
 
-    $app->mirror("$cwd/xt/mirror");
+    local $ENV{PERL_CARTON_MIRROR} = "$cwd/xt/mirror";
     $app->run("install");
 
     $app->run("list");
@@ -25,7 +25,7 @@ EOF
 requires 'PSGI';
 EOF
 
-    $app->mirror("$cwd/xt/mirror");
+    local $ENV{PERL_CARTON_MIRROR} = "$cwd/xt/mirror";
     $app->run("install");
 
     $app->run("list");

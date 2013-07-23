@@ -13,12 +13,12 @@ sub cli {
 }
 
 package Carton::CLI::Tested;
+use Carton::CLI;
 use Capture::Tiny qw(capture);
 use File::pushd ();
 use Path::Tiny;
 use Moo;
 
-extends 'Carton::CLI';
 $Carton::CLI::UseSystem = 1;
 
 has dir => (is => 'rw');
@@ -48,7 +48,7 @@ sub run {
     my $pushd = File::pushd::pushd $self->dir;
 
     my @capture = capture {
-        my $code = eval { $self->SUPER::run(@args) };
+        my $code = eval { Carton::CLI->new->run(@args) };
         $self->exit_code($@ ? 255 : $code);
     };
 
