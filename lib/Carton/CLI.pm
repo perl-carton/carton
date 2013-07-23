@@ -257,7 +257,7 @@ sub cmd_tree {
     $env->lockfile->load;
 
     my $cpanfile = Module::CPANfile->load($env->cpanfile);
-    my $requirements = Carton::Requirements->new(lock => $env->lockfile, prereqs => $cpanfile->prereqs);
+    my $requirements = Carton::Requirements->new(lockfile => $env->lockfile, prereqs => $cpanfile->prereqs);
 
     my %seen;
     my $dumper = sub {
@@ -285,7 +285,7 @@ sub cmd_check {
 
     # TODO remove lockfile
     # TODO pass git spec to Requirements?
-    my $requirements = Carton::Requirements->new(lock => $env->lockfile, prereqs => $prereqs);
+    my $requirements = Carton::Requirements->new(lockfile => $env->lockfile, prereqs => $prereqs);
     $requirements->walk_down(sub { });
 
     my @missing;
