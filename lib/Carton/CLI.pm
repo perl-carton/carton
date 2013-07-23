@@ -282,6 +282,15 @@ sub cmd_tree {
 sub cmd_check {
     my($self, @args) = @_;
 
+    my $cpanfile_path;
+    $self->parse_options(
+        \@args,
+        "cpanfile=s"  => \$cpanfile_path,
+    );
+
+    my $environment = Carton::Environment->build($cpanfile_path);
+    $self->environment($environment);
+
     my $lock = $self->lockfile->load;
 
     my $prereqs = Module::CPANfile->load($self->cpanfile)->prereqs;
