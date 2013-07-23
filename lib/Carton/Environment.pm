@@ -15,7 +15,7 @@ sub _build_lockfile {
     my $self = shift;
     my $base = $self->cpanfile->basename eq 'cpanfile'
              ? 'carton.lock' : ("carton." . $self->cpanfile->basename . ".lock");
-    Carton::Lockfile->new($self->cpanfile->dirname . "/$base");
+    Carton::Lockfile->new(path => $self->cpanfile->dirname . "/$base");
 }
 
 sub _build_install_path {
