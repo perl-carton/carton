@@ -52,9 +52,21 @@ dependencies.
 
 Force the deployment mode and carton will ignore I<cpanfile> contents.
 
+=item --cpanfile
+
+Specify the alternate path for cpanfile. By default, C<carton install>
+will look for the file C<cpanfile> in the current directory, then
+upwards till the root directory, in case the command runs from a sub
+directory.
+
+Carton assumes the directory where your cpanfile (or altenate path)
+exists as a project root directory, and will look for the lock file as
+well as install directory (C<local>) and C<vendor/cache> relative to it.
+
 =item --path
 
-Specify the path to install modules to. Defaults to I<local> in the current directory.
+Specify the path to install modules to. Defaults to I<local> in the
+directory relative to where C<cpanfile> is.
 
 =item --without
 
