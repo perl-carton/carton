@@ -2,6 +2,7 @@ package Carton::Environment;
 use strict;
 use Moo;
 
+use Carton::CPANfile;
 use Carton::Lockfile;
 use Carton::Error;
 use Path::Tiny;
@@ -13,9 +14,7 @@ has vendor_cache  => (is => 'lazy');
 
 sub _build_lockfile {
     my $self = shift;
-    my $base = $self->cpanfile->basename eq 'cpanfile'
-             ? 'carton.lock' : ("carton." . $self->cpanfile->basename . ".lock");
-    Carton::Lockfile->new(path => $self->cpanfile->dirname . "/$base");
+    Carton::Lockfile->new(path => $self->cpanfile->stringify . ".snapshot");
 }
 
 sub _build_install_path {
@@ -37,7 +36,7 @@ sub build_with {
 
     $cpanfile = Path::Tiny->new($cpanfile)->absolute;
     if ($cpanfile->is_file) {
-        return $class->new(cpanfile => $cpanfile);
+        return $class->new(cpanfile => Carton::CPANfile->new(path => $cpanfile));
     } else {
         Carton::Error::CPANfileNotFound->throw(error => "Can't locate cpanfile: $cpanfile");
     }
@@ -52,7 +51,7 @@ sub build {
 
     my $cpanfile = $self->locate_cpanfile($cpanfile_path || $ENV{PERL_CARTON_CPANFILE});
     if ($cpanfile && $cpanfile->is_file) {
-        $self->cpanfile($cpanfile);
+        $self->cpanfile( Carton::CPANfile->new(path => $cpanfile) );
     } else {
         Carton::Error::CPANfileNotFound->throw(error => "Can't locate cpanfile: (@{[ $cpanfile_path || 'cpanfile' ]})");
     }

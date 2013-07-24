@@ -18,11 +18,11 @@ subtest 'exec without cpanfile', sub {
     is $app->exit_code, 255;
 };
 
-subtest 'exec without a lock', sub {
+subtest 'exec without a snapshot', sub {
     my $app = cli();
     $app->write_cpanfile();
     $app->run("exec", "perl", "-e", 1);
-    like $app->stderr, qr/carton\.lock/;
+    like $app->stderr, qr/cpanfile\.snapshot/;
     is $app->exit_code, 255;
 };
 

@@ -9,7 +9,7 @@ requires 'Try::Tiny', '== 0.11';
 EOF
 
     $app->run("install", "--deployment");
-    like $app->stderr, qr/deployment requires carton\.lock/;
+    like $app->stderr, qr/deployment requires cpanfile\.snapshot/;
 
     $app->run("install");
     $app->clean_local;

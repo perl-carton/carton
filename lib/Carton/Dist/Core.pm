@@ -6,16 +6,16 @@ extends 'Carton::Dist';
 sub BUILDARGS {
     my($class, %args) = @_;
 
-    $args{dist} = "perl-$]";
+    $args{name} = "perl-$]";
 
     \%args;
 }
 
 sub is_core { 1 }
 
-sub prereqs {
-    my $self = shift;
-    CPAN::Meta::Prereqs->new;
+sub version_for {
+    my($self, $module) = @_;
+    $self->version;
 }
 
 1;

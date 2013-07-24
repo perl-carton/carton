@@ -3,6 +3,6 @@ META.yml
 !META.json
 .carton/
 local/
-carton.lock
+cpanfile.snapshot
 /carton-*
 /.build

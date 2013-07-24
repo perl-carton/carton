@@ -4,16 +4,16 @@ use Moo;
 
 has module => (is => 'rw');
 has requirement => (is => 'rw');
-has dist => (is => 'rw', handles => [ qw(prereqs) ]);
+has dist => (is => 'rw', handles => [ qw(requirements) ]);
 
 sub distname {
     my $self = shift;
-    $self->dist->dist;
+    $self->dist->name;
 }
 
 sub version {
     my $self = shift;
-    $self->dist->provides->{$self->module}{version};
+    $self->dist->version_for($self->module);
 }
 
 1;

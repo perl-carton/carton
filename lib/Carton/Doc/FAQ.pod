@@ -51,10 +51,10 @@ centered around the installer, by implementing a wrapper for
 L<cpanm|App::cpanminus>, so you can use the same commands in the
 development mode and deployment mode.
 
-Carton automatically maintains the L<carton.lock> file, which is meant
+Carton automatically maintains the L<cpanfile.snapshot> file, which is meant
 to be version controlled, inside your application directory. You don't
 need a separate database, a directory or a web server to maintain
-tarballs outside your application. The I<carton.lock> file can always
+tarballs outside your application. The I<cpanfile.snapshot> file can always
 be generated with C<carton install> command, and C<carton install> on
 another machine can use the version in the lock.
 

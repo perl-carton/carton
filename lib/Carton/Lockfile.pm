@@ -7,19 +7,22 @@ use Carton::Error;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
+use Carton::Lockfile::Emitter;
+use Carton::Lockfile::Parser;
 use CPAN::Meta;
 use CPAN::Meta::Requirements;
 use File::Find ();
 use Try::Tiny;
+use Path::Tiny ();
 use Module::CoreList;
 use Moo;
 
-use constant CARTON_LOCK_VERSION => '0.9';
+use constant CARTON_LOCK_VERSION => '1.0';
 
 has path    => (is => 'rw', coerce => sub { Path::Tiny->new($_[0]) });
 has version => (is => 'rw', default => sub { CARTON_LOCK_VERSION });
-has modules => (is => 'rw', default => sub { +{} });
 has loaded  => (is => 'rw');
+has _distributions => (is => 'rw', default => sub { +[] });
 
 sub load_if_exists {
     my $self = shift;
@@ -32,17 +35,14 @@ sub load {
     return 1 if $self->loaded;
 
     if ($self->path->is_file) {
-        my $data = try { Carton::Util::load_json($self->path) }
-          catch { Carton::Error::LockfileParseError->throw(error => "Can't parse carton.lock", path => $self->path) };
-
-        $self->version($data->{version});
-        $self->modules($data->{modules});
+        my $parser = Carton::Lockfile::Parser->new;
+        $parser->parse($self->path->slurp_utf8, $self);
         $self->loaded(1);
 
         return 1;
     } else {
         Carton::Error::LockfileNotFound->throw(
-            error => "Can't find carton.lock: Run `carton install` to build the lock file.",
+            error => "Can't find cpanfile.snapshot: Run `carton install` to build the lock file.",
             path => $self->path,
         );
     }
@@ -50,23 +50,12 @@ sub load {
 
 sub save {
     my $self = shift;
-    Carton::Util::dump_json({ modules => $self->modules, version => $self->version }, $self->path);
-}
-
-sub distributions {
-    map Carton::Dist->new($_), values %{$_[0]->modules}
+    $self->path->spew_utf8( Carton::Lockfile::Emitter->new->emit($self) );
 }
 
 sub find {
     my($self, $module) = @_;
-
-    for my $meta (values %{$_[0]->modules}) {
-        if ($meta->{provides}{$module}) {
-            return Carton::Dist->new( $self->modules->{$meta->{name}} );
-        }
-    }
-
-    return;
+    (grep $_->provides_module($module), $self->distributions)[0];
 }
 
 sub find_or_core {
@@ -96,14 +85,23 @@ sub index {
     return $index;
 }
 
+sub distributions {
+    @{$_[0]->_distributions};
+}
+
+sub add_distribution {
+    my($self, $dist) = @_;
+    push @{$self->_distributions}, $dist;
+}
+
 sub packages {
     my $self = shift;
 
     my @packages;
-    while (my($name, $metadata) = each %{$self->modules}) {
-        while (my($package, $provides) = each %{$metadata->{provides}}) {
+    for my $dist ($self->distributions) {
+        while (my($package, $provides) = each %{$dist->provides}) {
             # TODO what if duplicates?
-            push @packages, Carton::Package->new($package, $provides->{version}, $metadata->{pathname});
+            push @packages, Carton::Package->new($package, $provides->{version}, $dist->pathname);
         }
     }
 
@@ -118,14 +116,10 @@ sub write_index {
 }
 
 sub find_installs {
-    my($self, $path, $prereqs) = @_;
+    my($self, $path, $reqs) = @_;
 
     my $libdir = "$path/lib/perl5/$Config{archname}/.meta";
     return {} unless -e $libdir;
-
-    my $reqs = CPAN::Meta::Requirements->new;
-    $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
-      for qw( configure build runtime test develop );
 
     my @installs;
     my $wanted = sub {
@@ -136,27 +130,46 @@ sub find_installs {
     File::Find::find($wanted, $libdir);
 
     my %installs;
+
+    my $accepts = sub {
+        my $module = shift;
+
+        return 0 unless $reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version});
+
+        if (my $exist = $installs{$module->{name}}) {
+            my $old_ver = version->new($exist->{provides}{$module->{name}}{version});
+            my $new_ver = version->new($module->{provides}{$module->{name}}{version});
+            return $new_ver >= $old_ver;
+        } else {
+            return 1;
+        }
+    };
+
     for my $file (@installs) {
         my $module = Carton::Util::load_json($file->[0]);
-        my $mymeta = -f $file->[1] ? CPAN::Meta->load_file($file->[1])->as_struct({ version => "2" }) : {};
-        if ($reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version})) {
-            if (my $exist = $installs{$module->{name}}) {
-                my $old_ver = version->new($exist->{provides}{$module->{name}}{version});
-                my $new_ver = version->new($module->{provides}{$module->{name}}{version});
-                if ($new_ver >= $old_ver) {
-                    $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
-                } else {
-                    # Ignore same distributions older than the one we have
-                }
-            } else {
-                $installs{ $module->{name} } = { %$module, mymeta => $mymeta };
-            }
-        } else {
-            # Ignore installs because cpanfile doesn't accept it
+        my $prereqs = -f $file->[1] ? CPAN::Meta->load_file($file->[1])->effective_prereqs : CPAN::Meta::Prereqs->new;
+
+        my $reqs = CPAN::Meta::Requirements->new;
+        $reqs->add_requirements($prereqs->requirements_for($_, 'requires'))
+          for qw( configure build runtime );
+
+        if ($accepts->($module)) {
+            $installs{$module->{name}} = Carton::Dist->new(
+                name => $module->{dist},
+                pathname => $module->{pathname},
+                provides => $module->{provides},
+                version => $module->{version},
+                requirements => $reqs,
+            );
         }
     }
 
-    $self->modules(\%installs);
+    my @new_dists;
+    for my $module (keys %installs) {
+        push @new_dists, $installs{$module};
+    }
+
+    $self->_distributions(\@new_dists);
 }
 
 1;

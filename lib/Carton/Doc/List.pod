@@ -1,6 +1,6 @@
 =head1 NAME
 
-Carton::Doc::List - List dependencies tracked in the carton.lock file
+Carton::Doc::List - List dependencies tracked in the cpanfile.snapshot file
 
 =head1 SYNOPSIS
 
@@ -9,7 +9,7 @@ Carton::Doc::List - List dependencies tracked in the carton.lock file
 =head1 DESCRIPTION
 
 List the dependencies and version information tracked in the
-I<carton.lock> file. This command by default displays the name of the
+I<cpanfile.snapshot> file. This command by default displays the name of the
 distribution (e.g. I<Foo-Bar-0.01>) in a flat list.
 
 =head1 OPTIONS

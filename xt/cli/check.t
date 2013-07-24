@@ -9,7 +9,7 @@ requires 'Try::Tiny', '== 0.11';
 EOF
 
     $app->run("check");
-    like $app->stderr, qr/find carton\.lock/;
+    like $app->stderr, qr/find cpanfile\.snapshot/;
 };
 
 subtest 'carton install and check' => sub {
@@ -36,7 +36,7 @@ EOF
  TODO: {
         local $TODO = 'exec does not verify lock';
         $app->run("exec", "perl", "use Try::Tiny");
-        like $app->stderr, qr/lock/;
+        like $app->stderr, qr/\.snapshot/;
     }
 
     $app->run("install");

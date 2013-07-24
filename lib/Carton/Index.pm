@@ -25,7 +25,7 @@ sub write {
     print $fh <<EOF;
 File:         02packages.details.txt
 URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
-Description:  Package names found in carton.lock
+Description:  Package names found in cpanfile.snapshot
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
 Written-By:   Carton $Carton::VERSION

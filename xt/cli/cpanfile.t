@@ -10,8 +10,8 @@ EOF
     $app->run("install", "--cpanfile", "cpanfile.foo");
     $app->run("check", "--cpanfile", "cpanfile.foo");
 
-#    ok !$app->dir->child('cpanfile.lock')->exists;
-#    ok $app->dir->child('cpanfile.foo.lock')->exists;
+    ok !$app->dir->child('cpanfile.snapshot')->exists;
+    ok $app->dir->child('cpanfile.foo.snapshot')->exists;
 
     like $app->stdout, qr/are satisfied/;
 
@@ -37,7 +37,7 @@ EOF
     $app->run("list");
 
     like $app->stdout, qr/Try-Tiny-0\.11/;
-#    ok $app->dir->child('cpanfile.foo.lock')->exists;
+    ok $app->dir->child('cpanfile.foo.snapshot')->exists;
 };
 
 done_testing;

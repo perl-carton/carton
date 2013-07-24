@@ -3,15 +3,12 @@ use strict;
 use CPAN::Meta;
 use Moo;
 
-# XXX name here means the name of main module
-# XXX dist means the name of dist
 has name     => (is => 'ro');
-has pathname => (is => 'ro');
-has provides => (is => 'ro');
-has version  => (is => 'ro');
-has target   => (is => 'ro');
-has dist     => (is => 'ro');
-has mymeta   => (is => 'ro', coerce => sub { CPAN::Meta->new($_[0], { lazy_validation => 1 }) });
+has pathname => (is => 'rw');
+has provides => (is => 'rw', default => sub { +{} });
+has version  => (is => 'rw');
+has requirements => (is => 'rw', lazy => 1, builder => 1,
+                     handles => [ qw(add_string_requirement required_modules requirements_for_module) ]);
 
 sub is_core { 0 }
 
@@ -20,9 +17,18 @@ sub distfile {
     $self->pathname;
 }
 
-sub prereqs {
-    my $self = shift;
-    $self->mymeta->effective_prereqs;
+sub _build_requirements {
+    CPAN::Meta::Requirements->new;
+}
+
+sub provides_module {
+    my($self, $module) = @_;
+    exists $self->provides->{$module};
+}
+
+sub version_for {
+    my($self, $module) = @_;
+    $self->provides->{$module}{version};
 }
 
 1;
