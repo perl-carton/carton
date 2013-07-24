@@ -1,6 +1,7 @@
 package Carton::Snapshot::Parser;
 use strict;
 use Carton::Dist;
+use Carton::Error;
 use Moo;
 
 my $machine = {
@@ -117,9 +118,8 @@ sub parse {
                 }
             }
 
-            die "SOMETHING IS WRONG $line";
+            Carton::Error::SnapshotParseError->throw(error => "Could not parse snapshot file.");
         }
-
     }
 }
 
