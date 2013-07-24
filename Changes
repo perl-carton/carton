@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.66  2013-07-24 08:46:27 PDT
+        - Correctly raises an exception when badly formatted snapshot file is read
+        - Fixed a bug in tree scanner where seen hash is not preserved
+        - tree scanner should be much faster for giant set of dependencies
+
 v0.9.65  2013-07-23 18:51:59 PDT
         - BIG CHANGE: Use cpanfile.snapshot instead of carton.lock for 1.0 onwards
           There is no way to migrate carton.lock to cpanfile.snapshot just yet.
