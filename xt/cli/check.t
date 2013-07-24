@@ -80,5 +80,17 @@ subtest 'detect unused modules' => sub {
     }
 };
 
+subtest 'detect downgrade' => sub {
+    my $app = cli;
+    $app->write_cpanfile("requires 'URI';");
+    $app->run("install");
+
+    $app->write_cpanfile("requires 'URI', '== 1.59';");
+    $app->run("check");
+
+    like $app->stdout, qr/not satisfied/;
+    like $app->stdout, qr/URI has version .* Needs == 1\.59/;
+};
+
 done_testing;
 

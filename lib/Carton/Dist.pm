@@ -6,7 +6,6 @@ use Moo;
 has name     => (is => 'ro');
 has pathname => (is => 'rw');
 has provides => (is => 'rw', default => sub { +{} });
-has version  => (is => 'rw');
 has requirements => (is => 'rw', lazy => 1, builder => 1,
                      handles => [ qw(add_string_requirement required_modules requirements_for_module) ]);
 

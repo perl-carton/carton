@@ -68,7 +68,7 @@ sub find_in_core {
 
     if (exists $Module::CoreList::version{$]}{$module}) {
         my $version = $Module::CoreList::version{$]}{$module}; # maybe undef
-        return Carton::Dist::Core->new(name => $module, version => $version);
+        return Carton::Dist::Core->new(name => $module, module_version => $version);
     }
 
     return;

@@ -289,7 +289,7 @@ sub cmd_check {
         my $install = $env->snapshot->find_or_core($module);
         if ($install) {
             unless ($merged_reqs->accepts_module($module => $install->version_for($module))) {
-                push @missing, [ $module, 1, $install->version ];
+                push @missing, [ $module, 1, $install->version_for($module) ];
             }
         } else {
             push @missing, [ $module, 0 ];
