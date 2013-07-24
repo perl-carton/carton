@@ -27,6 +27,7 @@ sub walk_down {
     };
 
     $dumper->(undef, $self->cpanfile->requirements, 0, {});
+    undef $dumper;
 }
 
 sub dependency_for {
