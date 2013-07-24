@@ -1,6 +1,6 @@
 package Carton::Builder;
 use strict;
-use File::ShareDir 'dist_file';
+use Module::Metadata;
 use Moo;
 
 has mirror  => (is => 'rw');
@@ -88,8 +88,9 @@ sub update {
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    my $bin = dist_file('App-cpanminus', 'cpanm');
-    !system $^X, $bin, "--quiet", "--notest", @args;
+    my $path = Module::Metadata->find_module_by_name("App::cpanminus::fatscript")
+        or die "Can't locate App::cpanminus::fatscript.";
+    !system $^X, $path, "--quiet", "--notest", @args;
 }
 
 1;
