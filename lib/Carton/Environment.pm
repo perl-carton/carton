@@ -5,12 +5,14 @@ use Moo;
 use Carton::CPANfile;
 use Carton::Snapshot;
 use Carton::Error;
+use Carton::Tree;
 use Path::Tiny;
 
 has cpanfile => (is => 'rw');
 has snapshot => (is => 'lazy');
 has install_path => (is => 'rw', lazy => 1, builder => 1, coerce => sub { Path::Tiny->new($_[0])->absolute });
 has vendor_cache  => (is => 'lazy');
+has tree => (is => 'rw', lazy => 1, builder => 1);
 
 sub _build_snapshot {
     my $self = shift;
@@ -29,6 +31,11 @@ sub _build_install_path {
 sub _build_vendor_cache {
     my $self = shift;
     Path::Tiny->new($self->install_path->dirname . "/vendor/cache");
+}
+
+sub _build_tree {
+    my $self = shift;
+    Carton::Tree->new(cpanfile => $self->cpanfile, snapshot => $self->snapshot);
 }
 
 sub build_with {

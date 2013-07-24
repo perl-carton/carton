@@ -1,12 +1,10 @@
-package Carton::Requirements;
+package Carton::Tree;
 use strict;
 use Carton::Dependency;
 use Moo;
-use CPAN::Meta::Requirements;
 
+has cpanfile => (is => 'ro');
 has snapshot => (is => 'ro');
-has requirements => (is => 'ro');
-has all => (is => 'ro', default => sub { CPAN::Meta::Requirements->new });
 
 sub walk_down {
     my($self, $cb) = @_;
@@ -14,10 +12,7 @@ sub walk_down {
     my $dumper; $dumper = sub {
         my($dependency, $reqs, $level, $parent) = @_;
 
-        $cb->($dependency, $level) if $dependency;
-
-        $self->all->add_requirements($reqs) unless $self->all->is_finalized;
-
+        $cb->($dependency, $reqs, $level);
         local $parent->{$dependency->distname} = 1 if $dependency;
 
         for my $module (sort $reqs->required_modules) {
@@ -31,10 +26,7 @@ sub walk_down {
         }
     };
 
-    $dumper->(undef, $self->requirements, 0, {});
-
-    $self->all->clear_requirement('perl');
-    $self->all->finalize;
+    $dumper->(undef, $self->cpanfile->requirements, 0, {});
 }
 
 sub dependency_for {
@@ -53,6 +45,19 @@ sub dependency_for {
     return $dep;
 }
 
+sub merged_requirements {
+    my $self = shift;
+
+    my $merged_reqs = CPAN::Meta::Requirements->new;
+    $self->walk_down(sub {
+        my($dependency, $reqs, $level) = @_;
+        $merged_reqs->add_requirements($reqs);
+    });
+
+    $merged_reqs->clear_requirement('perl');
+    $merged_reqs->finalize;
+
+    $merged_reqs;
+}
+
 1;
-
-

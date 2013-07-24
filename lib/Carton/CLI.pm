@@ -17,7 +17,6 @@ use Carton::Snapshot;
 use Carton::Util;
 use Carton::Environment;
 use Carton::Error;
-use Carton::Requirements;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
@@ -256,16 +255,16 @@ sub cmd_tree {
     $env->snapshot->load;
     $env->cpanfile->load;
 
-    my $requirements = Carton::Requirements->new(snapshot => $env->snapshot, requirements => $env->cpanfile->requirements);
-
     my %seen;
     my $dumper = sub {
-        my($dependency, $level) = @_;
+        my($dependency, $reqs, $level) = @_;
+        return if $level == 0;
         return if $dependency->dist->is_core;
         return if $seen{$dependency->distname}++;
         $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->module, $dependency->distname, INFO );
     };
-    $requirements->walk_down($dumper);
+
+    $env->tree->walk_down($dumper);
 }
 
 sub cmd_check {
@@ -283,14 +282,13 @@ sub cmd_check {
 
     # TODO remove snapshot
     # TODO pass git spec to Requirements?
-    my $requirements = Carton::Requirements->new(snapshot => $env->snapshot, requirements => $env->cpanfile->requirements);
-    $requirements->walk_down(sub { });
+    my $merged_reqs = $env->tree->merged_requirements;
 
     my @missing;
-    for my $module ($requirements->all->required_modules) {
+    for my $module ($merged_reqs->required_modules) {
         my $install = $env->snapshot->find_or_core($module);
         if ($install) {
-            unless ($requirements->all->accepts_module($module => $install->version_for($module))) {
+            unless ($merged_reqs->accepts_module($module => $install->version_for($module))) {
                 push @missing, [ $module, 1, $install->version ];
             }
         } else {
@@ -304,10 +302,10 @@ sub cmd_check {
             my($module, $unsatisfied, $version) = @$missing;
             if ($unsatisfied) {
                 $self->printf("  %s has version %s. Needs %s\n",
-                              $module, $version, $requirements->all->requirements_for_module($module), INFO);
+                              $module, $version, $merged_reqs->requirements_for_module($module), INFO);
             } else {
                 $self->printf("  %s is not installed. Needs %s\n",
-                              $module, $requirements->all->requirements_for_module($module), INFO);
+                              $module, $merged_reqs->requirements_for_module($module), INFO);
             }
         }
         $self->printf("Run `carton install` to install them.\n", INFO);
