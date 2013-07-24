@@ -24,7 +24,7 @@ sub walk_down {
             my $dependency = $self->dependency_for($module, $reqs);
             if ($dependency->dist) {
                 next if $parent->{$dependency->distname};
-                $dumper->($dependency, $dependency->requirements, $level + 1);
+                $dumper->($dependency, $dependency->requirements, $level + 1, $parent);
             } else {
                 # no dist found in lock
             }
