@@ -174,7 +174,7 @@ sub cmd_install {
     $env->snapshot->load_if_exists;
 
     if ($deployment && !$env->snapshot->loaded) {
-        $self->error("--deployment requires cpanfile.snapshot: Run `carton install` and make sure carton.lock is checked into your version control.\n");
+        $self->error("--deployment requires cpanfile.snapshot: Run `carton install` and make sure cpanfile.snapshot is checked into your version control.\n");
     }
 
     my $builder = Carton::Builder->new(
