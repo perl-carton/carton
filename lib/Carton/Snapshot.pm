@@ -42,7 +42,7 @@ sub load {
         return 1;
     } else {
         Carton::Error::SnapshotNotFound->throw(
-            error => "Can't find cpanfile.snapshot: Run `carton install` to build the lock file.",
+            error => "Can't find cpanfile.snapshot: Run `carton install` to build the snapshot file.",
             path => $self->path,
         );
     }

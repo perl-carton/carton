@@ -37,7 +37,7 @@ HAVE BEEN WARNED.>
 carton is a command line tool to track the Perl module dependencies
 for your Perl application. The managed dependencies are tracked in a
 I<cpanfile.snapshot> file, which is meant to be version controlled, and the
-lock file allows other developers of your application will have the
+snapshot file allows other developers of your application will have the
 exact same versions of the modules.
 
 =head1 TUTORIAL

@@ -60,7 +60,7 @@ upwards till the root directory, in case the command runs from a sub
 directory.
 
 Carton assumes the directory where your cpanfile (or altenate path)
-exists as a project root directory, and will look for the lock file as
+exists as a project root directory, and will look for the snapshot file as
 well as install directory (C<local>) and C<vendor/cache> relative to it.
 
 =item --path
