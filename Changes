@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.67  2013-07-24 14:53:53 PDT
+        - Use cpanm's fatscript interface rather than share dir
+
 v0.9.66  2013-07-24 08:46:27 PDT
         - Correctly raises an exception when badly formatted snapshot file is read
         - Fixed a bug in tree scanner where seen hash is not preserved
