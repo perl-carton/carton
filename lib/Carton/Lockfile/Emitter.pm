@@ -9,7 +9,7 @@ sub emit {
     $data .= "# carton snapshot format: version @{[$lockfile->version]}\n";
     $data .= "DISTRIBUTIONS\n";
 
-    for my $dist ($lockfile->distributions) {
+    for my $dist (sort { $a->name cmp $b->name } $lockfile->distributions) {
         $data .= "  @{[$dist->name]}\n";
         $data .= "    pathname: @{[$dist->pathname]}\n";
 
@@ -19,7 +19,7 @@ sub emit {
         }
 
         $data .= "    requirements:\n";
-        for my $module ($dist->required_modules) {
+        for my $module (sort $dist->required_modules) {
             $data .= "      $module @{[ $dist->requirements_for_module($module) || '0' ]}\n";
         }
     }

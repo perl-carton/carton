@@ -165,7 +165,7 @@ sub find_installs {
     }
 
     my @new_dists;
-    for my $module (keys %installs) {
+    for my $module (sort keys %installs) {
         push @new_dists, $installs{$module};
     }
 
