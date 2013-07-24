@@ -54,8 +54,11 @@ sub merged_requirements {
     my $self = shift;
 
     my $merged_reqs = CPAN::Meta::Requirements->new;
+
+    my %seen;
     $self->walk_down(sub {
         my($dependency, $reqs, $level) = @_;
+        return Carton::Tree::STOP if $dependency && $seen{$dependency->distname}++;
         $merged_reqs->add_requirements($reqs);
     });
 
