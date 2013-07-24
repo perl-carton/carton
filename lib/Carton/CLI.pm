@@ -259,8 +259,8 @@ sub cmd_tree {
     my $dumper = sub {
         my($dependency, $reqs, $level) = @_;
         return if $level == 0;
-        return if $dependency->dist->is_core;
-        return if $seen{$dependency->distname}++;
+        return Carton::Tree::STOP if $dependency->dist->is_core;
+        return Carton::Tree::STOP if $seen{$dependency->distname}++;
         $self->printf( "%s%s (%s)\n", " " x ($level - 1), $dependency->module, $dependency->distname, INFO );
     };
 

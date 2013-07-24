@@ -6,13 +6,17 @@ use Moo;
 has cpanfile => (is => 'ro');
 has snapshot => (is => 'ro');
 
+use constant STOP => -1;
+
 sub walk_down {
     my($self, $cb) = @_;
 
     my $dumper; $dumper = sub {
         my($dependency, $reqs, $level, $parent) = @_;
 
-        $cb->($dependency, $reqs, $level);
+        my $ret = $cb->($dependency, $reqs, $level);
+        return if $ret && $ret == STOP;
+
         local $parent->{$dependency->distname} = 1 if $dependency;
 
         for my $module (sort $reqs->required_modules) {
