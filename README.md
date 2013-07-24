@@ -10,7 +10,7 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
     requires 'Starman', 0.2000;
 
     > carton install
-    > git add cpanfile carton.lock
+    > git add cpanfile cpanfile.snapshot
     > git commit -m "add Plack and Starman"
 
     # Other developer's machine, or on a deployment box
@@ -28,7 +28,7 @@ HAVE BEEN WARNED.__
 
 carton is a command line tool to track the Perl module dependencies
 for your Perl application. The managed dependencies are tracked in a
-_carton.lock_ file, which is meant to be version controlled, and the
+_cpanfile.snapshot_ file, which is meant to be version controlled, and the
 lock file allows other developers of your application will have the
 exact same versions of the modules.
 
@@ -42,7 +42,7 @@ exclude these directories from the version control system.
 
     > echo .carton/ >> .gitignore
     > echo local/ >> .gitignore
-    > git add carton.lock
+    > git add cpanfile.snapshot
     > git commit -m "Start using carton"
 
 ## Tracking the dependencies
@@ -59,14 +59,14 @@ And then you can install these dependencies via:
 
 The modules are installed into your _local_ directory, and the
 dependencies tree and version information are analyzed and saved into
-_carton.lock_ in your directory.
+_cpanfile.snapshot_ in your directory.
 
-Make sure you add _carton.lock_ to your version controlled repository
+Make sure you add _cpanfile.snapshot_ to your version controlled repository
 and commit changes as you update dependencies. This will ensure that
 other developers on your app, as well as your deployment environment,
 use exactly the same versions of the modules you just installed.
 
-    > git add cpanfile carton.lock
+    > git add cpanfile cpanfile.snapshot
     > git commit -m "Added Plack and Starman"
 
 ## Deploying your application
@@ -77,7 +77,7 @@ _.carton_) and run the following command:
 
     > carton install
 
-This will look at the _carton.lock_ and install the exact same
+This will look at the _cpanfile.snapshot_ and install the exact same
 versions of the dependencies into _local_, and now your application
 is ready to run.
 

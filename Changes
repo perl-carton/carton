@@ -2,6 +2,13 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.65  2013-07-23 18:51:59 PDT
+        - BIG CHANGE: Use cpanfile.snapshot instead of carton.lock for 1.0 onwards
+          There is no way to migrate carton.lock to cpanfile.snapshot just yet.
+        - New cpanfile.snapshot is text based and is more VCS friendly
+        - Reworked internal of prereqs/requirements loader (again!) to eliminate
+          lots of duplicate code
+
 v0.9.64  2013-07-23 14:39:54 PDT
         - Locate cpanm within a dist share dir so that cpanm in user's $PATH is not executed.
           This will solve issues with cpanm in /usr/bin, perlbrew or with bad shebang #92
