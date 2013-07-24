@@ -4,7 +4,7 @@ use Carton::Dependency;
 use Moo;
 use CPAN::Meta::Requirements;
 
-has lockfile => (is => 'ro');
+has snapshot => (is => 'ro');
 has requirements => (is => 'ro');
 has all => (is => 'ro', default => sub { CPAN::Meta::Requirements->new });
 
@@ -46,7 +46,7 @@ sub dependency_for {
     $dep->module($module);
     $dep->requirement($requirement);
 
-    if (my $dist = $self->lockfile->find_or_core($module)) {
+    if (my $dist = $self->snapshot->find_or_core($module)) {
         $dep->dist($dist);
     }
 

@@ -1,4 +1,4 @@
-package Carton::Lockfile::Parser;
+package Carton::Snapshot::Parser;
 use strict;
 use Carton::Dist;
 use Moo;
@@ -6,10 +6,10 @@ use Moo;
 my $machine = {
     init => [
         {
-            re => qr/^\# carton snapshot format: version ([\d\.]+)/,
+            re => qr/^\# carton snapshot format: version (1\.0)/,
             code => sub {
-                my($stash, $lockfile, $ver) = @_;
-                $lockfile->version($ver);
+                my($stash, $snapshot, $ver) = @_;
+                $snapshot->version($ver);
             },
             goto => 'section',
         },
@@ -57,8 +57,8 @@ my $machine = {
         {
             re => qr/^\s{0,2}\S/,
             code => sub {
-                my($stash, $lockfile) = @_;
-                $lockfile->add_distribution($stash->{dist});
+                my($stash, $snapshot) = @_;
+                $snapshot->add_distribution($stash->{dist});
                 %$stash = (); # clear
             },
             goto => 'dists',
@@ -69,7 +69,7 @@ my $machine = {
         {
             re => qr/^\s{6}([0-9A-Za-z_:]+) (v?[0-9\._]+|undef)/,
             code => sub {
-                my($stash, $lockfile, $module, $version) = @_;
+                my($stash, $snapshot, $module, $version) = @_;
 
                 if ($stash->{property} eq 'provides') {
                     $stash->{dist}->provides->{$module} = { version => $version };
@@ -87,7 +87,7 @@ my $machine = {
 };
 
 sub parse {
-    my($self, $data, $lockfile) = @_;
+    my($self, $data, $snapshot) = @_;
 
     my @lines = split /\n/, $data;
 
@@ -102,7 +102,7 @@ sub parse {
             for my $trans (@{$state}) {
                 if (my @match = $line =~ $trans->{re}) {
                     if (my $code = $trans->{code}) {
-                        $code->($stash, $lockfile, @match);
+                        $code->($stash, $snapshot, @match);
                     }
                     if (my $goto = $trans->{goto}) {
                         $state = $machine->{$goto};

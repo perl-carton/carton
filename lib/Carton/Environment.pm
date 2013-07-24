@@ -3,18 +3,18 @@ use strict;
 use Moo;
 
 use Carton::CPANfile;
-use Carton::Lockfile;
+use Carton::Snapshot;
 use Carton::Error;
 use Path::Tiny;
 
 has cpanfile => (is => 'rw');
-has lockfile => (is => 'lazy');
+has snapshot => (is => 'lazy');
 has install_path => (is => 'rw', lazy => 1, builder => 1, coerce => sub { Path::Tiny->new($_[0])->absolute });
 has vendor_cache  => (is => 'lazy');
 
-sub _build_lockfile {
+sub _build_snapshot {
     my $self = shift;
-    Carton::Lockfile->new(path => $self->cpanfile->stringify . ".snapshot");
+    Carton::Snapshot->new(path => $self->cpanfile->stringify . ".snapshot");
 }
 
 sub _build_install_path {

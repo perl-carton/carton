@@ -13,7 +13,7 @@ use Scalar::Util qw(blessed);
 use Carton;
 use Carton::Builder;
 use Carton::Mirror;
-use Carton::Lockfile;
+use Carton::Snapshot;
 use Carton::Util;
 use Carton::Environment;
 use Carton::Error;
@@ -144,7 +144,7 @@ sub cmd_bundle {
     my($self, @args) = @_;
 
     my $env = Carton::Environment->build;
-    $env->lockfile->load;
+    $env->snapshot->load;
 
     $self->print("Bundling modules using @{[$env->cpanfile]}\n");
 
@@ -152,7 +152,7 @@ sub cmd_bundle {
         mirror => $self->mirror,
         cpanfile => $env->cpanfile,
     );
-    $builder->bundle($env->install_path, $env->vendor_cache, $env->lockfile);
+    $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
     $self->printf("Complete! Modules were bundled into %s\n", $env->vendor_cache, SUCCESS);
 }
@@ -172,9 +172,9 @@ sub cmd_install {
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
-    $env->lockfile->load_if_exists;
+    $env->snapshot->load_if_exists;
 
-    if ($deployment && !$env->lockfile->loaded) {
+    if ($deployment && !$env->snapshot->loaded) {
         $self->error("--deployment requires cpanfile.snapshot: Run `carton install` and make sure carton.lock is checked into your version control.\n");
     }
 
@@ -195,11 +195,11 @@ sub cmd_install {
     }
 
     # TODO merge CPANfile git to mirror even if lock doesn't exist
-    if ($env->lockfile->loaded) {
+    if ($env->snapshot->loaded) {
         my $index_file = $env->install_path->child("cache/modules/02packages.details.txt");
            $index_file->parent->mkpath;
 
-        $env->lockfile->write_index($index_file);
+        $env->snapshot->write_index($index_file);
         $builder->index($index_file);
     }
 
@@ -211,8 +211,8 @@ sub cmd_install {
 
     unless ($deployment) {
         $env->cpanfile->load;
-        $env->lockfile->find_installs($env->install_path, $env->cpanfile->requirements);
-        $env->lockfile->save;
+        $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
+        $env->snapshot->save;
     }
 
     $self->print("Complete! Modules were installed into @{[$env->install_path]}\n", SUCCESS);
@@ -222,10 +222,10 @@ sub cmd_show {
     my($self, @args) = @_;
 
     my $env = Carton::Environment->build;
-    $env->lockfile->load;
+    $env->snapshot->load;
 
     for my $module (@args) {
-        my $dist = $env->lockfile->find($module)
+        my $dist = $env->snapshot->find($module)
             or $self->error("Couldn't locate $module in cpanfile.snapshot\n");
         $self->print( $dist->name . "\n" );
     }
@@ -242,9 +242,9 @@ sub cmd_list {
     );
 
     my $env = Carton::Environment->build;
-    $env->lockfile->load;
+    $env->snapshot->load;
 
-    for my $dist ($env->lockfile->distributions) {
+    for my $dist ($env->snapshot->distributions) {
         $self->print($dist->$format . "\n");
     }
 }
@@ -253,10 +253,10 @@ sub cmd_tree {
     my($self, @args) = @_;
 
     my $env = Carton::Environment->build;
-    $env->lockfile->load;
+    $env->snapshot->load;
     $env->cpanfile->load;
 
-    my $requirements = Carton::Requirements->new(lockfile => $env->lockfile, requirements => $env->cpanfile->requirements);
+    my $requirements = Carton::Requirements->new(snapshot => $env->snapshot, requirements => $env->cpanfile->requirements);
 
     my %seen;
     my $dumper = sub {
@@ -278,17 +278,17 @@ sub cmd_check {
     );
 
     my $env = Carton::Environment->build($cpanfile_path);
-    $env->lockfile->load;
+    $env->snapshot->load;
     $env->cpanfile->load;
 
-    # TODO remove lockfile
+    # TODO remove snapshot
     # TODO pass git spec to Requirements?
-    my $requirements = Carton::Requirements->new(lockfile => $env->lockfile, requirements => $env->cpanfile->requirements);
+    my $requirements = Carton::Requirements->new(snapshot => $env->snapshot, requirements => $env->cpanfile->requirements);
     $requirements->walk_down(sub { });
 
     my @missing;
     for my $module ($requirements->all->required_modules) {
-        my $install = $env->lockfile->find_or_core($module);
+        my $install = $env->snapshot->find_or_core($module);
         if ($install) {
             unless ($requirements->all->accepts_module($module => $install->version_for($module))) {
                 push @missing, [ $module, 1, $install->version ];
@@ -327,11 +327,11 @@ sub cmd_update {
     my $cpanfile = Module::CPANfile->load($env->cpanfile);
     @args = grep { $_ ne 'perl' } $env->cpanfile->required_modules unless @args;
 
-    $env->lockfile->load;
+    $env->snapshot->load;
 
     my @modules;
     for my $module (@args) {
-        my $dist = $env->lockfile->find_or_core($module)
+        my $dist = $env->snapshot->find_or_core($module)
             or $self->error("Could not find module $module.\n");
         next if $dist->is_core;
         push @modules, "$module~" . $env->cpanfile->requirements_for_module($module);
@@ -343,15 +343,15 @@ sub cmd_update {
     );
     $builder->update($env->install_path, @modules);
 
-    $env->lockfile->find_installs($env->install_path, $env->cpanfile->requirements);
-    $env->lockfile->save;
+    $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
+    $env->snapshot->save;
 }
 
 sub cmd_exec {
     my($self, @args) = @_;
 
     my $env = Carton::Environment->build;
-    $env->lockfile->load;
+    $env->snapshot->load;
 
     # allows -Ilib
     @args = map { /^(-[I])(.+)/ ? ($1,$2) : $_ } @args;

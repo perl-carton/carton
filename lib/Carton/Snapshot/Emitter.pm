@@ -1,15 +1,15 @@
-package Carton::Lockfile::Emitter;
+package Carton::Snapshot::Emitter;
 use strict;
 use Moo;
 
 sub emit {
-    my($self, $lockfile) = @_;
+    my($self, $snapshot) = @_;
 
     my $data = '';
-    $data .= "# carton snapshot format: version @{[$lockfile->version]}\n";
+    $data .= "# carton snapshot format: version @{[$snapshot->version]}\n";
     $data .= "DISTRIBUTIONS\n";
 
-    for my $dist (sort { $a->name cmp $b->name } $lockfile->distributions) {
+    for my $dist (sort { $a->name cmp $b->name } $snapshot->distributions) {
         $data .= "  @{[$dist->name]}\n";
         $data .= "    pathname: @{[$dist->pathname]}\n";
 

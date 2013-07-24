@@ -28,9 +28,9 @@ sub custom_mirror {
 }
 
 sub bundle {
-    my($self, $path, $cache_path, $lockfile) = @_;
+    my($self, $path, $cache_path, $snapshot) = @_;
 
-    for my $dist ($lockfile->distributions) {
+    for my $dist ($snapshot->distributions) {
         my $source = $path->child("cache/authors/id/" . $dist->pathname);
         my $target = $cache_path->child("authors/id/" . $dist->pathname);
 

@@ -1,4 +1,4 @@
-package Carton::Lockfile;
+package Carton::Snapshot;
 use strict;
 use Config;
 use Carton::Dist;
@@ -7,8 +7,8 @@ use Carton::Error;
 use Carton::Package;
 use Carton::Index;
 use Carton::Util;
-use Carton::Lockfile::Emitter;
-use Carton::Lockfile::Parser;
+use Carton::Snapshot::Emitter;
+use Carton::Snapshot::Parser;
 use CPAN::Meta;
 use CPAN::Meta::Requirements;
 use File::Find ();
@@ -17,10 +17,10 @@ use Path::Tiny ();
 use Module::CoreList;
 use Moo;
 
-use constant CARTON_LOCK_VERSION => '1.0';
+use constant CARTON_SNAPSHOT_VERSION => '1.0';
 
 has path    => (is => 'rw', coerce => sub { Path::Tiny->new($_[0]) });
-has version => (is => 'rw', default => sub { CARTON_LOCK_VERSION });
+has version => (is => 'rw', default => sub { CARTON_SNAPSHOT_VERSION });
 has loaded  => (is => 'rw');
 has _distributions => (is => 'rw', default => sub { +[] });
 
@@ -35,13 +35,13 @@ sub load {
     return 1 if $self->loaded;
 
     if ($self->path->is_file) {
-        my $parser = Carton::Lockfile::Parser->new;
+        my $parser = Carton::Snapshot::Parser->new;
         $parser->parse($self->path->slurp_utf8, $self);
         $self->loaded(1);
 
         return 1;
     } else {
-        Carton::Error::LockfileNotFound->throw(
+        Carton::Error::SnapshotNotFound->throw(
             error => "Can't find cpanfile.snapshot: Run `carton install` to build the lock file.",
             path => $self->path,
         );
@@ -50,7 +50,7 @@ sub load {
 
 sub save {
     my $self = shift;
-    $self->path->spew_utf8( Carton::Lockfile::Emitter->new->emit($self) );
+    $self->path->spew_utf8( Carton::Snapshot::Emitter->new->emit($self) );
 }
 
 sub find {

@@ -5,8 +5,8 @@ use Exception::Class (
     'Carton::Error::CommandNotFound' => { isa => 'Carton::Error' },
     'Carton::Error::CommandExit' => { isa => 'Carton::Error', fields => [ 'code' ] },
     'Carton::Error::CPANfileNotFound' => { isa => 'Carton::Error' },
-    'Carton::Error::LockfileParseError' => { isa => 'Carton::Error', fields => [ 'path' ] },
-    'Carton::Error::LockfileNotFound' => { isa => 'Carton::Error', fields => [ 'path' ] },
+    'Carton::Error::SnapshotParseError' => { isa => 'Carton::Error', fields => [ 'path' ] },
+    'Carton::Error::SnapshotNotFound' => { isa => 'Carton::Error', fields => [ 'path' ] },
 );
 
 1;
