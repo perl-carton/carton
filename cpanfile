@@ -22,6 +22,7 @@ requires 'ExtUtils::MakeMaker', 6.64;
 requires 'Module::Build', 0.4004;
 requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
+requires 'Module::CoreList';
 
 on develop => sub {
     requires 'Test::More', 0.90;
