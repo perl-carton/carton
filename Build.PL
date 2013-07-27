@@ -17,10 +17,10 @@ my %module_build_args = (
   "dist_author" => [
     "Tatsuhiko Miyagawa"
   ],
-  "dist_name" => "carton",
-  "dist_version" => "v0.9.67",
+  "dist_name" => "Carton",
+  "dist_version" => "v0.9.68",
   "license" => "perl",
-  "module_name" => "carton",
+  "module_name" => "Carton",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
@@ -33,6 +33,7 @@ my %module_build_args = (
     "JSON" => "2.53",
     "Module::Build" => "0.4004",
     "Module::CPANfile" => "0.9031",
+    "Module::CoreList" => 0,
     "Module::Metadata" => "1.000003",
     "Moo" => "1.002",
     "Path::Tiny" => "0.022",

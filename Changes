@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v0.9.68  2013-07-26 17:49:28 PDT
+        - Change the distribution name case, to match with the module name
+        - Add Module::CoreList as a dependency for perl 5.8
+
 v0.9.67  2013-07-24 14:53:53 PDT
         - Use cpanm's fatscript interface rather than share dir
 
