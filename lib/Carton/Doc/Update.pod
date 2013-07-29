@@ -1,0 +1,40 @@
+=head1 NAME
+
+Carton::Doc::Update - Update the dependencies
+
+=head1 SYNOPSIS
+
+  carton update [module]
+
+=head1 DESCRIPTION
+
+Update the dependencies version for your application.
+
+Carton is designed to update your dependency in a conservative way,
+meaning that it doesn't update modules that aren't explicitly required
+to.
+
+C<carton update> is a command to explicitly update one or all of
+modules in your cpanfile to the latest available that satisfies the
+requirements in cpanfile.
+
+=head1 EXAMPLE
+
+Suppose you have a cpanfile with:
+
+    requires 'DBI', '1.600';
+    requires 'Plack', '== 1.0011';
+
+and then run C<carton install> to get DBI 1.610 (the latest at that
+time) and Plack 1.0011 (as specified in the requirement).
+
+A few weeks later, DBI and Plack have been updated a couple of
+times. Running C<carton install> I<won't> update the versions, because
+the installed versions satisfy the requirements in C<cpanfile>.
+
+Running C<carton update> will update DBI to the latest version, say
+1.611, because the version still satisfies the requirement. However,
+it won't update Plack's version, since whatever latest version on CPAN
+will not satisfy the Plack's requirement C<== 1.0011> because it wants
+an exact version.
+
