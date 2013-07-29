@@ -40,7 +40,8 @@ carton definitely shares the goal with these private CPAN repository
 management tool. But the main difference is that rather than creating
 an actual CPAN-like repository that works with any CPAN clients,
 Carton provides a way to install specific versions of distributions
-from CPAN, or any CPAN-like mirrors, as well as git repositories.
+from CPAN, or any CPAN-like mirrors (as well as git repositories in
+the future version of Carton).
 
 Existing tools are designed to work I<with> CPAN clients such as
 L<CPAN> or L<CPANPLUS>, and have accomplished that by working around
