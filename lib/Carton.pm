@@ -38,6 +38,10 @@ Carton only works with perl installation with the complete set of core
 modules. If you use perl installed by a vendor package with modules
 stripped from core, Carton is not expected to work correctly.
 
+Also, Carton requires you to run your command/application with
+C<carton exec> command, which means it's difficult or impossible to
+run in an embedded perl use case such as mod_perl.
+
 =head1 DESCRIPTION
 
 carton is a command line tool to track the Perl module dependencies
