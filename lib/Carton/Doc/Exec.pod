@@ -9,8 +9,8 @@ Carton::Doc::Exec - execute your script in a carton local environment
 =head1 DESCRIPTION
 
 This command allows you to run your script in an isolated carton local
-environment, which means the whole perl 5 library path C<@INC> are the
-only ones from perl's core library path, carton's library path
+environment, which means the perl 5 library path C<@INC> are the only
+ones from perl's core library path, carton's library path
 (i.e. C<local/lib/perl5>) and the current directory.
 
 This is useful to make sure your scripts and application use the exact
