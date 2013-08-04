@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.3, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Dist::Milla version v1.0.3, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.132140",
    "license" : [
       "perl_5"
    ],
@@ -46,7 +46,7 @@
       },
       "runtime" : {
          "requires" : {
-            "App::cpanminus" : "1.6929",
+            "App::cpanminus" : "1.6935",
             "CPAN::Meta" : "2.120921",
             "CPAN::Meta::Requirements" : "2.121",
             "Exception::Class" : "1.32",
@@ -66,7 +66,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/miyagawa/carton/issues"
@@ -78,7 +78,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v0.9.68",
+   "version" : "v1.0.0",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",

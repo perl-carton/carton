@@ -24,6 +24,16 @@ quality till its version hits v1.0.0. Things might be broken, not all
 features have been implemented, and APIs are likely to change. YOU
 HAVE BEEN WARNED.__
 
+# AVAILABILITY
+
+Carton only works with perl installation with the complete set of core
+modules. If you use perl installed by a vendor package with modules
+stripped from core, Carton is not expected to work correctly.
+
+Also, Carton requires you to run your command/application with
+`carton exec` command, which means it's difficult or impossible to
+run in an embedded perl use case such as mod\_perl.
+
 # DESCRIPTION
 
 carton is a command line tool to track the Perl module dependencies

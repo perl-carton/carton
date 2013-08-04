@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.0  2013-08-04 12:29:31 PDT
+        - This makes 1.0 release
+        - Documentation update
+        - Bump cpanm dependency
+
 v0.9.68  2013-07-26 17:49:28 PDT
         - Change the distribution name case, to match with the module name
         - Add Module::CoreList as a dependency for perl 5.8
