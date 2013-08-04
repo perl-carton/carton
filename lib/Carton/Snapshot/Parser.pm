@@ -68,7 +68,7 @@ my $machine = {
     ],
     properties => [
         {
-            re => qr/^\s{6}([0-9A-Za-z_:]+) (v?[0-9\._]+|undef)/,
+            re => qr/^\s{6}([0-9A-Za-z_:]+) ([v0-9\._,=\!<>\s]+|undef)/,
             code => sub {
                 my($stash, $snapshot, $module, $version) = @_;
 
