@@ -1,0 +1,17 @@
+=head1 NAME
+
+Carton::Doc::Bundle - Bundle cached tarballs in vendor/cache
+
+=head1 SYNOPSIS
+
+  carton bundle
+
+=head1 DESCRIPTION
+
+This command bundles cached tarballs into C<vendor/cache>
+directory. These tarballs have been cached in C<local/cache> while
+resolving dependencies in the snapshot file.snapshot.
+
+Bundled modules can be committed to a version control system, or
+transferred to another host with scp/rsync etc. to use with C<carton
+install --cached>.

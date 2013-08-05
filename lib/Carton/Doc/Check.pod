@@ -8,14 +8,13 @@ Carton::Doc::Check - Check if your cpanfile and local environment are in sync
 
 =head1 DESCRIPTION
 
-This command checks the consistency between your cpanfile and the
-local environment.
+This command checks the consistency between your C<cpanfile>,
+C<cpanfile.snapshot> and the local environment.
 
 =head2 MISSING MODULES
 
 If one or more of the modules specified in your I<cpanfile> are not
-found in your local environment, C<carton check> will warn you about
-this:
+found in your snapshot, C<carton check> will warn you about this:
 
   $ carton check
   Following dependencies are not satisfied.

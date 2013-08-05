@@ -4,7 +4,7 @@ Carton::Doc::Install - Install the dependencies
 
 =head1 SYNOPSIS
 
-  carton install [--deployment] [--path=PATH] [--without develop]
+  carton install [--deployment] [--cached] [--path=PATH] [--without develop]
 
 =head1 DESCRIPTION
 
@@ -23,7 +23,7 @@ the modules.
 
 =back
 
-In either way, if you run C<carton install> for the first time
+If you run C<carton install> for the first time
 (i.e. I<cpanfile.snapshot> does not exist), carton will fetch all the
 modules specified, resolve dependencies and install all required
 modules from CPAN.
@@ -40,8 +40,8 @@ commit the changes as you update your dependencies.
 =head2 DEPLOYMENT MODE
 
 If you specify the C<--deployment> command line option or the
-I<cpanfile.snapshot> exists, carton will fetch all remote modules and use
-the dependencies specified in the I<cpanfile.snapshot> instead of resolving
+I<cpanfile.snapshot> exists, carton will only use the dependencies
+specified in the I<cpanfile.snapshot> instead of resolving
 dependencies.
 
 =head1 OPTIONS
@@ -50,7 +50,14 @@ dependencies.
 
 =item --deployment
 
-Force the deployment mode and carton will ignore I<cpanfile> contents.
+Force the deployment mode. See L</"DEPLOYMENT MODE"> above.
+
+=item --cache
+
+Locate distribution tarballs in C<vendor/cache> rather than fetching
+them from CPAN mirrors. This requires you to run C<carton bundle>
+prior to the deployment and commit or sync the content of C<vendor>
+directory to the other host you run C<carton install> on.
 
 =item --cpanfile
 
@@ -67,6 +74,12 @@ well as install directory (C<local>) and C<vendor/cache> relative to it.
 
 Specify the path to install modules to. Defaults to I<local> in the
 directory relative to where C<cpanfile> is.
+
+B<NOTE>: this option, as of version 1.0, is not preserved across
+multiple runs of C<carton install> or other commands such as C<carton
+list> or C<carton exec>. You can choose to set the path in
+C<PERL_CARTON_PATH> envrionment variable to persist it across
+commands.
 
 =item --without
 
