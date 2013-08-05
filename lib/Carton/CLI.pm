@@ -52,7 +52,7 @@ sub run {
 
     my $code = try {
         my $call = $self->can("cmd_$cmd")
-          or Carton::Error::CommandNotFound->throw(error => "Could not find command '$cmd'");
+            or Carton::Error::CommandNotFound->throw(error => "Could not find command '$cmd'");
         $self->$call(@commands);
         return 0;
     } catch {
@@ -60,6 +60,10 @@ sub run {
 
         if ($_->isa('Carton::Error::CommandExit')) {
             return $_->code || 255;
+        } elsif ($_->isa('Carton::Error::CommandNotFound')) {
+            warn $_->error, "\n\n";
+            $self->cmd_usage;
+            return 255;
         } elsif ($_->isa('Carton::Error')) {
             warn $_->error, "\n";
             return 255;
