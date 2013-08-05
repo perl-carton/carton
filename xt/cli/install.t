@@ -14,5 +14,17 @@ EOF
     unlike $app->stderr, qr/Could not parse snapshot file/;
 };
 
+subtest 'meta info for ancient modules' => sub {
+    my $app = cli();
+    $app->write_cpanfile(<<EOF);
+requires 'Algorithm::Diff';
+EOF
+
+    $app->run("install");
+    $app->run("list");
+
+    like $app->stdout, qr/Algorithm-Diff/;
+};
+
 done_testing;
 
