@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.3  2013-08-05 10:17:59 PDT
+        - Update obsolete docs
+        - Added missing docs to some commands
+
 v1.0.2  2013-08-04 21:49:14 PDT
         - Bump cpanm dependency to deal with old dists with ancient META.yml (tokuhirom)
 
