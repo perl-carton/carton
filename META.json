@@ -46,7 +46,7 @@
       },
       "runtime" : {
          "requires" : {
-            "App::cpanminus" : "1.6935",
+            "App::cpanminus" : "1.6936",
             "CPAN::Meta" : "2.120921",
             "CPAN::Meta::Requirements" : "2.121",
             "Exception::Class" : "1.32",
@@ -78,7 +78,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v1.0.1",
+   "version" : "v1.0.2",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",

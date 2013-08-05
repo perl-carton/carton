@@ -18,13 +18,13 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "Carton",
-  "dist_version" => "v1.0.1",
+  "dist_version" => "v1.0.2",
   "license" => "perl",
   "module_name" => "Carton",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "App::cpanminus" => "1.6935",
+    "App::cpanminus" => "1.6936",
     "CPAN::Meta" => "2.120921",
     "CPAN::Meta::Requirements" => "2.121",
     "Exception::Class" => "1.32",
