@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.1  2013-08-04 17:10:10 PDT
+        - Update docs
+        - Fixed bug where version range requirements are not properly preserved in the snapshot #117 (lestrrat)
+
 v1.0.0  2013-08-04 12:29:31 PDT
         - This makes 1.0 release
         - Documentation update

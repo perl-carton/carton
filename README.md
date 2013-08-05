@@ -17,13 +17,6 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
     > carton install
     > carton exec starman -p 8080 myapp.psgi
 
-# WARNING
-
-__This software is under heavy development and considered ALPHA
-quality till its version hits v1.0.0. Things might be broken, not all
-features have been implemented, and APIs are likely to change. YOU
-HAVE BEEN WARNED.__
-
 # AVAILABILITY
 
 Carton only works with perl installation with the complete set of core
