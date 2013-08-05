@@ -38,27 +38,27 @@ run in an embedded perl use case such as mod_perl.
 =head1 DESCRIPTION
 
 carton is a command line tool to track the Perl module dependencies
-for your Perl application. The managed dependencies are tracked in a
-I<cpanfile.snapshot> file, which is meant to be version controlled, and the
-snapshot file allows other developers of your application will have the
-exact same versions of the modules.
+for your Perl application. Dependencies are declared using L<cpanfile>
+format, and the managed dependencies are tracked in a
+I<cpanfile.snapshot> file, which is meant to be version controlled,
+and the snapshot file allows other developers of your application will
+have the exact same versions of the modules.
 
 =head1 TUTORIAL
 
 =head2 Initializing the environment
 
-carton will use the I<.carton> directory for local configuration and
-the I<local> directory to install modules into. You're recommended to
-exclude these directories from the version control system.
+carton will use the I<local> directory to install modules into. You're
+recommended to exclude these directories from the version control
+system.
 
-  > echo .carton/ >> .gitignore
   > echo local/ >> .gitignore
   > git add cpanfile.snapshot
   > git commit -m "Start using carton"
 
 =head2 Tracking the dependencies
 
-You can manage the dependencies of your application via I<cpanfile>.
+You can manage the dependencies of your application via C<cpanfile>.
 
   # cpanfile
   requires 'Plack', 0.9980;
@@ -86,11 +86,15 @@ Once you've done installing all the dependencies, you can push your
 application directory to a remote machine (excluding I<local> and
 I<.carton>) and run the following command:
 
-  > carton install
+  > carton install --deployment
 
 This will look at the I<cpanfile.snapshot> and install the exact same
 versions of the dependencies into I<local>, and now your application
 is ready to run.
+
+The C<--deployment> flag makes sure that carton will only install
+modules and versions available in your snapshot, and won't fallback to
+query for CPAN Meta DB for missing modules.
 
 =head2 Bundling modules
 
@@ -104,9 +108,10 @@ will bundle these tarballs into I<vendor/cache> directory, and
 
   > carton install --cached
 
-will install modules using this local cache. This way you can avoid
-querying for a database like CPAN Meta DB or CPAN mirrors upon
-deployment time.
+will install modules using this local cache. Combined with
+C<--deployment> option, you can avoid querying for a database like
+CPAN Meta DB or downloading files from CPAN mirrors upon deployment
+time.
 
 =head1 COMMUNITY
 
