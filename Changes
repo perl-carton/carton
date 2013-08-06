@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.4  2013-08-05 19:20:11 PDT
+        - Bump cpanm to deal with failing to extract versions with version.pm #120 (lestrrat)
+
 v1.0.3  2013-08-05 10:17:59 PDT
         - Update obsolete docs
         - Added missing docs to some commands
