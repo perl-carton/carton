@@ -39,5 +39,18 @@ EOF
     unlike $app->stderr, qr/is not installed/;
 };
 
+subtest 'meta info for modules with qv()' => sub {
+    my $app = cli();
+    $app->write_cpanfile(<<EOF);
+requires 'CPAN::Test::Dummy::Perl5::VersionQV', 'v0.1.0';
+EOF
+
+    $app->run("install");
+    $app->run("check");
+
+    like $app->stdout, qr/are satisfied/;
+    unlike $app->stderr, qr/is not installed/;
+};
+
 done_testing;
 
