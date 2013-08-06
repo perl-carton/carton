@@ -26,5 +26,18 @@ EOF
     like $app->stdout, qr/Algorithm-Diff/;
 };
 
+subtest 'meta info for modules with version->declare' => sub {
+    my $app = cli();
+    $app->write_cpanfile(<<EOF);
+requires 'CPAN::Test::Dummy::Perl5::VersionDeclare', 'v0.0.1';
+EOF
+
+    $app->run("install");
+    $app->run("check");
+
+    like $app->stdout, qr/are satisfied/;
+    unlike $app->stderr, qr/is not installed/;
+};
+
 done_testing;
 
