@@ -118,7 +118,7 @@ time.
 When you take a snapshot in one perl version and deploy on another
 (different) version, you might have troubles with core modules.
 
-The simples solution, which might not work for everybody, is to use
+The simplest solution, which might not work for everybody, is to use
 the same version of perl in the development and deployment.
 
 To enforce that, you're recommended to use L<plenv> and
