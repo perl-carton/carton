@@ -78,7 +78,7 @@ sub commands {
 
     no strict 'refs';
     map { s/^cmd_//; $_ }
-        grep /^cmd_(.*)/, sort keys %{__PACKAGE__."::"};
+        grep { /^cmd_.*/ && $self->can($_) } sort keys %{__PACKAGE__."::"};
 }
 
 sub cmd_usage {
