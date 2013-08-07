@@ -52,7 +52,7 @@ dependencies.
 
 Force the deployment mode. See L</"DEPLOYMENT MODE"> above.
 
-=item --cache
+=item --cached
 
 Locate distribution tarballs in C<vendor/cache> rather than fetching
 them from CPAN mirrors. This requires you to run C<carton bundle>
