@@ -8,7 +8,8 @@ has module_version => (is => 'ro');
 sub BUILDARGS {
     my($class, %args) = @_;
 
-    $args{name} = "perl-$]";
+    # TODO represent dual-life
+    $args{name} =~ s/::/-/g;
 
     \%args;
 }
