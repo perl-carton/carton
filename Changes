@@ -2,6 +2,11 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.5  2013-08-08 12:50:39 PDT
+        - Bump cpanm for version extraction #126
+        - Fix doc about --cached (shibayu36)
+        - Fix Usage errors #123
+
 v1.0.4  2013-08-05 19:20:11 PDT
         - Bump cpanm to deal with failing to extract versions with version.pm #120 (lestrrat)
 

@@ -105,6 +105,24 @@ will install modules using this local cache. Combined with
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
 
+# PERL VERSIONS
+
+When you take a snapshot in one perl version and deploy on another
+(different) version, you might have troubles with core modules.
+
+The simplest solution, which might not work for everybody, is to use
+the same version of perl in the development and deployment.
+
+To enforce that, you're recommended to use [plenv](http://search.cpan.org/perldoc?plenv) and
+`.perl-version` to lock perl versions in development.
+
+You can also specify the minimum perl required in `cpanfile`:
+
+    requires 'perl', '5.16.3';
+
+and carton (and cpanm) will give you errors when deployed on hosts
+with perl lower than the specified version.
+
 # COMMUNITY
 
 - [https://github.com/miyagawa/carton](https://github.com/miyagawa/carton)
