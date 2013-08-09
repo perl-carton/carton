@@ -360,7 +360,7 @@ sub cmd_exec {
 
     while (@args) {
         if ($args[0] eq '-I') {
-            warn "exec -Ilib is deprecated. Just run the following command with -I.\n";
+            warn "exec -Ilib is deprecated. You might want to run: carton exec perl -Ilib ...\n";
             splice(@args, 0, 2);
         } else {
             last;
