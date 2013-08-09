@@ -1,0 +1,48 @@
+=head1 NAME
+
+Carton::Doc::Upgrading - Upgrading document
+
+=head1 UPGRADING
+
+Carton adds, changes and deprecates some features between major
+releases in backward incompatible ways. Here's the list of major
+changes between versions. See C<Changes> file for more details.
+
+=head2 v0.9 to v1.0
+
+=over 4
+
+=item *
+
+C<carton exec -Ilib> is deprecated. You must pass the optional include
+path to perl interpreter in the normal way, like:
+
+  carton exec perl -Ilib myscript
+
+Or make your script to take its own C<-I> option, like many command line
+launcher does (i.e. plackup, prove)
+
+  carton exec plackup -Ilib myapp.psgi
+
+=item *
+
+C<carton.lock> is now C<cpanfile.snapshot>. Its name and file format
+has been changed. There's no automatic migration, but you can do:
+
+  # run with Carton v0.9.64
+  > carton install
+
+  # upgrade to Carton v1.0
+  > cpanm Carton
+  > carton install
+  > git add cpanfile.snapshot
+  > git rm carton.lock
+
+This process will most likely preserve modules in your local library.
+
+=item *
+
+cpanfile is now a requirement, and extracting requirements from build
+files (C<Makefile.PL>, C<Build.PL>) is not supported.
+
+=back
