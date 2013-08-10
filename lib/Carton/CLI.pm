@@ -157,6 +157,9 @@ sub cmd_bundle {
     );
     $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
+    require Carton::Packer;
+    Carton::Packer->new->fatpack_carton($env->vendor_bin);
+
     $self->printf("Complete! Modules were bundled into %s\n", $env->vendor_cache, SUCCESS);
 }
 

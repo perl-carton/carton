@@ -38,6 +38,11 @@ sub _build_tree {
     Carton::Tree->new(cpanfile => $self->cpanfile, snapshot => $self->snapshot);
 }
 
+sub vendor_bin {
+    my $self = shift;
+    $self->vendor_cache->parent->child('bin');
+}
+
 sub build_with {
     my($class, $cpanfile) = @_;
 

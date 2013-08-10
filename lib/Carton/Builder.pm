@@ -1,13 +1,14 @@
 package Carton::Builder;
 use strict;
-use Module::Metadata;
 use Moo;
+no warnings 'once';
 
 has mirror  => (is => 'rw');
 has index   => (is => 'rw');
 has cascade => (is => 'rw', default => sub { 1 });
 has without => (is => 'rw', default => sub { [] });
 has cpanfile => (is => 'rw');
+has fatscript => (is => 'lazy');
 
 sub effective_mirrors {
     my $self = shift;
@@ -85,12 +86,29 @@ sub update {
     ) or die "Updating modules failed\n";
 }
 
+sub _build_fatscript {
+    my $self = shift;
+
+    my $fatscript;
+    if ($Carton::Fatpacked) {
+        require Module::Reader;
+        my $content = Module::Reader::module_content('App::cpanminus::fatscript')
+            or die "Can't locate App::cpanminus::fatscript";
+        $fatscript = Path::Tiny->tempfile;
+        $fatscript->spew($content);
+    } else {
+        require Module::Metadata;
+        $fatscript = Module::Metadata->find_module_by_name("App::cpanminus::fatscript")
+            or die "Can't locate App::cpanminus::fatscript.";
+    }
+
+    return $fatscript;
+}
+
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    my $path = Module::Metadata->find_module_by_name("App::cpanminus::fatscript")
-        or die "Can't locate App::cpanminus::fatscript.";
-    !system $^X, $path, "--quiet", "--notest", @args;
+    !system $^X, $self->fatscript, "--quiet", "--notest", @args;
 }
 
 1;
