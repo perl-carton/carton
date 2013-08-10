@@ -99,7 +99,7 @@ sub _build_fatscript {
     } else {
         require Module::Metadata;
         $fatscript = Module::Metadata->find_module_by_name("App::cpanminus::fatscript")
-            or die "Can't locate App::cpanminus::fatscript.";
+            or die "Can't locate App::cpanminus::fatscript";
     }
 
     return $fatscript;
