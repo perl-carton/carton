@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "Carton",
-  "dist_version" => "v1.0.6",
+  "dist_version" => "v1.0.7",
   "license" => "perl",
   "module_name" => "Carton",
   "recommends" => {},
@@ -41,7 +41,6 @@ my %module_build_args = (
     "Moo" => "1.002",
     "Path::Tiny" => "0.022",
     "Try::Tiny" => "0.09",
-    "local::lib" => "1.008",
     "parent" => "0.223",
     "perl" => "v5.8.5"
   },

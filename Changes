@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.7  2013-08-10 21:55:29 PDT
+        - Worked around fatpack issue with perl < 5.16 with missing File::Spec
+        - Included missing requirements for fatpack executable
+
 v1.0.6  2013-08-10 17:59:51 PDT
         - Added upgrading documentation (carton help upgrading)
         - Experimental support for fatpacked carton executable in vendor/bin in bundle

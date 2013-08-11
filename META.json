@@ -62,7 +62,6 @@
             "Moo" : "1.002",
             "Path::Tiny" : "0.022",
             "Try::Tiny" : "0.09",
-            "local::lib" : "1.008",
             "parent" : "0.223",
             "perl" : "v5.8.5"
          }
@@ -80,7 +79,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v1.0.6",
+   "version" : "v1.0.7",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
