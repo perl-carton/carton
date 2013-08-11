@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.6  2013-08-10 17:59:51 PDT
+        - Added upgrading documentation (carton help upgrading)
+        - Experimental support for fatpacked carton executable in vendor/bin in bundle
+
 v1.0.5  2013-08-08 12:50:39 PDT
         - Bump cpanm for version extraction #126
         - Fix doc about --cached (shibayu36)

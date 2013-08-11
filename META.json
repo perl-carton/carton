@@ -38,7 +38,6 @@
       "develop" : {
          "requires" : {
             "Capture::Tiny" : "0",
-            "File::pushd" : "0",
             "Test::More" : "0.9",
             "Test::Pod" : "1.41",
             "Test::Requires" : "0"
@@ -46,17 +45,20 @@
       },
       "runtime" : {
          "requires" : {
+            "App::FatPacker" : "0.009018",
             "App::cpanminus" : "1.694",
             "CPAN::Meta" : "2.120921",
             "CPAN::Meta::Requirements" : "2.121",
             "Exception::Class" : "1.32",
             "ExtUtils::MakeMaker" : "6.64",
+            "File::pushd" : "0",
             "Getopt::Long" : "2.39",
             "JSON" : "2.53",
             "Module::Build" : "0.4004",
             "Module::CPANfile" : "0.9031",
             "Module::CoreList" : "0",
             "Module::Metadata" : "1.000003",
+            "Module::Reader" : "0.002",
             "Moo" : "1.002",
             "Path::Tiny" : "0.022",
             "Try::Tiny" : "0.09",
@@ -78,7 +80,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v1.0.5",
+   "version" : "v1.0.6",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
