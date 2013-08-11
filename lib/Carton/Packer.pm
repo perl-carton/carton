@@ -80,7 +80,8 @@ sub installed_meta {
     my @meta;
     my $finder = sub {
         if (m!\b$dist-.*[\\/]MYMETA.json!) {
-            push @meta, CPAN::Meta->load_file($_);
+            my $meta = CPAN::Meta->load_file($_);
+            push @meta, $meta if $meta->name eq $dist;
         }
     };
 
