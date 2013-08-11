@@ -35,6 +35,10 @@ EOF
         $packer->fatpack_file($file);
     };
 
+    # HACK: File::Spec bundled into arch in < 5.16, but is loadable as pure-perl
+    use Config;
+    $fatpacked =~ s/\$fatpacked{"$Config{archname}\/(Cwd|File)/\$fatpacked{"$1/g;
+
     my $executable = $dir->child('carton');
     warn "Bundling $executable\n";
 
