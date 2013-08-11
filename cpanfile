@@ -10,7 +10,6 @@ requires 'Module::CPANfile', 0.9031;
 
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
-requires 'local::lib', 1.008;
 requires 'Exception::Class', 1.32;
 requires 'Getopt::Long', 2.39;
 requires 'Moo', 1.002;
@@ -20,6 +19,7 @@ requires 'Path::Tiny', 0.022;
 requires 'App::cpanminus', 1.6940;
 requires 'ExtUtils::MakeMaker', 6.64;
 requires 'Module::Build', 0.4004;
+
 requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
 requires 'Module::CoreList';
