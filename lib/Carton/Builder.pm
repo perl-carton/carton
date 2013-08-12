@@ -64,6 +64,7 @@ sub install {
 sub groups {
     my $self = shift;
 
+    # TODO support --without test (don't need test on deployment)
     my @options = ('--with-all-features', '--with-develop');
 
     for my $group (@{$self->without}) {
