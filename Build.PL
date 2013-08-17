@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "Carton",
-  "dist_version" => "v1.0.8",
+  "dist_version" => "v1.0.9",
   "license" => "perl",
   "module_name" => "Carton",
   "recommends" => {},
