@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.8  2013-08-16 18:38:14 PDT
+        - Include POD documentation for carton(1)
+
 v1.0.7  2013-08-10 21:55:29 PDT
         - Worked around fatpack issue with perl < 5.16 with missing File::Spec
         - Included missing requirements for fatpack executable
