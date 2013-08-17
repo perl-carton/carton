@@ -4,3 +4,24 @@ use 5.008001;
 use Carton::CLI;
 
 exit Carton::CLI->new->run(@ARGV);
+
+__END__
+
+=head1 NAME
+
+carton - Perl module dependency manager
+
+=head1 SYNOPSIS
+
+  > carton install
+  > carton exec ./myscript
+
+=head1 DESCRIPTION
+
+For more documentation, refer to L<Carton> by running C<perldoc Carton> or C<carton --help>.
+
+=head1 SEE ALSO
+
+L<Carton>
+
+=cut
