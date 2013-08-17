@@ -134,7 +134,7 @@ sub error {
 
 sub cmd_help {
     my $self = shift;
-    my $module = $_[0] ? ("Carton::Doc::" . ucfirst $_[0]) : "Carton";
+    my $module = $_[0] ? ("Carton::Doc::" . ucfirst $_[0]) : "Carton.pm";
     system "perldoc", $module;
 }
 
