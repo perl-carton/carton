@@ -44,6 +44,8 @@ I<cpanfile.snapshot> file, which is meant to be version controlled,
 and the snapshot file allows other developers of your application will
 have the exact same versions of the modules.
 
+For C<cpanfile> syntax, see L<cpanfile> documentation.
+
 =head1 TUTORIAL
 
 =head2 Initializing the environment
@@ -160,6 +162,8 @@ This software is licensed under the same terms as Perl itself.
 =head1 SEE ALSO
 
 L<cpanm>
+
+L<cpanfile>
 
 L<Bundler|http://gembundler.com/>
 
