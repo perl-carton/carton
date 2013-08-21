@@ -55,7 +55,7 @@ recommended to exclude these directories from the version control
 system.
 
   > echo local/ >> .gitignore
-  > git add cpanfile.snapshot
+  > git add cpanfile cpanfile.snapshot
   > git commit -m "Start using carton"
 
 =head2 Tracking the dependencies
@@ -74,10 +74,11 @@ The modules are installed into your I<local> directory, and the
 dependencies tree and version information are analyzed and saved into
 I<cpanfile.snapshot> in your directory.
 
-Make sure you add I<cpanfile.snapshot> to your version controlled repository
-and commit changes as you update dependencies. This will ensure that
-other developers on your app, as well as your deployment environment,
-use exactly the same versions of the modules you just installed.
+Make sure you add I<cpanfile> and I<cpanfile.snapshot> to your version
+controlled repository and commit changes as you update
+dependencies. This will ensure that other developers on your app, as
+well as your deployment environment, use exactly the same versions of
+the modules you just installed.
 
   > git add cpanfile cpanfile.snapshot
   > git commit -m "Added Plack and Starman"
