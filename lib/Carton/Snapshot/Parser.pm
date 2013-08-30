@@ -90,7 +90,7 @@ my $machine = {
 sub parse {
     my($self, $data, $snapshot) = @_;
 
-    my @lines = split /\n/, $data;
+    my @lines = split /\r?\n/, $data;
 
     my $state = $machine->{init};
     my $stash = {};

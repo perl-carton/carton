@@ -44,5 +44,22 @@ EOF
     like $app->stderr, qr/Could not parse/;
 };
 
+subtest 'snapshot file support separate CRLF' => sub {
+    my $app = cli();
+    $app->write_cpanfile(<<EOF);
+requires 'Try::Tiny', '== 0.11';
+requires 'Getopt::Long', '2.41';
+EOF
+
+    $app->run("install");
+
+    my $content = $app->dir->child('cpanfile.snapshot')->slurp;
+    $content =~ s/\n/\r\n/g;
+    $app->write_file('cpanfile.snapshot', $content);
+
+    $app->run("install");
+    ok !$app->stderr;
+};
+
 done_testing;
 
