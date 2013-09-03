@@ -14,8 +14,8 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
 
   # On your development environment
   > cat cpanfile
-  requires 'Plack', 0.9980;
-  requires 'Starman', 0.2000;
+  requires 'Plack', '0.9980';
+  requires 'Starman', '0.2000';
 
   > carton install
   > git add cpanfile cpanfile.snapshot
@@ -63,8 +63,8 @@ system.
 You can manage the dependencies of your application via C<cpanfile>.
 
   # cpanfile
-  requires 'Plack', 0.9980;
-  requires 'Starman', 0.2000;
+  requires 'Plack', '0.9980';
+  requires 'Starman', '0.2000';
 
 And then you can install these dependencies via:
 
