@@ -1,6 +1,6 @@
 package Carton::Mirror;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 our $DefaultMirror = 'http://cpan.metacpan.org/';
 

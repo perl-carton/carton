@@ -1,6 +1,6 @@
 package Carton::Package;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 has name     => (is => 'ro');
 has version  => (is => 'ro');

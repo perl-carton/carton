@@ -1,7 +1,7 @@
 package Carton::Dist;
-use strict;
-use CPAN::Meta;
 use Moo;
+use warnings NONFATAL => 'all';
+use CPAN::Meta;
 
 has name     => (is => 'ro');
 has pathname => (is => 'rw');

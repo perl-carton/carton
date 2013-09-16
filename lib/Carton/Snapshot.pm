@@ -1,5 +1,6 @@
 package Carton::Snapshot;
-use strict;
+use Moo;
+use warnings NONFATAL => 'all';
 use Config;
 use Carton::Dist;
 use Carton::Dist::Core;
@@ -15,7 +16,6 @@ use File::Find ();
 use Try::Tiny;
 use Path::Tiny ();
 use Module::CoreList;
-use Moo;
 
 use constant CARTON_SNAPSHOT_VERSION => '1.0';
 

@@ -1,6 +1,6 @@
 package Carton::Builder;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 no warnings 'once';
 
 has mirror  => (is => 'rw');

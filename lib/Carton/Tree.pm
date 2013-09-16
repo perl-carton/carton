@@ -1,7 +1,7 @@
 package Carton::Tree;
-use strict;
-use Carton::Dependency;
 use Moo;
+use warnings NONFATAL => 'all';
+use Carton::Dependency;
 
 has cpanfile => (is => 'ro');
 has snapshot => (is => 'ro');

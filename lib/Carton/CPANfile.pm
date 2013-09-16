@@ -1,8 +1,8 @@
 package Carton::CPANfile;
-use strict;
+use Moo;
+use warnings NONFATAL => 'all';
 use Path::Tiny ();
 use Module::CPANfile;
-use Moo;
 
 use overload q{""} => sub { $_[0]->stringify }, fallback => 1;
 

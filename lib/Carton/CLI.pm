@@ -1,12 +1,11 @@
 package Carton::CLI;
-use strict;
-use warnings;
+use Moo;
+use warnings NONFATAL => 'all';
 
 use Config;
 use Getopt::Long;
 use Path::Tiny;
 use Try::Tiny;
-use Moo;
 use Module::CoreList;
 use Scalar::Util qw(blessed);
 

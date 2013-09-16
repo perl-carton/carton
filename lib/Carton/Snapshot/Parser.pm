@@ -1,8 +1,8 @@
 package Carton::Snapshot::Parser;
-use strict;
+use Moo;
+use warnings NONFATAL => 'all';
 use Carton::Dist;
 use Carton::Error;
-use Moo;
 
 my $machine = {
     init => [

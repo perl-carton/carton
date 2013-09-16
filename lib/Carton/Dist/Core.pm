@@ -1,6 +1,6 @@
 package Carton::Dist::Core;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 extends 'Carton::Dist';
 
 has module_version => (is => 'ro');

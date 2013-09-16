@@ -1,6 +1,6 @@
 package Carton::Environment;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 use Carton::CPANfile;
 use Carton::Snapshot;

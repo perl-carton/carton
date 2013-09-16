@@ -1,6 +1,6 @@
 package Carton::Dependency;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 has module => (is => 'rw');
 has requirement => (is => 'rw');

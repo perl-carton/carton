@@ -1,6 +1,6 @@
 package Carton::Index;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 has _packages => (is => 'rw', default => sub { +{} });
 

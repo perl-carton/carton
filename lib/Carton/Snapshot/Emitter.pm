@@ -1,6 +1,6 @@
 package Carton::Snapshot::Emitter;
-use strict;
 use Moo;
+use warnings NONFATAL => 'all';
 
 sub emit {
     my($self, $snapshot) = @_;

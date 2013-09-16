@@ -1,12 +1,11 @@
 package Carton::Packer;
-use strict;
+use Moo;
+use warnings NONFATAL => 'all';
 use App::FatPacker;
 use File::pushd ();
 use Path::Tiny ();
 use CPAN::Meta ();
 use File::Find ();
-
-use Moo;
 
 sub fatpack_carton {
     my($self, $dir) = @_;
