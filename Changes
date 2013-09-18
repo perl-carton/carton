@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.11  2013-09-18 18:51:14 JST
+        - Disable fatal warnings that comes with Moo. This will make Path::Tiny not fail
+          on NFS without flock. #135
+
 v1.0.10  2013-09-02 17:52:42 PDT
         - Documentation fixes
         - Support CRLF in snapshot (kan) #133
