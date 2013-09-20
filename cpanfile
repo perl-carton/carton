@@ -6,7 +6,7 @@ requires 'perl', '5.8.5';
 
 requires 'JSON', 2.53;
 requires 'Module::Metadata', 1.000003;
-requires 'Module::CPANfile', 0.9031;
+requires 'Module::CPANfile', 1.0903;
 
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
@@ -16,7 +16,7 @@ requires 'Moo', 1.002;
 requires 'Path::Tiny', 0.022;
 
 # MYMETA support
-requires 'App::cpanminus', 1.6940;
+requires 'App::cpanminus', 1.7102;
 requires 'ExtUtils::MakeMaker', 6.64;
 requires 'Module::Build', 0.4004;
 

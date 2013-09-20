@@ -199,14 +199,15 @@ sub cmd_install {
         $self->print("Installing modules using @{[$env->cpanfile]}\n");
     }
 
-    # TODO merge CPANfile git to mirror even if lock doesn't exist
-    if ($env->snapshot->loaded) {
-        my $index_file = $env->install_path->child("cache/modules/02packages.details.txt");
-           $index_file->parent->mkpath;
+    # Gather git from cpanfile, even when .snapshot does not exist
+    $env->cpanfile->load;
+    $env->snapshot->preload_cpanfile($env->cpanfile);
 
-        $env->snapshot->write_index($index_file);
-        $builder->index($index_file);
-    }
+    my $index_file = $env->install_path->child("cache/modules/02packages.details.txt");
+       $index_file->parent->mkpath;
+
+    $env->snapshot->write_index($index_file);
+    $builder->index($index_file);
 
     if ($cached) {
         $builder->mirror(Carton::Mirror->new($env->vendor_cache));
@@ -215,7 +216,6 @@ sub cmd_install {
     $builder->install($env->install_path);
 
     unless ($deployment) {
-        $env->cpanfile->load;
         $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
         $env->snapshot->save;
     }
