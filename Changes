@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.900  2013-09-20 15:59:34 JST
+        - Experimental support for git
+
 v1.0.11  2013-09-18 18:51:14 JST
         - Disable fatal warnings that comes with Moo. This will make Path::Tiny not fail
           on NFS without flock. #135
