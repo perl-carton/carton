@@ -55,7 +55,7 @@
             "Getopt::Long" : "2.39",
             "JSON" : "2.53",
             "Module::Build" : "0.4004",
-            "Module::CPANfile" : "1.0903",
+            "Module::CPANfile" : "1.0904",
             "Module::CoreList" : "0",
             "Module::Metadata" : "1.000003",
             "Module::Reader" : "0.002",
@@ -79,7 +79,7 @@
          "web" : "https://github.com/miyagawa/carton"
       }
    },
-   "version" : "v1.0.900",
+   "version" : "v1.0.901",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",

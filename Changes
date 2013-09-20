@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.901  2013-09-21 08:19:25 JST
+        - Experimental support for pinning specific dist (with DarkPAN URL as well)
+
 v1.0.900  2013-09-20 15:59:34 JST
         - Experimental support for git
 

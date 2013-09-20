@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "Carton",
-  "dist_version" => "v1.0.900",
+  "dist_version" => "v1.0.901",
   "license" => "perl",
   "module_name" => "Carton",
   "recommends" => {},
@@ -34,7 +34,7 @@ my %module_build_args = (
     "Getopt::Long" => "2.39",
     "JSON" => "2.53",
     "Module::Build" => "0.4004",
-    "Module::CPANfile" => "1.0903",
+    "Module::CPANfile" => "1.0904",
     "Module::CoreList" => 0,
     "Module::Metadata" => "1.000003",
     "Module::Reader" => "0.002",
