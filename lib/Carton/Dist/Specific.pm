@@ -19,9 +19,13 @@ sub provides {
 
 sub pathname {
     my $self = shift;
-    my $uri = $self->options->{git};
-    $uri .= '@' . $self->options->{ref} if $self->options->{ref};
-    $uri;
+
+    if (my $git = $self->options->{git}) {
+        $git .= '@' . $self->options->{ref} if $self->options->{ref};
+        return $git;
+    } elsif ($self->options->{dist}) {
+        return $self->options->{dist};
+    }
 }
 
 1;
