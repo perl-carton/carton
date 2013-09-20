@@ -9,6 +9,7 @@ perl:
 before_install:
   - perlbrew install-cpanm -f
 install:
+  - cpanm -nq --dev App::cpanminus Module::CPANfile
   - (cpanm --installdeps --with-develop -nq .) || cat ~/.cpanm/build.log
 script:
   - prove -lr xt
