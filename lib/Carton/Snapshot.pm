@@ -182,7 +182,7 @@ sub preload_cpanfile {
     my $reqs = $cpanfile->merged_requirements;
     for my $module ($reqs->required_modules) {
         my $prereq = $cpanfile->prereq_for_module($module) or next;
-        if ($prereq->requirement->git) {
+        if ($prereq->requirement->has_options) {
             my $dist = Carton::Dist::Specific->new(module => $module, requirement => $prereq->requirement);
             $self->add_distribution($dist);
         }

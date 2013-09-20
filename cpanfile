@@ -6,7 +6,7 @@ requires 'perl', '5.8.5';
 
 requires 'JSON', 2.53;
 requires 'Module::Metadata', 1.000003;
-requires 'Module::CPANfile', 1.0903;
+requires 'Module::CPANfile', 1.0904;
 
 requires 'Try::Tiny', 0.09;
 requires 'parent', 0.223;
