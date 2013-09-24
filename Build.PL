@@ -18,7 +18,7 @@ my %module_build_args = (
     "Tatsuhiko Miyagawa"
   ],
   "dist_name" => "Carton",
-  "dist_version" => "v1.0.11",
+  "dist_version" => "v1.0.12",
   "license" => "perl",
   "module_name" => "Carton",
   "recommends" => {},
@@ -39,7 +39,7 @@ my %module_build_args = (
     "Module::Metadata" => "1.000003",
     "Module::Reader" => "0.002",
     "Moo" => "1.002",
-    "Path::Tiny" => "0.022",
+    "Path::Tiny" => "0.033",
     "Try::Tiny" => "0.09",
     "parent" => "0.223",
     "perl" => "v5.8.5"

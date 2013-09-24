@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.12  2013-09-24 20:03:47 JST
+        - up Path::Tiny
+        - Add --no-fatpack to carton bundle #140
+
 v1.0.11  2013-09-18 18:51:14 JST
         - Disable fatal warnings that comes with Moo. This will make Path::Tiny not fail
           on NFS without flock. #135
