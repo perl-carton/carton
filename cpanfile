@@ -13,7 +13,7 @@ requires 'parent', 0.223;
 requires 'Exception::Class', 1.32;
 requires 'Getopt::Long', 2.39;
 requires 'Moo', 1.002;
-requires 'Path::Tiny', 0.022;
+requires 'Path::Tiny', 0.033;
 
 # MYMETA support
 requires 'App::cpanminus', 1.7102;
