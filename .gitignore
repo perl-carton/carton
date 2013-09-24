@@ -6,3 +6,4 @@ local/
 cpanfile.snapshot
 /carton-*
 /.build
+/vendor
