@@ -15,3 +15,13 @@ resolving dependencies in the snapshot file.snapshot.
 Bundled modules can be committed to a version control system, or
 transferred to another host with scp/rsync etc. to use with C<carton
 install --cached>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item --no-fatpack
+
+Skip generating fatpacked C<carton> executable in C<vendor/bin>.
+
+=back
