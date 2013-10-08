@@ -92,4 +92,11 @@ to exclude, in the comma separated list.
 B<NOTE>: C<--without> for the initial installation (without
 cpanfile.snapshot) is not supported at this moment.
 
+=item --with-test
+
+By default, C<carton install> will skip installation of all test dependencies.
+This can prove undesirable if running through an automated testing system 
+This option causes carton to install all test dependencies and run the tests
+of all dependencies.
+
 =back
