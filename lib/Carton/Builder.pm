@@ -8,6 +8,7 @@ has index   => (is => 'rw');
 has cascade => (is => 'rw', default => sub { 1 });
 has without => (is => 'rw', default => sub { [] });
 has cpanfile => (is => 'rw');
+has with_test => (is => 'rw', default => sub { 0 });
 has fatscript => (is => 'lazy');
 
 sub effective_mirrors {
@@ -109,7 +110,7 @@ sub _build_fatscript {
 sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
-    !system $^X, $self->fatscript, "--quiet", "--notest", @args;
+    !system $^X, $self->fatscript, "--quiet", ($self->with_test ? () : "--notest"), @args;
 }
 
 1;
