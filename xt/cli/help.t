@@ -5,10 +5,10 @@ use xt::CLI;
 {
     my $app = cli();
     $app->run("help");
-    like $app->stdout, qr/Carton - Perl module/;
+    like $app->stdout, qr/Carton − Perl module/;
 
     $app->run("-h");
-    like $app->stdout, qr/Carton - Perl module/;
+    like $app->stdout, qr/Carton − Perl module/;
 
     $app->run("help", "install");
     like $app->stdout, qr/Install the dependencies/;
