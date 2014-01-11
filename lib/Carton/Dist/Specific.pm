@@ -2,7 +2,6 @@ package Carton::Dist::Specific;
 use Moo;
 use warnings NONFATAL => 'all';
 
-use URI;
 use File::Basename ();
 
 has 'module' => (is => 'rw');
