@@ -343,7 +343,8 @@ sub cmd_update {
         my $dist = $env->snapshot->find_or_core($module)
             or $self->error("Could not find module $module.\n");
         next if $dist->is_core;
-        push @modules, "$module~" . $env->cpanfile->requirements_for_module($module);
+        my $reqs = $env->cpanfile->requirements_for_module($module);
+        push @modules, $reqs ? "$module~" . $reqs : $module;
     }
 
     return unless @modules;
