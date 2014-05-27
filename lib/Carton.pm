@@ -99,6 +99,13 @@ The C<--deployment> flag makes sure that carton will only install
 modules and versions available in your snapshot, and won't fallback to
 query for CPAN Meta DB for missing modules.
 
+If you're using an environment where modules are already installed.
+Then C<--deployment> will only update modules that don't match the 
+I<cpanfile> template. For example if you have version C<0.01> of C<Foo>
+installed then C<--deployment> will only upgrade to match your 
+C<cpanfile.snapshot> when you  change your I<cpanfile> to 
+require C<0.02> or higher.
+
 =head2 Bundling modules
 
 carton can bundle all the tarballs for your dependencies into a
