@@ -169,11 +169,12 @@ sub cmd_install {
 
     $self->parse_options(
         \@args,
-        "p|path=s"    => \$install_path,
-        "cpanfile=s"  => \$cpanfile_path,
-        "without=s"   => sub { push @without, split /,/, $_[1] },
-        "deployment!" => \my $deployment,
-        "cached!"     => \my $cached,
+        "p|path=s"        => \$install_path,
+        "cpanfile=s"      => \$cpanfile_path,
+        "without=s"       => sub { push @without, split /,/, $_[1] },
+        "deployment!"     => \my $deployment,
+        "cached!"         => \my $cached,
+        "skip-installed!" => \my $skip_installed,
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
@@ -188,6 +189,7 @@ sub cmd_install {
         mirror  => $self->mirror,
         without => \@without,
         cpanfile => $env->cpanfile,
+        skip_installed => $skip_installed,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
