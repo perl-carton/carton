@@ -9,6 +9,7 @@ has cascade => (is => 'rw', default => sub { 1 });
 has without => (is => 'rw', default => sub { [] });
 has cpanfile => (is => 'rw');
 has fatscript => (is => 'lazy');
+has skip_installed => (is => 'rw', default => sub { 0 });
 
 sub effective_mirrors {
     my $self = shift;
@@ -49,7 +50,7 @@ sub install {
     my($self, $path) = @_;
 
     $self->run_cpanm(
-        "-L", $path,
+        ( $self->skip_installed ? "-l" : "-L" ), $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
@@ -79,7 +80,7 @@ sub update {
     my($self, $path, @modules) = @_;
 
     $self->run_cpanm(
-        "-L", $path,
+        ( $self->skip_installed ? "-l" : "-L" ), $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->custom_mirror ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
