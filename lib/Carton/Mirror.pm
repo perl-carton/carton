@@ -3,6 +3,8 @@ use Moo;
 use warnings NONFATAL => 'all';
 
 our $DefaultMirror = 'http://cpan.metacpan.org/';
+# set environmental variable to override, like so:
+# PERL_CARTON_MIRROR=$PINTO_REPOSITORY_ROOT carton install
 
 has url => (is => 'ro');
 
