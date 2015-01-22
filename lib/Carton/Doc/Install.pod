@@ -101,12 +101,16 @@ cpanfile.snapshot) is not supported at this moment.
 =item PERL_CARTON_MIRROR
 
 Carton::Mirror sets the default mirror to: http://cpan.metacpan.org/.  
-But that can be over ridden using this environmental variable like so:
+But that can be over ridden using this environmental variable 
+providing an alternative url like so:
 
+PERL_CARTON_MIRROR=file://$PWD/darkpan carton install
+
+PINTO_REPOSITORY_ROOT=http://deploy:password@pinto.example.com:3111
 PERL_CARTON_MIRROR=$PINTO_REPOSITORY_ROOT carton install
 
 permitting one to pull one's dependencies from a local DarkPAN 
-or an internal repository.  
+or an internally hosted repository.  
 
 =back
 

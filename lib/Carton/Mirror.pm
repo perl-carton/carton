@@ -5,6 +5,7 @@ use warnings NONFATAL => 'all';
 our $DefaultMirror = 'http://cpan.metacpan.org/';
 # set environmental variable to override, like so:
 # PERL_CARTON_MIRROR=$PINTO_REPOSITORY_ROOT carton install
+# see perldoc Carton::Doc::Install for further details
 
 has url => (is => 'ro');
 
