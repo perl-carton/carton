@@ -18,7 +18,7 @@ use Carton::Error;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
-our $UseSystem = 0; # 1 for unit testing
+our $UseSystem = ($^O eq 'MSWin32'); # 1 for unit testing, and for Windows
 
 use Class::Tiny {
     verbose => undef,
