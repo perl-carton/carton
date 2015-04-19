@@ -2,6 +2,7 @@ package Carton::Index;
 use strict;
 use Class::Tiny {
     _packages => sub { +{} },
+    generator => sub { require Carton; "Carton $Carton::VERSION" },
 };
 
 sub add_package {
@@ -28,7 +29,7 @@ URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
 Description:  Package names found in cpanfile.snapshot
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
-Written-By:   Carton $Carton::VERSION
+Written-By:   @{[ $self->generator ]}
 Line-Count:   @{[ $self->count ]}
 Last-Updated: @{[ scalar localtime ]}
 
