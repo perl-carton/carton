@@ -1,5 +1,5 @@
 package Carton::Packer;
-use Moo;
+use Class::Tiny;
 use warnings NONFATAL => 'all';
 use App::FatPacker;
 use File::pushd ();

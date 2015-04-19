@@ -1,8 +1,8 @@
 package Carton::Index;
-use Moo;
-use warnings NONFATAL => 'all';
-
-has _packages => (is => 'rw', default => sub { +{} });
+use strict;
+use Class::Tiny {
+    _packages => sub { +{} },
+};
 
 sub add_package {
     my($self, $package) = @_;

@@ -1,5 +1,5 @@
 package Carton::Snapshot::Emitter;
-use Moo;
+use Class::Tiny;
 use warnings NONFATAL => 'all';
 
 sub emit {

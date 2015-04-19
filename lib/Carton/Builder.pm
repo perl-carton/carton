@@ -1,14 +1,13 @@
 package Carton::Builder;
-use Moo;
-use warnings NONFATAL => 'all';
-no warnings 'once';
-
-has mirror  => (is => 'rw');
-has index   => (is => 'rw');
-has cascade => (is => 'rw', default => sub { 1 });
-has without => (is => 'rw', default => sub { [] });
-has cpanfile => (is => 'rw');
-has fatscript => (is => 'lazy');
+use strict;
+use Class::Tiny {
+    mirror => undef,
+    index  => undef,
+    cascade => sub { 1 },
+    without => sub { [] },
+    cpanfile => undef,
+    fatscript => sub { $_[0]->_build_fatscript },
+};
 
 sub effective_mirrors {
     my $self = shift;

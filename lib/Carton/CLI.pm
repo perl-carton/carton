@@ -1,7 +1,5 @@
 package Carton::CLI;
-use Moo;
-use warnings NONFATAL => 'all';
-
+use strict;
 use Config;
 use Getopt::Long;
 use Path::Tiny;
@@ -21,14 +19,15 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $UseSystem = 0; # 1 for unit testing
 
-has verbose => (is => 'rw');
-has carton  => (is => 'lazy');
-has mirror  => (is => 'rw', builder => 1,
-                coerce => sub { Carton::Mirror->new($_[0]) });
+use Class::Tiny {
+    verbose => undef,
+    carton => sub { $_[0]->_build_carton },
+    mirror => sub { $_[0]->_build_mirror },
+};
 
 sub _build_mirror {
     my $self = shift;
-    $ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror;
+    Carton::Mirror->new($ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror);
 }
 
 sub run {

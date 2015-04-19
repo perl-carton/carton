@@ -1,9 +1,8 @@
 package Carton::Dist::Core;
-use Moo;
-use warnings NONFATAL => 'all';
-extends 'Carton::Dist';
+use strict;
+use parent 'Carton::Dist';
 
-has module_version => (is => 'ro');
+use Class::Tiny qw( module_version );
 
 sub BUILDARGS {
     my($class, %args) = @_;

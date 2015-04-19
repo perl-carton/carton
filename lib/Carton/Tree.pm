@@ -1,10 +1,8 @@
 package Carton::Tree;
-use Moo;
-use warnings NONFATAL => 'all';
+use strict;
 use Carton::Dependency;
 
-has cpanfile => (is => 'ro');
-has snapshot => (is => 'ro');
+use Class::Tiny qw( cpanfile snapshot );
 
 use constant STOP => -1;
 

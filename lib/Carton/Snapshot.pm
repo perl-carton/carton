@@ -1,6 +1,5 @@
 package Carton::Snapshot;
-use Moo;
-use warnings NONFATAL => 'all';
+use strict;
 use Config;
 use Carton::Dist;
 use Carton::Dist::Core;
@@ -19,10 +18,27 @@ use Module::CoreList;
 
 use constant CARTON_SNAPSHOT_VERSION => '1.0';
 
-has path    => (is => 'rw', coerce => sub { Path::Tiny->new($_[0]) });
-has version => (is => 'rw', default => sub { CARTON_SNAPSHOT_VERSION });
-has loaded  => (is => 'rw');
-has _distributions => (is => 'rw', default => sub { +[] });
+use subs 'path';
+use Class::Tiny {
+    path => undef,
+    version => sub { CARTON_SNAPSHOT_VERSION },
+    loaded => undef,
+    _distributions => sub { +[] },
+};
+
+sub BUILD {
+    my $self = shift;
+    $self->path( $self->{path} );
+}    
+
+sub path {
+    my $self = shift;
+    if (@_) {
+        $self->{path} = Path::Tiny->new($_[0]);
+    } else {
+        $self->{path};
+    }
+}
 
 sub load_if_exists {
     my $self = shift;
@@ -137,8 +153,8 @@ sub find_installs {
         return 0 unless $reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version});
 
         if (my $exist = $installs{$module->{name}}) {
-            my $old_ver = version->new($exist->{provides}{$module->{name}}{version});
-            my $new_ver = version->new($module->{provides}{$module->{name}}{version});
+            my $old_ver = version::->new($exist->{provides}{$module->{name}}{version});
+            my $new_ver = version::->new($module->{provides}{$module->{name}}{version});
             return $new_ver >= $old_ver;
         } else {
             return 1;
