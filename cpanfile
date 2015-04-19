@@ -16,7 +16,7 @@ requires 'Moo', 1.002;
 requires 'Path::Tiny', 0.033;
 
 # MYMETA support
-requires 'App::cpanminus', 1.7029;
+requires 'App::cpanminus', 1.7030;
 requires 'ExtUtils::MakeMaker', 6.64;
 requires 'Module::Build', 0.4004;
 
