@@ -4,13 +4,13 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.4, Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132660",
+   "generated_by" : "Dist::Zilla version 5.035, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150001",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Carton",
    "no_index" : {
@@ -24,20 +24,16 @@
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "Module::Build" : "0.3601"
-         }
-      },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.3601",
+            "ExtUtils::MakeMaker" : "0",
             "version" : "0.77"
          }
       },
       "develop" : {
          "requires" : {
             "Capture::Tiny" : "0",
+            "Dist::Milla" : "v1.0.15",
             "Test::More" : "0.9",
             "Test::Pod" : "1.41",
             "Test::Requires" : "0"
@@ -46,7 +42,7 @@
       "runtime" : {
          "requires" : {
             "App::FatPacker" : "0.009018",
-            "App::cpanminus" : "1.694",
+            "App::cpanminus" : "1.703",
             "CPAN::Meta" : "2.120921",
             "CPAN::Meta::Requirements" : "2.121",
             "Exception::Class" : "1.32",
@@ -70,13 +66,13 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/miyagawa/carton/issues"
+         "web" : "https://github.com/perl-carton/carton/issues"
       },
-      "homepage" : "https://github.com/miyagawa/carton",
+      "homepage" : "https://github.com/perl-carton/carton",
       "repository" : {
          "type" : "git",
-         "url" : "https://github.com/miyagawa/carton.git",
-         "web" : "https://github.com/miyagawa/carton"
+         "url" : "https://github.com/perl-carton/carton.git",
+         "web" : "https://github.com/perl-carton/carton"
       }
    },
    "version" : "v1.0.12",
@@ -84,15 +80,16 @@
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
+      "ikasam_a <masaki.nakagawa@gmail.com>",
       "Kan Fushihara <kan.fushihara@gmail.com>",
       "Masahiro Chiba <chiba@everqueue.com>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Olaf Alders <olaf@wundersolutions.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",
+      "shiba_yu36 <shibayu36@gmail.com>",
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
       "Tatsuhiko Miyagawa <miyagawa@gmail.com>",
-      "Yanick Champoux <yanick@babyl.dyndns.org>",
-      "ikasam_a <masaki.nakagawa@gmail.com>",
-      "shiba_yu36 <shibayu36@gmail.com>"
+      "Yanick Champoux <yanick@babyl.dyndns.org>"
    ]
 }
 
