@@ -2,6 +2,12 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.13  2015-04-19 19:38:42 CEST
+        - require cpanm 1.7030 for better cpanfile support
+        - switch to MakeMaker
+        - remove Exception::Class and Moo in favor of Class::Tiny
+        - add an ability to set generator in Carton::Index for Carmel use
+
 v1.0.12  2013-09-24 20:03:47 JST
         - up Path::Tiny
         - Add --no-fatpack to carton bundle #140
