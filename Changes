@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.15  2015-04-20 11:13:32 CEST
+        - downgrade some dependencies for fatpack-related tools to recommends
+          (probably ship it as a separate distribution in the future)
+
 v1.0.14  2015-04-20 00:07:26 CEST
         - same as v1.0.14
 

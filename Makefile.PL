@@ -21,25 +21,22 @@ my %WriteMakefileArgs = (
   "MIN_PERL_VERSION" => "5.008005",
   "NAME" => "Carton",
   "PREREQ_PM" => {
-    "App::FatPacker" => "0.009018",
     "App::cpanminus" => "1.703",
     "CPAN::Meta" => "2.120921",
     "CPAN::Meta::Requirements" => "2.121",
     "Class::Tiny" => "1.001",
     "ExtUtils::MakeMaker" => "6.64",
-    "File::pushd" => 0,
     "Getopt::Long" => "2.39",
     "JSON" => "2.53",
     "Module::Build" => "0.4004",
     "Module::CPANfile" => "0.9031",
     "Module::CoreList" => 0,
     "Module::Metadata" => "1.000003",
-    "Module::Reader" => "0.002",
     "Path::Tiny" => "0.033",
     "Try::Tiny" => "0.09",
     "parent" => "0.223"
   },
-  "VERSION" => "v1.0.14",
+  "VERSION" => "v1.0.15",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -47,20 +44,17 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "App::FatPacker" => "0.009018",
   "App::cpanminus" => "1.703",
   "CPAN::Meta" => "2.120921",
   "CPAN::Meta::Requirements" => "2.121",
   "Class::Tiny" => "1.001",
   "ExtUtils::MakeMaker" => "6.64",
-  "File::pushd" => 0,
   "Getopt::Long" => "2.39",
   "JSON" => "2.53",
   "Module::Build" => "0.4004",
   "Module::CPANfile" => "0.9031",
   "Module::CoreList" => 0,
   "Module::Metadata" => "1.000003",
-  "Module::Reader" => "0.002",
   "Path::Tiny" => "0.033",
   "Try::Tiny" => "0.09",
   "parent" => "0.223",
