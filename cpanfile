@@ -23,9 +23,10 @@ requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
 requires 'Module::CoreList';
 
-requires 'App::FatPacker', 0.009018;
-requires 'File::pushd';
-requires 'Module::Reader', 0.002;
+# for fatpack
+recommends 'Module::Reader', 0.002;
+recommends 'File::pushd';
+recommends 'App::FatPacker', 0.009018;
 
 on develop => sub {
     requires 'Test::More', 0.90;
