@@ -13,3 +13,4 @@ install:
   - (cpanm --installdeps --with-develop -nq .) || cat ~/.cpanm/build.log
 script:
   - prove -lr xt
+sudo: false
