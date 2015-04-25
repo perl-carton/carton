@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.16  2015-04-25 06:37:17 PDT
+        - update 02packages.details.txt whitespace padding to follow PAUSE
+
 v1.0.15  2015-04-20 11:13:32 CEST
         - downgrade some dependencies for fatpack-related tools to recommends
           (probably ship it as a separate distribution in the future)

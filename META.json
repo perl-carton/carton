@@ -76,7 +76,7 @@
          "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.15",
+   "version" : "v1.0.16",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
