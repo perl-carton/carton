@@ -387,8 +387,12 @@ sub cmd_exec {
     local $ENV{PERL5LIB} = "$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
-    use warnings FATAL => 'all';
-    $UseSystem ? system(@args) : exec(@args);
+    if ($UseSystem) {
+        system @args;
+    } else {
+        exec @args;
+        exit 127; # command not found
+    }
 }
 
 1;
