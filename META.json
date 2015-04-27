@@ -76,12 +76,13 @@
          "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.16",
+   "version" : "v1.0.17",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
       "ikasam_a <masaki.nakagawa@gmail.com>",
+      "Jonathan Steinert <hachi@fastly.com>",
       "Kan Fushihara <kan.fushihara@gmail.com>",
       "Masahiro Chiba <chiba@everqueue.com>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
