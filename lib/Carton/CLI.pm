@@ -1,5 +1,6 @@
 package Carton::CLI;
 use strict;
+use warnings;
 use Config;
 use Getopt::Long;
 use Path::Tiny;
