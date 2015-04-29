@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.18  2015-04-29 13:46:21 PDT
+        - Sort 02packages case insensitive, like PAUSE
+
 v1.0.17  2015-04-27 16:18:04 PDT
         - Add back warnings to Carton::CLI
         - Properly fail when a command is not found in carton exec (hachi) #193
