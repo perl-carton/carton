@@ -17,7 +17,7 @@ sub count {
 
 sub packages {
     my $self = shift;
-    sort { $a->name cmp $b->name } values %{$self->_packages};
+    sort { lc $a->name cmp lc $b->name } values %{$self->_packages};
 }
 
 sub write {
