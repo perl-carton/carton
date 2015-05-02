@@ -14,10 +14,7 @@ requires 'Getopt::Long', 2.39;
 requires 'Class::Tiny', 1.001;
 requires 'Path::Tiny', 0.033;
 
-# MYMETA support
 requires 'App::cpanminus', 1.7030;
-requires 'ExtUtils::MakeMaker', 6.64;
-requires 'Module::Build', 0.4004;
 
 requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
