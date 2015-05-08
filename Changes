@@ -1,8 +1,10 @@
 Revision history for carton
 
 {{$NEXT}}
-        - Disable fatpack generation in carton bundle by default. Use the new standalone
-          command carton fatpack, to generate vendor/bin/carton
+
+v1.0.20  2015-05-08 16:20:37 PDT
+        - INCOMPATIBLE: Disable fatpack generation in carton bundle by default.
+          Use the new standalone command carton fatpack, to generate vendor/bin/carton
 
 v1.0.19  2015-05-01 17:48:06 PDT
         - Remove Module::Build and MakeMaker from prerequisite since cpanm will

@@ -1,7 +1,7 @@
 package Carton;
 use strict;
 use 5.008_005;
-use version; our $VERSION = version->declare("v1.0.19");
+use version; our $VERSION = version->declare("v1.0.20");
 
 1;
 __END__
