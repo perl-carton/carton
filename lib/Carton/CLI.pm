@@ -145,12 +145,6 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    my $fatpack = 1;
-    $self->parse_options(
-        \@args,
-        "fatpack!" => \$fatpack,
-    );
-
     my $env = Carton::Environment->build;
     $env->snapshot->load;
 
@@ -162,12 +156,15 @@ sub cmd_bundle {
     );
     $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
-    if ($fatpack) {
-        require Carton::Packer;
-        Carton::Packer->new->fatpack_carton($env->vendor_bin);
-    }
-
     $self->printf("Complete! Modules were bundled into %s\n", $env->vendor_cache, SUCCESS);
+}
+
+sub cmd_fatpack {
+    my($self, @args) = @_;
+
+    my $env = Carton::Environment->build;
+    require Carton::Packer;
+    Carton::Packer->new->fatpack_carton($env->vendor_bin);
 }
 
 sub cmd_install {
