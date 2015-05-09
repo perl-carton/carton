@@ -78,7 +78,7 @@ directory relative to where C<cpanfile> is.
 B<NOTE>: this option, as of version 1.0, is not preserved across
 multiple runs of C<carton install> or other commands such as C<carton
 list> or C<carton exec>. You can choose to set the path in
-C<PERL_CARTON_PATH> envrionment variable to persist it across
+C<PERL_CARTON_PATH> environment variable to persist it across
 commands.
 
 =item --without
