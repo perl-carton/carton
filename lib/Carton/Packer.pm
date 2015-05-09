@@ -84,7 +84,9 @@ sub installed_meta {
         }
     };
 
-    File::Find::find({ wanted => $finder, no_chdir => 1 }, grep -d, map "$_/.meta", @INC);
+    my @meta_dirs = grep -d, map "$_/.meta", @INC;
+    File::Find::find({ wanted => $finder, no_chdir => 1 }, @meta_dirs)
+        if @meta_dirs;
 
     # return the latest version
     @meta = sort { version->new($b->version) cmp version->new($a->version) } @meta;
