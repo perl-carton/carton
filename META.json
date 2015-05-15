@@ -42,8 +42,7 @@
       "runtime" : {
          "recommends" : {
             "App::FatPacker" : "0.009018",
-            "File::pushd" : "0",
-            "Module::Reader" : "0.002"
+            "File::pushd" : "0"
          },
          "requires" : {
             "App::cpanminus" : "1.703",
@@ -55,6 +54,7 @@
             "Module::CPANfile" : "0.9031",
             "Module::CoreList" : "0",
             "Module::Metadata" : "1.000003",
+            "Module::Reader" : "0.002",
             "Path::Tiny" : "0.033",
             "Try::Tiny" : "0.09",
             "parent" : "0.223",
@@ -74,7 +74,7 @@
          "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.20",
+   "version" : "v1.0.21",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
@@ -86,6 +86,7 @@
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Olaf Alders <olaf@wundersolutions.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",
+      "Peter Oliver <git@mavit.org.uk>",
       "shiba_yu36 <shibayu36@gmail.com>",
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
       "Tatsuhiko Miyagawa <miyagawa@gmail.com>",

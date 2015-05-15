@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.21  2015-05-15 12:21:47 PDT
+        - Changed Module::Reader dependency to requires for now, since it will be required
+          on the runtime by the fatpacked carton.
+
 v1.0.20  2015-05-08 16:20:37 PDT
         - INCOMPATIBLE: Disable fatpack generation in carton bundle by default.
           Use the new standalone command carton fatpack, to generate vendor/bin/carton

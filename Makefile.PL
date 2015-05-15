@@ -30,11 +30,12 @@ my %WriteMakefileArgs = (
     "Module::CPANfile" => "0.9031",
     "Module::CoreList" => 0,
     "Module::Metadata" => "1.000003",
+    "Module::Reader" => "0.002",
     "Path::Tiny" => "0.033",
     "Try::Tiny" => "0.09",
     "parent" => "0.223"
   },
-  "VERSION" => "v1.0.20",
+  "VERSION" => "v1.0.21",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -52,6 +53,7 @@ my %FallbackPrereqs = (
   "Module::CPANfile" => "0.9031",
   "Module::CoreList" => 0,
   "Module::Metadata" => "1.000003",
+  "Module::Reader" => "0.002",
   "Path::Tiny" => "0.033",
   "Try::Tiny" => "0.09",
   "parent" => "0.223",
