@@ -21,7 +21,7 @@ requires 'CPAN::Meta::Requirements', 2.121;
 requires 'Module::CoreList';
 
 # for fatpack
-recommends 'Module::Reader', 0.002;
+requires 'Module::Reader', 0.002;
 recommends 'File::pushd';
 recommends 'App::FatPacker', 0.009018;
 
