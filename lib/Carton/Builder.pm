@@ -107,7 +107,8 @@ sub _build_fatscript {
 
 sub run_cpanm {
     my($self, @args) = @_;
-    local $ENV{PERL_CPANM_OPT};
+    # allow cpanm options to be set via PERL_CARTON_CPANM_OPT
+    local $ENV{PERL_CPANM_OPT} = $ENV{PERL_CARTON_CPANM_OPT};
     !system $^X, $self->fatscript, "--quiet", "--notest", @args;
 }
 
