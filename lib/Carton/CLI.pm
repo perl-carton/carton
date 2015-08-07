@@ -346,6 +346,8 @@ sub cmd_update {
         push @modules, "$module~" . $env->cpanfile->requirements_for_module($module);
     }
 
+    return unless @modules;
+
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
         cpanfile => $env->cpanfile,
