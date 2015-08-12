@@ -2,6 +2,10 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.22  2015-08-11 22:17:44 PDT
+        - Fixed a bug where carton update gives an error when there's nothing to update
+        - Update a link to point to the new IRC chatroom #cpanm on irc.perl.org
+
 v1.0.21  2015-05-15 12:21:47 PDT
         - Changed Module::Reader dependency to requires for now, since it will be required
           on the runtime by the fatpacked carton.
