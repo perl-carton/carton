@@ -132,7 +132,7 @@ with perl lower than the specified version.
 
     Code repository, Wiki and Issue Tracker
 
-- [irc://irc.perl.org/#carton](irc://irc.perl.org/#carton)
+- [irc://irc.perl.org/#cpanm](irc://irc.perl.org/#cpanm)
 
     IRC chat room
 
