@@ -138,7 +138,7 @@ with perl lower than the specified version.
 
 =over 4
 
-=item L<https://github.com/miyagawa/carton>
+=item L<https://github.com/perl-carton/carton>
 
 Code repository, Wiki and Issue Tracker
 
