@@ -101,7 +101,7 @@ I<myapp>. Install L<Carton> and all of its dependencies to the
 I<myapp> local::lib path. Then run C<carton install> like you
 normally do.
 
-Becuase I<devel> and I<myapp> are isolated, the modules you installed
+Because I<devel> and I<myapp> are isolated, the modules you installed
 into I<devel> doesn't affect the process when carton builds the
 dependency tree for your new project at all. This could often be
 critical when you have a conditional dependency in your tree, like
