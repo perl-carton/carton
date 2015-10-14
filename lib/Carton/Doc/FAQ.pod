@@ -111,7 +111,7 @@ L<Any::Moose>.
 
 =head2 I'm using perlbrew, but C<< carton install >> uses system perl, how to fix?
 
-Instead of C<< carton install >>, use C<< perl `which carton` install >>.
+Instead of C<< carton install >>, use C<< perl -S carton install >>.
 
 This will force the use of the C<perl> from your PATH, and not the C</usr/bin/perl>
 that is hard-coded at the top of the C<carton> script.
