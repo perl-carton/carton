@@ -111,41 +111,9 @@ L<Any::Moose>.
 
 =head2 I'm using perlbrew, but C<< carton install >> uses system perl, how to fix?
 
-Instead of C<< carton install >>, use C<< perl -S carton install >>.
-
-This will force the use of the C<perl> from your PATH, and not the C</usr/bin/perl>
-that is hard-coded at the top of the C<carton> script.
-
-Carton will do the right thing when calling C<cpanm> to install your dependencies,
-running it under the same C<perl> as Carton is running on.
-
-=head2 Using C<< perl -S carton install >> is ugly, any permanent fix?
-
-The issue is most likelly caused by a inital bad install of C<cpanm>,
-that ended up with a shebang line pointed to the system perl.
-
-To fix:
-
-=over 4
-
-=item Make sure you perlbrew-installed cpanm is not using system perl
-
-Run this: C<< head -1 "$PERLBREW_ROOT/bin/cpanm" >>
-
-If the output is not C<< #!/usr/bin/env perl >>, then you have
-a bad C<cpanm> installed.
-
-Run C<< perlbrew install-cpanm >> to fix it. Re-run the previous
-command to make sure it was fixed.
-
-=item Re-install cpanm on your perlbrew environment
-
-Switch to the perlbrew environment you plan on using and force
-install C<cpanm>. Use C<< "$PERLBREW_ROOT/bin/cpanm -f App::cpanminus >>
-to make sure you use the newly fixed C<cpanm> from perlbrew.
-
-This will make sure that your new environment has a C<cpanm> that will
-use the correct C<perl> for that environment.
+The issue is most likelly caused by a inital bad install of C<cpanm>
+or C<carton> or both, that ended up with a shebang line pointed to the
+(wrong) system perl.
 
 =item Re-install Carton on you perlbrew environment
 
@@ -155,5 +123,4 @@ the same will happen with C<carton>.
 
 =back
 
-After this process, your C<< carton install >> will use the
-correct C<perl>.
+Make sure the shebang (the first line) of your C<carton> script points to the right perl path, rather than C</usr/bin/perl>.
