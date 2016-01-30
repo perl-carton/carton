@@ -50,7 +50,7 @@ sub do_fatpack {
 
     # HACK: File::Spec bundled into arch in < 5.16, but is loadable as pure-perl
     use Config;
-    $fatpacked =~ s/\$fatpacked{"$Config{archname}\/(Cwd|File)/\$fatpacked{"$1/g;
+    $fatpacked =~ s/\$fatpacked\{"$Config{archname}\/(Cwd|File)/\$fatpacked{"$1/g;
 
     $fatpacked;
 }
