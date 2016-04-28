@@ -179,6 +179,7 @@ sub cmd_install {
         "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
+        "with-test!"   => \my $with_test,
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
@@ -193,6 +194,7 @@ sub cmd_install {
         mirror  => $self->mirror,
         without => \@without,
         cpanfile => $env->cpanfile,
+        with_test => $with_test,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
