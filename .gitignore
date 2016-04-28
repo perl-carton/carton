@@ -7,3 +7,4 @@ cpanfile.snapshot
 /carton-*
 /.build
 /vendor
+/blib

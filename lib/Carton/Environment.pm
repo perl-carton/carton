@@ -1,30 +1,30 @@
 package Carton::Environment;
-use Moo;
-use warnings NONFATAL => 'all';
-
+use strict;
 use Carton::CPANfile;
 use Carton::Snapshot;
 use Carton::Error;
 use Carton::Tree;
 use Path::Tiny;
 
-has cpanfile => (is => 'rw');
-has snapshot => (is => 'lazy');
-has install_path => (is => 'rw', lazy => 1, builder => 1, coerce => sub { Path::Tiny->new($_[0])->absolute });
-has vendor_cache  => (is => 'lazy');
-has tree => (is => 'rw', lazy => 1, builder => 1);
+use Class::Tiny {
+    cpanfile => undef,
+    snapshot => sub { $_[0]->_build_snapshot },
+    install_path => sub { $_[0]->_build_install_path },
+    vendor_cache => sub { $_[0]->_build_vendor_cache },
+    tree => sub { $_[0]->_build_tree },
+};
 
 sub _build_snapshot {
     my $self = shift;
-    Carton::Snapshot->new(path => $self->cpanfile->stringify . ".snapshot");
+    Carton::Snapshot->new(path => $self->cpanfile . ".snapshot");
 }
 
 sub _build_install_path {
     my $self = shift;
     if ($ENV{PERL_CARTON_PATH}) {
-        return $ENV{PERL_CARTON_PATH};
+        return Path::Tiny->new($ENV{PERL_CARTON_PATH});
     } else {
-        return $self->cpanfile->dirname . "/local";
+        return $self->cpanfile->path->parent->child("local");
     }
 }
 
@@ -68,7 +68,7 @@ sub build {
         Carton::Error::CPANfileNotFound->throw(error => "Can't locate cpanfile: (@{[ $cpanfile_path || 'cpanfile' ]})");
     }
 
-    $self->install_path($install_path) if $install_path;
+    $self->install_path( Path::Tiny->new($install_path)->absolute ) if $install_path;
 
     $self;
 }

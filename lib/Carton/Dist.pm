@@ -1,13 +1,17 @@
 package Carton::Dist;
-use Moo;
-use warnings NONFATAL => 'all';
+use strict;
+use Class::Tiny {
+    name => undef,
+    pathname => undef,
+    provides => sub { +{} },
+    requirements => sub { $_[0]->_build_requirements },
+};
+
 use CPAN::Meta;
 
-has name     => (is => 'ro');
-has pathname => (is => 'rw');
-has provides => (is => 'rw', default => sub { +{} });
-has requirements => (is => 'rw', lazy => 1, builder => 1,
-                     handles => [ qw(add_string_requirement required_modules requirements_for_module) ]);
+sub add_string_requirement  { shift->requirements->add_string_requirement(@_) }
+sub required_modules        { shift->requirements->required_modules(@_) }
+sub requirements_for_module { shift->requirements->requirements_for_module(@_) }
 
 sub is_core { 0 }
 

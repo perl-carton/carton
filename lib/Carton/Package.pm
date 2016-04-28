@@ -1,10 +1,6 @@
 package Carton::Package;
-use Moo;
-use warnings NONFATAL => 'all';
-
-has name     => (is => 'ro');
-has version  => (is => 'ro');
-has pathname => (is => 'ro');
+use strict;
+use Class::Tiny qw( name version pathname );
 
 sub BUILDARGS {
     my($class, @args) = @_;

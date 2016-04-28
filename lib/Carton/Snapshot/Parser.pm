@@ -1,5 +1,5 @@
 package Carton::Snapshot::Parser;
-use Moo;
+use Class::Tiny;
 use warnings NONFATAL => 'all';
 use Carton::Dist;
 use Carton::Error;

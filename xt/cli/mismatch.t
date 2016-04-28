@@ -13,14 +13,11 @@ EOF
     $app->run("install");
     $app->run("list");
 
- TODO: {
-        local $TODO = "depends which module it tries to install first";
-        like $app->stdout, qr/Data-Dumper-2\.139/;
-        like $app->stdout, qr/Test-Differences-0\.61/;
+    like $app->stdout, qr/Data-Dumper-2\.139/;
+    like $app->stdout, qr/Test-Differences-0\.61/;
 
-        $app->run("check");
-        like $app->stdout, qr/are satisfied/;
-    }
+    $app->run("check");
+    like $app->stdout, qr/are satisfied/;
 }
 
 done_testing;
