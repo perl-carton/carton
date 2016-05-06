@@ -6,6 +6,7 @@ use Class::Tiny {
     cascade => sub { 1 },
     without => sub { [] },
     cpanfile => undef,
+    with_test => sub { 0 },
     fatscript => sub { $_[0]->_build_fatscript },
 };
 
@@ -107,8 +108,9 @@ sub _build_fatscript {
 
 sub run_cpanm {
     my($self, @args) = @_;
-    local $ENV{PERL_CPANM_OPT};
-    !system $^X, $self->fatscript, "--quiet", "--notest", @args;
+    # allow cpanm options to be set via PERL_CARTON_CPANM_OPT
+    local $ENV{PERL_CPANM_OPT} = $ENV{PERL_CARTON_CPANM_OPT};
+    !system $^X, $self->fatscript, "--quiet", ($self->with_test ? () : "--notest"), @args;
 }
 
 1;

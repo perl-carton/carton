@@ -29,4 +29,6 @@ on develop => sub {
     requires 'Test::More', 0.90;
     requires 'Test::Requires';
     requires 'Capture::Tiny';
+    requires 'Dist::Zilla';
+    requires 'Dist::Zilla::PluginBundle::Milla';
 };

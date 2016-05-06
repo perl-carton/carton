@@ -18,7 +18,7 @@ use Carton::Error;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
-our $UseSystem = 0; # 1 for unit testing
+our $UseSystem = ($^O eq 'MSWin32'); # 1 for unit testing, and for Windows
 
 use Class::Tiny {
     verbose => undef,
@@ -179,6 +179,7 @@ sub cmd_install {
         "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
+        "with-test!"   => \my $with_test,
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
@@ -193,6 +194,7 @@ sub cmd_install {
         mirror  => $self->mirror,
         without => \@without,
         cpanfile => $env->cpanfile,
+        with_test => $with_test,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
