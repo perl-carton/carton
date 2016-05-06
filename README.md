@@ -128,7 +128,7 @@ with perl lower than the specified version.
 
 # COMMUNITY
 
-- [https://github.com/miyagawa/carton](https://github.com/miyagawa/carton)
+- [https://github.com/perl-carton/carton](https://github.com/perl-carton/carton)
 
     Code repository, Wiki and Issue Tracker
 
