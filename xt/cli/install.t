@@ -35,8 +35,11 @@ EOF
     $app->run("install");
     $app->run("check");
 
-    like $app->stdout, qr/are satisfied/;
-    unlike $app->stderr, qr/is not installed/;
+   SKIP: {
+        skip "MakeMaker installs CPAN::Meta and fails on carton check", 2 if $] < 5.14;
+        like $app->stdout, qr/are satisfied/;
+        unlike $app->stderr, qr/is not installed/;
+    }
 };
 
 subtest 'meta info for modules with qv()' => sub {
@@ -48,8 +51,11 @@ EOF
     $app->run("install");
     $app->run("check");
 
-    like $app->stdout, qr/are satisfied/;
-    unlike $app->stderr, qr/is not installed/;
+    SKIP: {
+        skip "MakeMaker installs CPAN::Meta and fails on carton check", 2 if $] < 5.14;
+        like $app->stdout, qr/are satisfied/;
+        unlike $app->stderr, qr/is not installed/;
+    }
 };
 
 done_testing;
