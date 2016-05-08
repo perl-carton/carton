@@ -2,6 +2,14 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.24  2016-05-08 11:56:14 PDT
+        - Same as v1.0.23, repackaging
+
+v1.0.23  2016-05-08 11:50:00 PDT
+        - Update FAQ to use with perlbrew #202
+        - Update github URL
+        - Fix regular expression warnings in perl 5.22 #204
+
 v1.0.22  2015-08-11 22:17:44 PDT
         - Fixed a bug where carton update gives an error when there's nothing to update
         - Update a link to point to the new IRC chatroom #cpanm on irc.perl.org

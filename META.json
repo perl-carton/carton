@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.039, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "Dist::Zilla version 5.047, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -15,12 +15,12 @@
    "name" : "Carton",
    "no_index" : {
       "directory" : [
-         "t",
-         "xt",
+         "eg",
+         "examples",
          "inc",
          "share",
-         "eg",
-         "examples"
+         "t",
+         "xt"
       ]
    },
    "prereqs" : {
@@ -74,22 +74,23 @@
          "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.22",
+   "version" : "v1.0.24",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
-      "ikasam_a <masaki.nakagawa@gmail.com>",
       "Jonathan Steinert <hachi@fastly.com>",
       "Kan Fushihara <kan.fushihara@gmail.com>",
       "Masahiro Chiba <chiba@everqueue.com>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Olaf Alders <olaf@wundersolutions.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",
+      "Pedro Melo <melo@simplicidade.org>",
       "Peter Oliver <git@mavit.org.uk>",
       "shiba_yu36 <shibayu36@gmail.com>",
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
       "Tatsuhiko Miyagawa <miyagawa@gmail.com>",
+      "WATANABE Hiroaki <hwat@mac.com>",
       "Yanick Champoux <yanick@babyl.dyndns.org>"
    ]
 }
