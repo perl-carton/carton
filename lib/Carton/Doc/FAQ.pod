@@ -115,6 +115,8 @@ The issue is most likelly caused by a inital bad install of C<cpanm>
 or C<carton> or both, that ended up with a shebang line pointed to the
 (wrong) system perl.
 
+=over 4
+    
 =item Re-install Carton on you perlbrew environment
 
 Run C<< cpanm -f Carton >>. This will force-install Carton,
