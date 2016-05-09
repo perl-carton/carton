@@ -7,6 +7,7 @@ use Path::Tiny;
 use Try::Tiny;
 use Module::CoreList;
 use Scalar::Util qw(blessed);
+use File::Path qw(remove_tree);
 
 use Carton;
 use Carton::Builder;
@@ -174,17 +175,18 @@ sub cmd_install {
 
     $self->parse_options(
         \@args,
-        "p|path=s"    => \$install_path,
-        "cpanfile=s"  => \$cpanfile_path,
-        "without=s"   => sub { push @without, split /,/, $_[1] },
-        "deployment!" => \my $deployment,
-        "cached!"     => \my $cached,
+        "p|path=s"          => \$install_path,
+        "cpanfile=s"        => \$cpanfile_path,
+        "without=s"         => sub { push @without, split /,/, $_[1] },
+        "deployment!"       => \my $deployment,
+        "clean-deployment!" => \my $clean_deployment,
+        "cached!"           => \my $cached,
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
     $env->snapshot->load_if_exists;
 
-    if ($deployment && !$env->snapshot->loaded) {
+    if (($deployment || $clean_deployment) && !$env->snapshot->loaded) {
         $self->error("--deployment requires cpanfile.snapshot: Run `carton install` and make sure cpanfile.snapshot is checked into your version control.\n");
     }
 
@@ -197,11 +199,32 @@ sub cmd_install {
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
 
-    if ($deployment) {
+    if ($deployment || $clean_deployment) {
         $self->print("Installing modules using @{[$env->cpanfile]} (deployment mode)\n");
         $builder->cascade(0);
     } else {
         $self->print("Installing modules using @{[$env->cpanfile]}\n");
+    }
+
+    my $libdir = $env->install_path . "/lib/perl5/$Config{archname}/.meta";
+    if ($clean_deployment && -e $libdir) {
+        opendir( my $fh, $libdir );
+        my %installed = map { /^\./ ? () : ( $_ => 1 ) } readdir $fh;
+
+        for ( $env->snapshot->distributions ) {
+            unless ( delete $installed{ $_->name } ) {
+                $self->print("Can't find @{[$_->name]} on disk, removing @{[$env->install_path]}\n");
+                remove_tree glob $env->install_path . '/{bin,lib,man}';  # Keep cache
+                %installed = ();
+                last;
+            }
+        }
+
+        my ($orphan) = sort keys %installed;
+        if ($orphan) {
+            $self->print("Orphaned distribution $orphan on disk, removing @{[$env->install_path]}\n");
+            remove_tree glob $env->install_path . '/{bin,lib,man}';  # Keep cache
+        }
     }
 
     # TODO merge CPANfile git to mirror even if lock doesn't exist
@@ -219,7 +242,7 @@ sub cmd_install {
 
     $builder->install($env->install_path);
 
-    unless ($deployment) {
+    unless ($deployment || $clean_deployment) {
         $env->cpanfile->load;
         $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
         $env->snapshot->save;
