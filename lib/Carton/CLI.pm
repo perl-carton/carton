@@ -358,6 +358,13 @@ sub cmd_update {
     $env->snapshot->save;
 }
 
+sub cmd_run {
+    my($self, @args) = @_;
+
+    local $UseSystem = 1;
+    $self->cmd_exec(@args);
+}
+
 sub cmd_exec {
     my($self, @args) = @_;
 
