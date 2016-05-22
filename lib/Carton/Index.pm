@@ -35,7 +35,7 @@ Last-Updated: @{[ scalar localtime ]}
 
 EOF
     for my $p ($self->packages) {
-        print $fh $self->_format_line($p->name, $p->version || 'undef', $p->pathname);
+        print $fh $self->_format_line($p->name, $p->version_format, $p->pathname);
     }
 }
 
