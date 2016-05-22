@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.26  2016-05-21 20:29:11 PDT
+        - Make sure 'undef' and '0' are encoded properly writing 02packages as well
+
 v1.0.25  2016-05-21 20:21:22 PDT
         - Handle 'undef' in snapshot and 02packages, separate from '0'
 
