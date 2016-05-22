@@ -15,7 +15,9 @@ sub emit {
 
         $data .= "    provides:\n";
         for my $package (sort keys %{$dist->provides}) {
-            $data .= "      $package @{[$dist->provides->{$package}{version} || 'undef' ]}\n";
+            my $version = $dist->provides->{$package}{version};
+            $version = 'undef' unless defined $version;
+            $data .= "      $package $version\n";
         }
 
         $data .= "    requirements:\n";
