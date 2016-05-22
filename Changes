@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.25  2016-05-21 20:21:22 PDT
+        - Handle 'undef' in snapshot and 02packages, separate from '0'
+
 v1.0.24  2016-05-08 11:56:14 PDT
         - Same as v1.0.23, repackaging
 
