@@ -71,7 +71,6 @@ my $machine = {
             re => qr/^\s{6}([0-9A-Za-z_:]+) ([v0-9\._,=\!<>\s]+|undef)/,
             code => sub {
                 my($stash, $snapshot, $module, $version) = @_;
-                $version = undef if $version eq 'undef';
                 if ($stash->{property} eq 'provides') {
                     $stash->{dist}->provides->{$module} = { version => $version };
                 } else {
