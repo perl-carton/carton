@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.27  2016-05-23 12:34:58 PDT
+        - revert v1.0.25 undef special casing
+
 v1.0.26  2016-05-21 20:29:11 PDT
         - Make sure 'undef' and '0' are encoded properly writing 02packages as well
 
