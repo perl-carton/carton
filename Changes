@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.28  2016-05-23 22:30:48 PDT
+        - Emit the line when parser error happened
+
 v1.0.27  2016-05-23 12:34:58 PDT
         - revert v1.0.25 undef special casing
 
