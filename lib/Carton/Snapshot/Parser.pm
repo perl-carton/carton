@@ -117,7 +117,7 @@ sub parse {
                 }
             }
 
-            Carton::Error::SnapshotParseError->throw(error => "Could not parse snapshot file.");
+            Carton::Error::SnapshotParseError->throw(error => "Could not parse snapshot file: $line");
         }
     }
 }
