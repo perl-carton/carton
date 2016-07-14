@@ -1,0 +1,11 @@
+=head1 NAME
+
+Carton::Doc::Suggest - Add module as suggestion to cpanfile and install it
+
+=head1 SYNOPSIS
+
+  carton suggest [--phase PHASE] [--update-core] Module Module ...
+
+=head1 DESCRIPTION
+
+Please see L<Carton::Doc::Require> for details.

@@ -1,0 +1,39 @@
+=head1 NAME
+
+Carton::Doc::Require - Add module as requirement to cpanfile and install it
+
+=head1 SYNOPSIS
+
+  carton require [--phase PHASE] [--update-core] Module Module ...
+
+=head1 DESCRIPTION
+
+Query CPAN for the latest module version and add that version as a requirement
+to the I<cpanfile>. Then C<carton install> is executed.
+
+You can specify several space separated modules at once.
+
+If a core module is given then per default no version will be added (and thus no
+update takes place) to ensure maximum compatibility. You can enforce updates of
+core modules with the C<--update-core> option.
+
+=head1 OPTIONS
+
+=over 4
+
+=item --phase PHASE
+
+Specify the phase for the requirement. PHASE must be one of C<configure>,
+C<build>, C<test>, C<runtime> or C<develop>.
+
+Default phase is C<runtime>.
+
+=back
+
+=over 4
+
+=item --update-core
+
+Enforce latest versions even for core modules. This might result in updates.
+
+=back

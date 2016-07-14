@@ -21,6 +21,10 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
   > git add cpanfile cpanfile.snapshot
   > git commit -m "add Plack and Starman"
 
+  # Shortcut to add requirements to cpanfile and install modules
+  # (e.g. when you start developing with an empty local lib)
+  > carton require Plack Starman
+
   # Other developer's machine, or on a deployment box
   > carton install
   > carton exec starman -p 8080 myapp.psgi
@@ -69,6 +73,18 @@ You can manage the dependencies of your application via C<cpanfile>.
 And then you can install these dependencies via:
 
   > carton install
+
+You can also automatically add the latest module versions to the C<cpanfile>
+and install the modules in one step:
+
+  > carton require Plack Starman
+  > carton recommend --phase test Type::Tiny
+
+  # Core modules are added without version:
+  > carton require File::Spec
+
+  # To enforce the latest version of a core module:
+  > carton require --update-core File::Spec
 
 The modules are installed into your I<local> directory, and the
 dependencies tree and version information are analyzed and saved into
