@@ -86,6 +86,24 @@ sub update {
     ) or die "Updating modules failed\n";
 }
 
+sub get_cpan_module_version {
+	my($self, $module) = @_;
+
+	my $output = $self->run_cpanm_with_output(
+		(map { ("--mirror", $_->url) } $self->effective_mirrors),
+        ( $self->index ? ("--mirror-index", $self->index) : () ),
+        ( $self->cascade ? "--cascade-search" : () ),
+        ( $self->custom_mirror ? "--mirror-only" : () ),
+		"--info", $module,
+	) or die "Could not get version info for $module from CPAN\n";
+
+	$output =~ s/\.tar\.gz$//;
+	$output =~ s/^([^\/]+\/)+([^-]+-)+([0-9\.]+)/$3/;
+	chomp($output);
+
+	return $output;
+}
+
 sub _build_fatscript {
     my $self = shift;
 
@@ -109,6 +127,18 @@ sub run_cpanm {
     my($self, @args) = @_;
     local $ENV{PERL_CPANM_OPT};
     !system $^X, $self->fatscript, "--quiet", "--notest", @args;
+}
+
+sub run_cpanm_with_output {
+	my($self, @args) = @_;
+
+	local $ENV{PERL_CPANM_OPT};
+	open(CMD, '-|', $^X, $self->fatscript, "--quiet", @args);
+	my $output = do { local $/; <CMD> };
+	close CMD;
+    my $exit_value = $? >> 8;
+	return if $exit_value;
+	return $output;
 }
 
 1;
