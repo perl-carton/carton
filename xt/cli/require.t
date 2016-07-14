@@ -5,31 +5,31 @@ use xt::CLI;
 
 subtest 'carton require' => sub {
     my $app = cli();
-	$app->write_cpanfile();
+    $app->write_cpanfile();
 
     $app->run("require", "Try::Tiny");
-	$app->run("tree");
-	like $app->stdout, qr/Try::Tiny/;
+    $app->run("tree");
+    like $app->stdout, qr/Try::Tiny/;
 };
 
 subtest 'carton require - without module name' => sub {
     my $app = cli();
-	$app->write_cpanfile();
+    $app->write_cpanfile();
 
     $app->run("require");
-	like $app->stderr, qr/module/;
-	is $app->exit_code, 255;
+    like $app->stderr, qr/module/;
+    is $app->exit_code, 255;
 };
 
 subtest 'carton require - unknown module' => sub {
     my $app = cli();
-	$app->write_cpanfile();
+    $app->write_cpanfile();
 
     $app->run("require", "CyberspaceHasGotToBeAnAnarchyAPirateConceptInAndOutAndOverMe");
-	is $app->exit_code, 255;
+    is $app->exit_code, 255;
 
     $app->run("tree");
-	unlike $app->stdout, qr/CyberspaceHasGotToBeAnAnarchyAPirateConceptInAndOutAndOverMe/;
+    unlike $app->stdout, qr/CyberspaceHasGotToBeAnAnarchyAPirateConceptInAndOutAndOverMe/;
 };
 
 subtest 'carton require - module already in cpanfile' => sub {
@@ -79,7 +79,23 @@ subtest 'carton require for develop phase' => sub {
     like $app->stdout, qr/develop/;
 
     $app->run("tree");
-	like $app->stdout, qr/Try::Tiny/;
+    like $app->stdout, qr/Try::Tiny/;
+};
+
+subtest 'carton recommend' => sub {
+    my $app = cli();
+    $app->write_cpanfile();
+
+    $app->run("recommend", "Try::Tiny");
+    like $app->dir->child('cpanfile')->slurp, qr/recommends.*Try::Tiny/;
+};
+
+subtest 'carton suggest' => sub {
+    my $app = cli();
+    $app->write_cpanfile();
+
+    $app->run("suggest", "Try::Tiny");
+    like $app->dir->child('cpanfile')->slurp, qr/suggests.*Try::Tiny/;
 };
 
 done_testing;
