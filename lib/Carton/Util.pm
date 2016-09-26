@@ -19,7 +19,7 @@ sub dump_json {
 
 sub from_json {
     require JSON;
-    JSON::decode_json(@_);
+    JSON::decode_json($_[0]);
 }
 
 sub to_json {
