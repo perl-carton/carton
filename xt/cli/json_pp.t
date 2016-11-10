@@ -8,7 +8,7 @@ plan skip_all => "perl <= 5.14" if $] >= 5.015;
     my $app = cli();
 
     $app->write_cpanfile(<<EOF);
-requires 'JSON';
+requires 'JSON::PP';
 requires 'CPAN::Meta', '2.12';
 EOF
 

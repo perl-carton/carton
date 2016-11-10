@@ -1,6 +1,7 @@
 Revision history for carton
 
 {{$NEXT}}
+        - switched from JSON to JSON::PP
 
 v1.0.28  2016-05-23 22:30:48 PDT
         - Emit the line when parser error happened
