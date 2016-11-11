@@ -4,7 +4,7 @@ on configure => sub {
 
 requires 'perl', '5.8.5';
 
-requires 'JSON', 2.53;
+requires 'JSON::PP', '2.27300';
 requires 'Module::Metadata', 1.000003;
 requires 'Module::CPANfile', 0.9031;
 
