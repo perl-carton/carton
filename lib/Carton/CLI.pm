@@ -402,4 +402,94 @@ sub cmd_exec {
     }
 }
 
+sub cmd_require {
+    my($self, @args) = @_;
+    $self->add_dependency("requires", @args);
+}
+
+sub cmd_recommend {
+    my($self, @args) = @_;
+    $self->add_dependency("recommends", @args);
+}
+
+sub cmd_suggest {
+    my($self, @args) = @_;
+    $self->add_dependency("suggests", @args);
+}
+
+sub add_dependency {
+    my($self, $type, @args) = @_;
+
+    my $phase = "runtime";
+    my $update_core;
+
+    $self->parse_options(
+        \@args,
+        "phase=s"     => \$phase,
+        "update-core" => \$update_core,
+    );
+
+    # Check for module name(s)
+    unless (@args) {
+        $self->error("'carton require' needs one or more module names to run.\n");
+    }
+
+    # Check for valid --phase
+    my @phases = qw(configure build test runtime develop);
+    unless (grep { /\Q$phase\E/ } @phases) {
+        die sprintf("Phase must be one of: %s\n", join(", ", @phases)) ;
+    }
+
+    my $env = Carton::Environment->build;
+    $env->cpanfile->load;
+
+    my $builder = Carton::Builder->new(
+        mirror => $self->mirror,
+        cpanfile => $env->cpanfile,
+    );
+
+    # Build list (hash) of existing requirements in cpanfile
+    my $re_modules = join "|", map { qr/^\Q$_\E$/ } @args;
+    my %existing = map { $_ => 1 } grep { $_ =~ $re_modules } $env->cpanfile->prereqs->requirements_for($phase, $type)->required_modules;
+
+    # same as: my $file = $env->cpanfile->_cpanfile
+    my $cpanfile = Module::CPANfile->load($env->cpanfile->path);
+
+    for my $module (@args) {
+        my $is_core = $env->snapshot->find_in_core($module);
+
+        # Do not change existing entries
+        if ($existing{$module} and (!$is_core or !$update_core)) {
+            $self->print("$module is already a requirement, use 'carton update' to update version\n", INFO);
+            next;
+        }
+
+        my $version;
+        # Core modules: add without version
+        if ($is_core and !$update_core) {
+            $version = undef;
+            $self->print("Adding $module (core module) without version. To enforce newer version use --update-core\n", INFO);
+        }
+        # Standard modules
+        else {
+            $version = $builder->get_cpan_module_version($module);
+            $self->printf("Adding $module ($version)%s%s\n", $is_core ? " as recent version of core module" : "", $phase ne "runtime" ? " to phase $phase" : "", INFO);
+        }
+
+        $cpanfile->{_prereqs}->add_prereq(
+            phase       => $phase,
+            type        => $type,
+            module      => $module,
+            requirement => Module::CPANfile::Requirement->new(name => $module, version => $version),
+        );
+
+    }
+
+    # Save cpanfile
+    $cpanfile->save($env->cpanfile->path);
+
+    # Install newly added modules
+    $self->cmd_install;
+}
+
 1;
