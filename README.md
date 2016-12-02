@@ -108,6 +108,10 @@ will install modules using this local cache. Combined with
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
 
+Additionally, if you have installed [Carton::Packer](http://search.cpan.org/perldoc?Carton::Packer),
+carton will create a standalone executable into the _vendor/bin_ directory
+called *carton*.  This is especially useful if you are unable to install carton before deployment.
+
 # PERL VERSIONS
 
 When you take a snapshot in one perl version and deploy on another
