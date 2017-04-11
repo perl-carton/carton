@@ -402,4 +402,16 @@ sub cmd_exec {
     }
 }
 
+sub cmd_env {
+
+    my $env = Carton::Environment->build;
+    $env->snapshot->load;
+    # PERL5LIB takes care of arch
+    my $path = $env->install_path;
+    local $ENV{PERL5LIB} = "$path/lib/perl5";
+    local $ENV{PATH} = "$path/bin:$ENV{PATH}";
+
+    print "export PERL5LIB='$ENV{PERL5LIB}'; export PATH='$ENV{PATH}';"
+}
+
 1;
