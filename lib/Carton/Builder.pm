@@ -50,26 +50,7 @@ sub bundle {
 
 sub install {
     my($self, $path) = @_;
-    ########## TO DELETE ##############
-    use Data::Dumper;
-    die Dumper('        "-L", $path,
-        (map { ("--mirror", $_->url) } $self->effective_mirrors),
-        ( $self->index ? ("--mirror-index", $self->index) : () ),
-        ( $self->cascade ? "--cascade-search" : () ),
-        ( $self->mirror_only_check ? "--mirror-only" : () ),
-        "--save-dists", "$path/cache",
-        $self->groups,
-        "--cpanfile", $self->cpanfile,
-        "--installdeps", $self->cpanfile->dirname,:',\        "-L", $path,
-        (map { ("--mirror", $_->url) } $self->effective_mirrors),
-        ( $self->index ? ("--mirror-index", $self->index) : () ),
-        ( $self->cascade ? "--cascade-search" : () ),
-        ( $self->mirror_only_check ? "--mirror-only" : () ),
-        "--save-dists", "$path/cache",
-        $self->groups,
-        "--cpanfile", $self->cpanfile,
-        "--installdeps", $self->cpanfile->dirname,);
-    ########## TO DELETE ##############
+
     $self->run_cpanm(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
