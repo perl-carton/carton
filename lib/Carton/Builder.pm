@@ -2,6 +2,7 @@ package Carton::Builder;
 use strict;
 use Class::Tiny {
     mirror => undef,
+    mirror_only => sub { 1 },
     index  => undef,
     cascade => sub { 1 },
     without => sub { [] },
@@ -14,17 +15,20 @@ sub effective_mirrors {
 
     # push default CPAN mirror always, as a fallback
     # TODO don't pass fallback if --cached is set?
-
     my @mirrors = ($self->mirror);
     push @mirrors, Carton::Mirror->default if $self->custom_mirror;
     push @mirrors, Carton::Mirror->new('http://backpan.perl.org/');
-
     @mirrors;
 }
 
 sub custom_mirror {
     my $self = shift;
-    ! $self->mirror->is_default;
+    ! $self->mirror->is_default
+}
+
+sub mirror_only_check {
+    my $self = shift;
+    (defined($self->mirror_only) && $self->mirror_only == 0)? 0 : $self->custom_mirror
 }
 
 sub bundle {
@@ -52,7 +56,7 @@ sub install {
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->index ? ("--mirror-index", $self->index) : () ),
         ( $self->cascade ? "--cascade-search" : () ),
-        ( $self->custom_mirror ? "--mirror-only" : () ),
+        ( $self->mirror_only_check ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
         $self->groups,
         "--cpanfile", $self->cpanfile,
@@ -76,11 +80,10 @@ sub groups {
 
 sub update {
     my($self, $path, @modules) = @_;
-
     $self->run_cpanm(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
-        ( $self->custom_mirror ? "--mirror-only" : () ),
+        ( $self->mirror_only_check ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
         @modules
     ) or die "Updating modules failed\n";

@@ -1,6 +1,7 @@
 #!perl
 use strict;
 use 5.008001;
+
 use Carton::CLI;
 
 exit Carton::CLI->new->run(@ARGV);
