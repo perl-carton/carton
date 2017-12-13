@@ -1,7 +1,7 @@
 #!perl
 use strict;
 use 5.008001;
-use lib qw(/home/flopes/projects/carton/lib);
+
 use Carton::CLI;
 
 exit Carton::CLI->new->run(@ARGV);
