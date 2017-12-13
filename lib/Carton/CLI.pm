@@ -21,9 +21,10 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 our $UseSystem = 0; # 1 for unit testing
 
 use Class::Tiny {
-    verbose => undef,
-    carton => sub { $_[0]->_build_carton },
-    mirror => sub { $_[0]->_build_mirror },
+    verbose         => undef,
+    mirror_only     => undef,
+    carton          => sub { $_[0]->_build_carton },
+    mirror          => sub { $_[0]->_build_mirror },
 };
 
 sub _build_mirror {
@@ -40,9 +41,9 @@ sub run {
     );
     $p->getoptionsfromarray(
         \@args,
-        "h|help"    => sub { unshift @commands, 'help' },
-        "v|version" => sub { unshift @commands, 'version' },
-        "verbose!"  => sub { $self->verbose($_[1]) },
+        "h|help"        => sub { unshift @commands, 'help' },
+        "v|version"     => sub { unshift @commands, 'version' },
+        "verbose!"      => sub { $self->verbose($_[1]) },
     );
 
     push @commands, @args;
@@ -151,8 +152,9 @@ sub cmd_bundle {
     $self->print("Bundling modules using @{[$env->cpanfile]}\n");
 
     my $builder = Carton::Builder->new(
-        mirror => $self->mirror,
-        cpanfile => $env->cpanfile,
+        mirror      => $self->mirror,
+        cpanfile    => $env->cpanfile,
+        mirror_only => $self->{mirror_only},
     );
     $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
@@ -179,6 +181,8 @@ sub cmd_install {
         "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
+        "mirror-only!"  => \$self->{mirror_only},
+
     );
 
     my $env = Carton::Environment->build($cpanfile_path, $install_path);
@@ -193,6 +197,7 @@ sub cmd_install {
         mirror  => $self->mirror,
         without => \@without,
         cpanfile => $env->cpanfile,
+        mirror_only => $self->{mirror_only},
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
@@ -351,6 +356,7 @@ sub cmd_update {
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
         cpanfile => $env->cpanfile,
+        mirror_only => $self->{mirror_only},
     );
     $builder->update($env->install_path, @modules);
 
