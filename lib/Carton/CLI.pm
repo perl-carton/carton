@@ -391,8 +391,9 @@ sub cmd_exec {
 
     # PERL5LIB takes care of arch
     my $path = $env->install_path;
-    local $ENV{PERL5LIB} = "$path/lib/perl5";
-    local $ENV{PATH} = "$path/bin:$ENV{PATH}";
+    my $psep = ($^O eq 'MSWin32' ? ';' : ':');
+    local $ENV{PERL5LIB} = slashify("$path/lib/perl5");
+    local $ENV{PATH} = slashify("$path/bin$psep$ENV{PATH}");
 
     if ($UseSystem) {
         system @args;
@@ -400,6 +401,13 @@ sub cmd_exec {
         exec @args;
         exit 127; # command not found
     }
+}
+
+sub slashify {
+    my $p = shift;
+    my $sep = shift || ($^O eq 'MSWin32' ? '\\' : '/');
+    $p =~ s#[/\\]+#$sep#g;
+    return $p;
 }
 
 1;
