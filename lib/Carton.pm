@@ -25,6 +25,10 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
   > carton install
   > carton exec starman -p 8080 myapp.psgi
 
+  # carton exec is not required
+  > perl -Ilocal/lib/perl5 local/bin/starman -p 8080 myapp.psgi
+  > PERL5LIB=/path/to/local/lib/perl5 /path/to/local/bin/starman -p 8080 myapp.psgi
+
 =head1 AVAILABILITY
 
 Carton only works with perl installation with the complete set of core
@@ -32,8 +36,9 @@ modules. If you use perl installed by a vendor package with modules
 stripped from core, Carton is not expected to work correctly.
 
 Also, Carton requires you to run your command/application with
-C<carton exec> command, which means it's difficult or impossible to
-run in an embedded perl use case such as mod_perl.
+C<carton exec> command or to include the I<local/lib/perl5> directory
+in your Perl library search path (using C<PERL5LIB>, C<-I>, or
+L<lib>).
 
 =head1 DESCRIPTION
 
@@ -98,6 +103,10 @@ is ready to run.
 The C<--deployment> flag makes sure that carton will only install
 modules and versions available in your snapshot, and won't fallback to
 query for CPAN Meta DB for missing modules.
+
+As an alternative to installing Carton on the remote machine(s), you
+can use L<carton fatpack|Carton::Doc::Fatpack> to pack it into
+I<vendor/bin/carton> and deploy that script with the application.
 
 =head2 Bundling modules
 
