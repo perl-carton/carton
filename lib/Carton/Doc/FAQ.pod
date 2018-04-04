@@ -101,7 +101,7 @@ I<myapp>. Install L<Carton> and all of its dependencies to the
 I<myapp> local::lib path. Then run C<carton install> like you
 normally do.
 
-Becuase I<devel> and I<myapp> are isolated, the modules you installed
+Because I<devel> and I<myapp> are isolated, the modules you installed
 into I<devel> doesn't affect the process when carton builds the
 dependency tree for your new project at all. This could often be
 critical when you have a conditional dependency in your tree, like
@@ -109,4 +109,20 @@ L<Any::Moose>.
 
 =back
 
+=head2 I'm using perlbrew, but C<< carton install >> uses system perl, how to fix?
 
+The issue is most likelly caused by a inital bad install of C<cpanm>
+or C<carton> or both, that ended up with a shebang line pointed to the
+(wrong) system perl.
+
+=over 4
+    
+=item Re-install Carton on you perlbrew environment
+
+Run C<< cpanm -f Carton >>. This will force-install Carton,
+and because your C<cpanm> is now using the correct C<perl>,
+the same will happen with C<carton>.
+
+=back
+
+Make sure the shebang (the first line) of your C<carton> script points to the right perl path, rather than C</usr/bin/perl>.

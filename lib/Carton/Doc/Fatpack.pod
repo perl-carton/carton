@@ -1,0 +1,15 @@
+=head1 NAME
+
+Carton::Doc::Fatpack - Fatpack carton executable into vendor/bin
+
+=head1 SYNOPSIS
+
+  carton fatpack
+
+=head1 DESCRIPTION
+
+This command creates a fatpack executable of C<carton> in
+C<vendor/bin> directory, so that it can be used to bootstrap
+deployment process, combined with C<carton bundle> and C<carton
+install --cached>.
+

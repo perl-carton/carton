@@ -1,8 +1,9 @@
 package Carton::Index;
-use Moo;
-use warnings NONFATAL => 'all';
-
-has _packages => (is => 'rw', default => sub { +{} });
+use strict;
+use Class::Tiny {
+    _packages => sub { +{} },
+    generator => sub { require Carton; "Carton $Carton::VERSION" },
+};
 
 sub add_package {
     my($self, $package) = @_;
@@ -16,7 +17,7 @@ sub count {
 
 sub packages {
     my $self = shift;
-    sort { $a->name cmp $b->name } values %{$self->_packages};
+    sort { lc $a->name cmp lc $b->name } values %{$self->_packages};
 }
 
 sub write {
@@ -28,14 +29,29 @@ URL:          http://www.perl.com/CPAN/modules/02packages.details.txt
 Description:  Package names found in cpanfile.snapshot
 Columns:      package name, version, path
 Intended-For: Automated fetch routines, namespace documentation.
-Written-By:   Carton $Carton::VERSION
+Written-By:   @{[ $self->generator ]}
 Line-Count:   @{[ $self->count ]}
 Last-Updated: @{[ scalar localtime ]}
 
 EOF
     for my $p ($self->packages) {
-        print $fh sprintf "%s %s  %s\n", pad($p->name, 32), pad($p->version || 'undef', 10, 1), $p->pathname;
+        print $fh $self->_format_line($p->name, $p->version_format, $p->pathname);
     }
+}
+
+sub _format_line {
+    my($self, @row) = @_;
+
+    # from PAUSE::mldistwatch::rewrite02
+    my $one = 30;
+    my $two = 8;
+
+    if (length $row[0] > $one) {
+        $one += 8 - length $row[1];
+        $two = length $row[1];
+    }
+
+    sprintf "%-${one}s %${two}s  %s\n", @row;
 }
 
 sub pad {

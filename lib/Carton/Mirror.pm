@@ -1,10 +1,8 @@
 package Carton::Mirror;
-use Moo;
-use warnings NONFATAL => 'all';
+use strict;
+use Class::Tiny qw( url );
 
 our $DefaultMirror = 'http://cpan.metacpan.org/';
-
-has url => (is => 'ro');
 
 sub BUILDARGS {
     my($class, $url) = @_;

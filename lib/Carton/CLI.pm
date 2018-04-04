@@ -1,7 +1,6 @@
 package Carton::CLI;
-use Moo;
-use warnings NONFATAL => 'all';
-
+use strict;
+use warnings;
 use Config;
 use Getopt::Long;
 use Path::Tiny;
@@ -21,14 +20,15 @@ use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
 our $UseSystem = 0; # 1 for unit testing
 
-has verbose => (is => 'rw');
-has carton  => (is => 'lazy');
-has mirror  => (is => 'rw', builder => 1,
-                coerce => sub { Carton::Mirror->new($_[0]) });
+use Class::Tiny {
+    verbose => undef,
+    carton => sub { $_[0]->_build_carton },
+    mirror => sub { $_[0]->_build_mirror },
+};
 
 sub _build_mirror {
     my $self = shift;
-    $ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror;
+    Carton::Mirror->new($ENV{PERL_CARTON_MIRROR} || $Carton::Mirror::DefaultMirror);
 }
 
 sub run {
@@ -145,10 +145,8 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    my $fatpack = 1;
     $self->parse_options(
         \@args,
-        "fatpack!" => \$fatpack,
         "with-test!"   => \my $with_test,
     );
 
@@ -164,12 +162,15 @@ sub cmd_bundle {
     );
     $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
-    if ($fatpack) {
-        require Carton::Packer;
-        Carton::Packer->new->fatpack_carton($env->vendor_bin);
-    }
-
     $self->printf("Complete! Modules were bundled into %s\n", $env->vendor_cache, SUCCESS);
+}
+
+sub cmd_fatpack {
+    my($self, @args) = @_;
+
+    my $env = Carton::Environment->build;
+    require Carton::Packer;
+    Carton::Packer->new->fatpack_carton($env->vendor_bin);
 }
 
 sub cmd_install {
@@ -353,6 +354,8 @@ sub cmd_update {
         push @modules, "$module~" . $env->cpanfile->requirements_for_module($module);
     }
 
+    return unless @modules;
+
     my $builder = Carton::Builder->new(
         mirror => $self->mirror,
         cpanfile => $env->cpanfile,
@@ -361,6 +364,13 @@ sub cmd_update {
 
     $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
     $env->snapshot->save;
+}
+
+sub cmd_run {
+    my($self, @args) = @_;
+
+    local $UseSystem = 1;
+    $self->cmd_exec(@args);
 }
 
 sub cmd_exec {
@@ -392,7 +402,12 @@ sub cmd_exec {
     local $ENV{PERL5LIB} = "$path/lib/perl5";
     local $ENV{PATH} = "$path/bin:$ENV{PATH}";
 
-    $UseSystem ? system(@args) : exec(@args);
+    if ($UseSystem) {
+        system @args;
+    } else {
+        exec @args;
+        exit 127; # command not found
+    }
 }
 
 1;

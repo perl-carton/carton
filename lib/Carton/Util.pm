@@ -18,14 +18,14 @@ sub dump_json {
 }
 
 sub from_json {
-    require JSON;
-    JSON::decode_json(@_);
+    require JSON::PP;
+    JSON::PP->new->utf8->decode($_[0])
 }
 
 sub to_json {
     my($data) = @_;
-    require JSON;
-    JSON->new->utf8->pretty->canonical->encode($data);
+    require JSON::PP;
+    JSON::PP->new->utf8->pretty->canonical->encode($data);
 }
 
 1;

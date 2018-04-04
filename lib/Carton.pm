@@ -1,7 +1,7 @@
 package Carton;
 use strict;
 use 5.008_005;
-use version; our $VERSION = version->declare("v1.0.12");
+use version; our $VERSION = version->declare("v1.0.28");
 
 1;
 __END__
@@ -138,11 +138,11 @@ with perl lower than the specified version.
 
 =over 4
 
-=item L<https://github.com/miyagawa/carton>
+=item L<https://github.com/perl-carton/carton>
 
 Code repository, Wiki and Issue Tracker
 
-=item L<irc://irc.perl.org/#carton>
+=item L<irc://irc.perl.org/#cpanm>
 
 IRC chat room
 

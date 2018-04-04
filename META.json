@@ -4,62 +4,57 @@
       "Tatsuhiko Miyagawa"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.4, Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.132660",
+   "generated_by" : "Dist::Zilla version 6.005, Dist::Milla version v1.0.16, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Carton",
    "no_index" : {
       "directory" : [
-         "t",
-         "xt",
+         "eg",
+         "examples",
          "inc",
          "share",
-         "eg",
-         "examples"
+         "t",
+         "xt"
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "Module::Build" : "0.3601"
-         }
-      },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.3601",
+            "ExtUtils::MakeMaker" : "0",
             "version" : "0.77"
          }
       },
       "develop" : {
          "requires" : {
             "Capture::Tiny" : "0",
+            "Dist::Milla" : "v1.0.16",
             "Test::More" : "0.9",
             "Test::Pod" : "1.41",
             "Test::Requires" : "0"
          }
       },
       "runtime" : {
-         "requires" : {
+         "recommends" : {
             "App::FatPacker" : "0.009018",
-            "App::cpanminus" : "1.694",
+            "File::pushd" : "0"
+         },
+         "requires" : {
+            "App::cpanminus" : "1.703",
             "CPAN::Meta" : "2.120921",
             "CPAN::Meta::Requirements" : "2.121",
-            "Exception::Class" : "1.32",
-            "ExtUtils::MakeMaker" : "6.64",
-            "File::pushd" : "0",
+            "Class::Tiny" : "1.001",
             "Getopt::Long" : "2.39",
-            "JSON" : "2.53",
-            "Module::Build" : "0.4004",
+            "JSON::PP" : "2.27300",
             "Module::CPANfile" : "0.9031",
             "Module::CoreList" : "0",
             "Module::Metadata" : "1.000003",
             "Module::Reader" : "0.002",
-            "Moo" : "1.002",
             "Path::Tiny" : "0.033",
             "Try::Tiny" : "0.09",
             "parent" : "0.223",
@@ -70,29 +65,34 @@
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/miyagawa/carton/issues"
+         "web" : "https://github.com/perl-carton/carton/issues"
       },
-      "homepage" : "https://github.com/miyagawa/carton",
+      "homepage" : "https://github.com/perl-carton/carton",
       "repository" : {
          "type" : "git",
-         "url" : "https://github.com/miyagawa/carton.git",
-         "web" : "https://github.com/miyagawa/carton"
+         "url" : "https://github.com/perl-carton/carton.git",
+         "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.12",
+   "version" : "v1.0.28",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
       "David Golden <dagolden@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
+      "Jonathan Steinert <hachi@fastly.com>",
+      "Jose Luis Martinez <jlmartinez@capside.com>",
       "Kan Fushihara <kan.fushihara@gmail.com>",
       "Masahiro Chiba <chiba@everqueue.com>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Olaf Alders <olaf@wundersolutions.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",
+      "Pedro Melo <melo@simplicidade.org>",
+      "Peter Oliver <git@mavit.org.uk>",
+      "shiba_yu36 <shibayu36@gmail.com>",
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
       "Tatsuhiko Miyagawa <miyagawa@gmail.com>",
-      "Yanick Champoux <yanick@babyl.dyndns.org>",
-      "ikasam_a <masaki.nakagawa@gmail.com>",
-      "shiba_yu36 <shibayu36@gmail.com>"
+      "WATANABE Hiroaki <hwat@mac.com>",
+      "Yanick Champoux <yanick@babyl.dyndns.org>"
    ]
 }
 

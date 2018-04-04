@@ -1,5 +1,5 @@
 package Carton::Packer;
-use Moo;
+use Class::Tiny;
 use warnings NONFATAL => 'all';
 use App::FatPacker;
 use File::pushd ();
@@ -50,7 +50,7 @@ sub do_fatpack {
 
     # HACK: File::Spec bundled into arch in < 5.16, but is loadable as pure-perl
     use Config;
-    $fatpacked =~ s/\$fatpacked{"$Config{archname}\/(Cwd|File)/\$fatpacked{"$1/g;
+    $fatpacked =~ s/\$fatpacked\{"$Config{archname}\/(Cwd|File)/\$fatpacked{"$1/g;
 
     $fatpacked;
 }
@@ -84,7 +84,9 @@ sub installed_meta {
         }
     };
 
-    File::Find::find({ wanted => $finder, no_chdir => 1 }, grep -d, map "$_/.meta", @INC);
+    my @meta_dirs = grep -d, map "$_/.meta", @INC;
+    File::Find::find({ wanted => $finder, no_chdir => 1 }, @meta_dirs)
+        if @meta_dirs;
 
     # return the latest version
     @meta = sort { version->new($b->version) cmp version->new($a->version) } @meta;

@@ -1,5 +1,5 @@
 package Carton::Snapshot::Parser;
-use Moo;
+use Class::Tiny;
 use warnings NONFATAL => 'all';
 use Carton::Dist;
 use Carton::Error;
@@ -71,7 +71,6 @@ my $machine = {
             re => qr/^\s{6}([0-9A-Za-z_:]+) ([v0-9\._,=\!<>\s]+|undef)/,
             code => sub {
                 my($stash, $snapshot, $module, $version) = @_;
-
                 if ($stash->{property} eq 'provides') {
                     $stash->{dist}->provides->{$module} = { version => $version };
                 } else {
@@ -118,7 +117,7 @@ sub parse {
                 }
             }
 
-            Carton::Error::SnapshotParseError->throw(error => "Could not parse snapshot file.");
+            Carton::Error::SnapshotParseError->throw(error => "Could not parse snapshot file: $line");
         }
     }
 }

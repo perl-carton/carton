@@ -17,14 +17,10 @@ use Carton::CLI;
 use Capture::Tiny qw(capture);
 use File::pushd ();
 use Path::Tiny;
-use Moo;
 
 $Carton::CLI::UseSystem = 1;
 
-has dir => (is => 'rw');
-has stdout => (is => 'rw');
-has stderr => (is => 'rw');
-has exit_code => (is => 'rw');
+use Class::Tiny qw( dir stdout stderr exit_code );
 
 sub write_file {
     my($self, $file, @args) = @_;

@@ -30,13 +30,13 @@ run in an embedded perl use case such as mod\_perl.
 # DESCRIPTION
 
 carton is a command line tool to track the Perl module dependencies
-for your Perl application. Dependencies are declared using [cpanfile](http://search.cpan.org/perldoc?cpanfile)
+for your Perl application. Dependencies are declared using [cpanfile](https://metacpan.org/pod/cpanfile)
 format, and the managed dependencies are tracked in a
 _cpanfile.snapshot_ file, which is meant to be version controlled,
 and the snapshot file allows other developers of your application will
 have the exact same versions of the modules.
 
-For `cpanfile` syntax, see [cpanfile](http://search.cpan.org/perldoc?cpanfile) documentation.
+For `cpanfile` syntax, see [cpanfile](https://metacpan.org/pod/cpanfile) documentation.
 
 # TUTORIAL
 
@@ -116,7 +116,7 @@ When you take a snapshot in one perl version and deploy on another
 The simplest solution, which might not work for everybody, is to use
 the same version of perl in the development and deployment.
 
-To enforce that, you're recommended to use [plenv](http://search.cpan.org/perldoc?plenv) and
+To enforce that, you're recommended to use [plenv](https://metacpan.org/pod/plenv) and
 `.perl-version` to lock perl versions in development.
 
 You can also specify the minimum perl required in `cpanfile`:
@@ -128,11 +128,11 @@ with perl lower than the specified version.
 
 # COMMUNITY
 
-- [https://github.com/miyagawa/carton](https://github.com/miyagawa/carton)
+- [https://github.com/perl-carton/carton](https://github.com/perl-carton/carton)
 
     Code repository, Wiki and Issue Tracker
 
-- [irc://irc.perl.org/\#carton](irc://irc.perl.org/\#carton)
+- [irc://irc.perl.org/#cpanm](irc://irc.perl.org/#cpanm)
 
     IRC chat room
 
@@ -150,9 +150,9 @@ This software is licensed under the same terms as Perl itself.
 
 # SEE ALSO
 
-[cpanm](http://search.cpan.org/perldoc?cpanm)
+[cpanm](https://metacpan.org/pod/cpanm)
 
-[cpanfile](http://search.cpan.org/perldoc?cpanfile)
+[cpanfile](https://metacpan.org/pod/cpanfile)
 
 [Bundler](http://gembundler.com/)
 
@@ -162,4 +162,4 @@ This software is licensed under the same terms as Perl itself.
 
 [perlrocks](https://github.com/gugod/perlrocks)
 
-[only](http://search.cpan.org/perldoc?only)
+[only](https://metacpan.org/pod/only)

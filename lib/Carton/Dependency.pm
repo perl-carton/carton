@@ -1,10 +1,12 @@
 package Carton::Dependency;
-use Moo;
-use warnings NONFATAL => 'all';
+use strict;
+use Class::Tiny {
+    module => undef,
+    requirement => undef,
+    dist => undef,
+};
 
-has module => (is => 'rw');
-has requirement => (is => 'rw');
-has dist => (is => 'rw', handles => [ qw(requirements) ]);
+sub requirements { shift->dist->requirements(@_) }
 
 sub distname {
     my $self = shift;
