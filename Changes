@@ -1,7 +1,10 @@
 Revision history for carton
 
 {{$NEXT}}
+
+v1.0.29  2018-04-21 19:27:13 CEST
         - switched from JSON to JSON::PP
+        - use Menlo to instlal modules rather than App::cpanminus::fatscript
 
 v1.0.28  2016-05-23 22:30:48 PDT
         - Emit the line when parser error happened
