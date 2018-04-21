@@ -89,9 +89,10 @@ sub run_install {
     my($self, @args) = @_;
 
     require Menlo::CLI::Compat;
+    local $ENV{PERL_CPANM_OPT};
 
     my $cli = Menlo::CLI::Compat->new;
-    $cli->parse_options(@args);
+    $cli->parse_options("--quiet", "--notest", @args);
     $cli->run;
 
     !$cli->status;
