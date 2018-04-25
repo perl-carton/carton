@@ -13,7 +13,7 @@ requires 'Getopt::Long', 2.39;
 requires 'Class::Tiny', 1.001;
 requires 'Path::Tiny', 0.033;
 
-requires 'Menlo', '1.9016';
+requires 'Menlo::CLI::Compat', '1.9018';
 
 requires 'CPAN::Meta', 2.120921;
 requires 'CPAN::Meta::Requirements', 2.121;
