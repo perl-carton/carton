@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.30  2018-04-25 02:42:18 PDT
+        - depend on Menlo::CLI::Compat for Menlo-Legacy
+
 v1.0.29  2018-04-21 19:27:13 CEST
         - switched from JSON to JSON::PP
         - use Menlo to instlal modules rather than App::cpanminus::fatscript

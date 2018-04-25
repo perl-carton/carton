@@ -26,14 +26,14 @@ my %WriteMakefileArgs = (
     "Class::Tiny" => "1.001",
     "Getopt::Long" => "2.39",
     "JSON::PP" => "2.27300",
-    "Menlo" => "1.9016",
+    "Menlo::CLI::Compat" => "1.9018",
     "Module::CPANfile" => "0.9031",
     "Module::CoreList" => 0,
     "Path::Tiny" => "0.033",
     "Try::Tiny" => "0.09",
     "parent" => "0.223"
   },
-  "VERSION" => "v1.0.29",
+  "VERSION" => "v1.0.30",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -46,7 +46,7 @@ my %FallbackPrereqs = (
   "Class::Tiny" => "1.001",
   "Getopt::Long" => "2.39",
   "JSON::PP" => "2.27300",
-  "Menlo" => "1.9016",
+  "Menlo::CLI::Compat" => "1.9018",
   "Module::CPANfile" => "0.9031",
   "Module::CoreList" => 0,
   "Path::Tiny" => "0.033",
