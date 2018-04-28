@@ -56,10 +56,21 @@ sub do_fatpack {
 }
 
 sub required_modules {
-    my($self, $packer) = @_;
+    my $self = shift;
 
-    my $meta = $self->installed_meta('Carton')
-        or die "Couldn't find install metadata for Carton";
+    my %requirements;
+    for my $dist (qw( Carton Menlo-Legacy Menlo )) {
+        $requirements{$_} = 1 for $self->required_modules_for($dist);
+    }
+
+    [ keys %requirements ];
+}
+
+sub required_modules_for {
+    my($self, $dist) = @_;
+
+    my $meta = $self->installed_meta($dist)
+        or die "Couldn't find install metadata for $dist";
 
     my %excludes = (
         perl => 1,
@@ -67,10 +78,8 @@ sub required_modules {
         'Module::Build' => 1,
     );
 
-    my @requirements = grep !$excludes{$_},
+    grep !$excludes{$_},
         $meta->effective_prereqs->requirements_for('runtime', 'requires')->required_modules;
-
-    return \@requirements;
 }
 
 sub installed_meta {
