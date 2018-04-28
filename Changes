@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.31  2018-04-28 08:31:27 PDT
+        - Fix carton fatpack to include runtime dependencies for Menlo #571
+
 v1.0.30  2018-04-25 02:42:18 PDT
         - depend on Menlo::CLI::Compat for Menlo-Legacy
 
