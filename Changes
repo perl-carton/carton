@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.33  2018-05-04 11:22:45 PDT
+        - bundle: support environment where IO::Compress::Gzip is not available
+
 v1.0.32  2018-05-04 11:01:36 PDT
         - Write out 02packages.details.txt.gz in carton bundle so that you can use
           plain cpanm to install them
