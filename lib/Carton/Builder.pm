@@ -41,6 +41,15 @@ sub bundle {
             warn "Couldn't find @{[ $dist->pathname ]}\n";
         }
     }
+
+    require IO::Compress::Gzip;
+    my $index = $cache_path->child("modules/02packages.details.txt.gz");
+    $index->parent->mkpath;
+
+    warn "Writing $index\n";
+    my $out = IO::Compress::Gzip->new($index->openw)
+      or die "gzip failed: $IO::Compress::Gzip::GzipError";
+    $snapshot->index->write($out);
 }
 
 sub install {
