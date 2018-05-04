@@ -42,14 +42,28 @@ sub bundle {
         }
     }
 
-    require IO::Compress::Gzip;
-    my $index = $cache_path->child("modules/02packages.details.txt.gz");
+    my $has_io_gzip = eval { require IO::Compress::Gzip; 1 };
+
+    my $ext   = $has_io_gzip ? ".txt.gz" : ".txt";
+    my $index = $cache_path->child("modules/02packages.details$ext");
     $index->parent->mkpath;
 
     warn "Writing $index\n";
-    my $out = IO::Compress::Gzip->new($index->openw)
-      or die "gzip failed: $IO::Compress::Gzip::GzipError";
+
+    my $out = $index->openw;
+    if ($has_io_gzip) {
+        $out = IO::Compress::Gzip->new($out)
+          or die "gzip failed: $IO::Compress::Gzip::GzipError";
+    }
+
     $snapshot->index->write($out);
+    close $out;
+
+    unless ($has_io_gzip) {
+        unlink "$index.gz";
+        !system 'gzip', $index
+          or die "Running gzip command failed: $!";
+    }
 }
 
 sub install {
