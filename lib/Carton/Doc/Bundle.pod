@@ -18,5 +18,3 @@ C<carton install --cached>, or a plain cpanm command with:
 
   cpanm --from file://$PWD/vendor/cache -L local --installdeps .
 
-See also C<carton fatpack> that generates C<carton> executable in
-C<vendor/bin>.
