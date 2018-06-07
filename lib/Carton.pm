@@ -144,7 +144,7 @@ allowing you to simply use L<cpanm> (which has a
 L<standalone version|App::cpanminus/"Downloading the standalone executable">)
 instead of installing Carton on a remote machine.
 
-  > cpanm -L local --from vendor/cache --installdeps --notest --quiet .
+  > cpanm -L local --from "$PWD/vendor/cache" --installdeps --notest --quiet .
 
 =head1 PERL VERSIONS
 
