@@ -121,11 +121,10 @@ C<--deployment> option, you can avoid querying for a database like
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
 
-As an alternative to installing Carton on remote machine(s), you can
-use L<carton fatpack|Carton::Doc::Fatpack> to pack Carton into
-I<vendor/bin/carton> and deploy that script with the application and
-bundled tarballs. As of Carton v1.0.32, the bundle also includes a
-package index allowing you to simply use L<cpanm> instead.
+As of Carton v1.0.32, the bundle also includes a package index
+allowing you to simply use L<cpanm> (which has a
+L<standalone version|App::cpanminus/"Downloading the standalone executable">)
+instead of installing Carton on a remote machine.
 
   > cpanm -L local --from vendor/cache --installdeps --notest --quiet .
 
