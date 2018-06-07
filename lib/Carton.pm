@@ -25,7 +25,7 @@ Carton - Perl module dependency manager (aka Bundler for Perl)
   > carton install
   > carton exec starman -p 8080 myapp.psgi
 
-  # carton exec is not required
+  # carton exec is optional
   > perl -Ilocal/lib/perl5 local/bin/starman -p 8080 myapp.psgi
   > PERL5LIB=/path/to/local/lib/perl5 /path/to/local/bin/starman -p 8080 myapp.psgi
 
