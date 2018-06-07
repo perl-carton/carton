@@ -104,10 +104,6 @@ The C<--deployment> flag makes sure that carton will only install
 modules and versions available in your snapshot, and won't fallback to
 query for CPAN Meta DB for missing modules.
 
-As an alternative to installing Carton on the remote machine(s), you
-can use L<carton fatpack|Carton::Doc::Fatpack> to pack it into
-I<vendor/bin/carton> and deploy that script with the application.
-
 =head2 Bundling modules
 
 carton can bundle all the tarballs for your dependencies into a
@@ -124,6 +120,14 @@ will install modules using this local cache. Combined with
 C<--deployment> option, you can avoid querying for a database like
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
+
+As an alternative to installing Carton on remote machine(s), you can
+use L<carton fatpack|Carton::Doc::Fatpack> to pack Carton into
+I<vendor/bin/carton> and deploy that script with the application and
+bundled tarballs. As of Carton v1.0.32, the bundle also includes a
+package index allowing you to simply use L<cpanm> instead.
+
+  > cpanm -L local --from vendor/cache --installdeps --notest --quiet .
 
 =head1 PERL VERSIONS
 
