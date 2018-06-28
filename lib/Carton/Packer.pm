@@ -63,7 +63,10 @@ sub required_modules {
         $requirements{$_} = 1 for $self->required_modules_for($dist);
     }
 
-    [ keys %requirements ];
+    # these modules are needed, but lazy-loaded, so FatPacker wont bundle them by default.
+    my @extra = qw(Menlo::Index::Mirror);
+
+    [ keys %requirements, @extra ];
 }
 
 sub required_modules_for {
