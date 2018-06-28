@@ -72,9 +72,10 @@
          "web" : "https://github.com/perl-carton/carton"
       }
    },
-   "version" : "v1.0.33",
+   "version" : "v1.0.34",
    "x_contributors" : [
       "Christian Walde <walde.christian@googlemail.com>",
+      "Dan Book <grinnz@gmail.com>",
       "David Golden <dagolden@cpan.org>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",
       "Jonathan Steinert <hachi@fastly.com>",
@@ -82,6 +83,7 @@
       "Kan Fushihara <kan.fushihara@gmail.com>",
       "Karen Etheridge <ether@cpan.org>",
       "Masahiro Chiba <chiba@everqueue.com>",
+      "Michael Schout <mschout@gkg.net>",
       "NAKAGAWA Masaki <masaki.nakagawa@gmail.com>",
       "Olaf Alders <olaf@wundersolutions.com>",
       "Pedro Figueiredo <me@pedrofigueiredo.org>",

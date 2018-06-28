@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.34  2018-06-28 10:38:01 PDT
+        - workaround carton fatpack by explicitly loading Menlo::Index::Mirror
+
 v1.0.33  2018-05-04 11:22:45 PDT
         - bundle: support environment where IO::Compress::Gzip is not available
 
