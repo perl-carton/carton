@@ -1,5 +1,6 @@
 use strict;
 use Test::More;
+use lib ".";
 use xt::CLI;
 
 subtest 'snapshot file has canonical representation' => sub {

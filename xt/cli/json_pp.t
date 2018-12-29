@@ -1,5 +1,6 @@
 use strict;
 use Test::More;
+use lib ".";
 use xt::CLI;
 
 plan skip_all => "perl <= 5.14" if $] >= 5.015;

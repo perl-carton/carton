@@ -8,6 +8,12 @@ Carton::Doc::Fatpack - Fatpack carton executable into vendor/bin
 
 =head1 DESCRIPTION
 
+B<WARNING>: It is known for this command to create an executable that
+is not sufficient to run standalone in some environments, especially
+when L<local::lib> is enabled. It is recommended to use the standard
+C<cpanm> command to install bundle created by C<carton bundle>
+command. See C<carton -h bundle> for more details.
+
 This command creates a fatpack executable of C<carton> in
 C<vendor/bin> directory, so that it can be used to bootstrap
 deployment process, combined with C<carton bundle> and C<carton

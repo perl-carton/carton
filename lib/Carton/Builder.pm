@@ -6,7 +6,6 @@ use Class::Tiny {
     cascade => sub { 1 },
     without => sub { [] },
     cpanfile => undef,
-    fatscript => sub { $_[0]->_build_fatscript },
 };
 
 sub effective_mirrors {
@@ -42,12 +41,35 @@ sub bundle {
             warn "Couldn't find @{[ $dist->pathname ]}\n";
         }
     }
+
+    my $has_io_gzip = eval { require IO::Compress::Gzip; 1 };
+
+    my $ext   = $has_io_gzip ? ".txt.gz" : ".txt";
+    my $index = $cache_path->child("modules/02packages.details$ext");
+    $index->parent->mkpath;
+
+    warn "Writing $index\n";
+
+    my $out = $index->openw;
+    if ($has_io_gzip) {
+        $out = IO::Compress::Gzip->new($out)
+          or die "gzip failed: $IO::Compress::Gzip::GzipError";
+    }
+
+    $snapshot->index->write($out);
+    close $out;
+
+    unless ($has_io_gzip) {
+        unlink "$index.gz";
+        !system 'gzip', $index
+          or die "Running gzip command failed: $!";
+    }
 }
 
 sub install {
     my($self, $path) = @_;
 
-    $self->run_cpanm(
+    $self->run_install(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->index ? ("--mirror-index", $self->index) : () ),
@@ -77,7 +99,7 @@ sub groups {
 sub update {
     my($self, $path, @modules) = @_;
 
-    $self->run_cpanm(
+    $self->run_install(
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->custom_mirror ? "--mirror-only" : () ),
@@ -86,30 +108,17 @@ sub update {
     ) or die "Updating modules failed\n";
 }
 
-sub _build_fatscript {
-    my $self = shift;
-
-    my $fatscript;
-    if ($Carton::Fatpacked) {
-        require Module::Reader;
-        my $content = Module::Reader::module_content('App::cpanminus::fatscript')
-            or die "Can't locate App::cpanminus::fatscript";
-        $fatscript = Path::Tiny->tempfile;
-        $fatscript->spew($content);
-    } else {
-        require Module::Metadata;
-        $fatscript = Module::Metadata->find_module_by_name("App::cpanminus::fatscript")
-            or die "Can't locate App::cpanminus::fatscript";
-    }
-
-    return $fatscript;
-}
-
-sub run_cpanm {
+sub run_install {
     my($self, @args) = @_;
-    # allow cpanm options to be set via PERL_CARTON_CPANM_OPT
+
+    require Menlo::CLI::Compat;
     local $ENV{PERL_CPANM_OPT} = $ENV{PERL_CARTON_CPANM_OPT};
-    !system $^X, $self->fatscript, "--quiet", "--notest", @args;
+
+    my $cli = Menlo::CLI::Compat->new;
+    $cli->parse_options("--quiet", "--notest", @args);
+    $cli->run;
+
+    !$cli->status;
 }
 
 1;
