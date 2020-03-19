@@ -215,6 +215,11 @@ sub cmd_install {
 
     if ($cached) {
         $builder->mirror(Carton::Mirror->new($env->vendor_cache));
+    } else {
+        $env->cpanfile->load;
+        if (my $cpanfile_mirror = $env->cpanfile->mirror) {
+            $builder->mirror(Carton::Mirror->new($cpanfile_mirror));
+        }
     }
 
     $builder->install($env->install_path);
@@ -352,6 +357,8 @@ sub cmd_update {
         mirror => $self->mirror,
         cpanfile => $env->cpanfile,
     );
+    $builder->mirror(Carton::Mirror->new($env->cpanfile->mirror))
+        if $env->cpanfile->mirror;
     $builder->update($env->install_path, @modules);
 
     $env->snapshot->find_installs($env->install_path, $env->cpanfile->requirements);
