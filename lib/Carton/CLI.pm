@@ -402,4 +402,8 @@ sub cmd_exec {
     }
 }
 
+sub cmd_outdated {
+    system "cpan-outdated -Llocal --verbose --exclude-core";
+}
+
 1;

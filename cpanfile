@@ -23,6 +23,9 @@ requires 'Module::CoreList';
 recommends 'File::pushd';
 recommends 'App::FatPacker', 0.009018;
 
+# for outdated
+recommends 'App::cpanoutdated', 0.32;
+
 on develop => sub {
     requires 'Test::More', 0.90;
     requires 'Test::Requires';
