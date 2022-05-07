@@ -24,7 +24,7 @@ recommends 'File::pushd';
 recommends 'App::FatPacker', 0.009018;
 
 on develop => sub {
-    requires 'Test::More', 0.90;
+    requires 'Test::More', 0.96;
     requires 'Test::Requires';
     requires 'Capture::Tiny';
 };
