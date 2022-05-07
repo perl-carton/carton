@@ -110,6 +110,12 @@ sub add_distribution {
     push @{$self->_distributions}, $dist;
 }
 
+sub remove_distributions {
+    my($self, $filter) = @_;
+    my @dists = grep !$filter->($_), $self->distributions;
+    $self->_distributions(\@dists);
+}
+
 sub packages {
     my $self = shift;
 
