@@ -172,10 +172,6 @@ with perl lower than the specified version.
 
 Code repository, Wiki and Issue Tracker
 
-=item L<irc://irc.perl.org/#cpanm>
-
-IRC chat room
-
 =back
 
 =head1 AUTHOR
@@ -191,6 +187,8 @@ Tatsuhiko Miyagawa 2011-
 This software is licensed under the same terms as Perl itself.
 
 =head1 SEE ALSO
+
+L<Carmel>
 
 L<cpanm>
 
