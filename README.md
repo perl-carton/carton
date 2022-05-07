@@ -133,7 +133,7 @@ time.
 
 As of Carton v1.0.32, the bundle also includes a package index
 allowing you to simply use [cpanm](https://metacpan.org/pod/cpanm) (which has a
-[standalone version](https://metacpan.org/pod/App::cpanminus#Downloading-the-standalone-executable))
+[standalone version](https://metacpan.org/pod/App%3A%3Acpanminus#Downloading-the-standalone-executable))
 instead of installing Carton on a remote machine.
 
     > cpanm -L local --from "$PWD/vendor/cache" --installdeps --notest --quiet .
@@ -162,10 +162,6 @@ with perl lower than the specified version.
 
     Code repository, Wiki and Issue Tracker
 
-- [irc://irc.perl.org/#cpanm](irc://irc.perl.org/#cpanm)
-
-    IRC chat room
-
 # AUTHOR
 
 Tatsuhiko Miyagawa
@@ -179,6 +175,8 @@ Tatsuhiko Miyagawa 2011-
 This software is licensed under the same terms as Perl itself.
 
 # SEE ALSO
+
+[Carmel](https://metacpan.org/pod/Carmel)
 
 [cpanm](https://metacpan.org/pod/cpanm)
 

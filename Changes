@@ -2,6 +2,9 @@ Revision history for carton
 
 {{$NEXT}}
 
+v1.0.35  2022-05-06 18:36:17 PDT
+        - add $snapshot->remove_distributions to use from Carmel
+
 v1.0.34  2018-06-28 10:38:01 PDT
         - workaround carton fatpack by explicitly loading Menlo::Index::Mirror
 
