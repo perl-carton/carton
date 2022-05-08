@@ -19,7 +19,7 @@ modes and the behavior is slightly different.
 
 If you run C<carton install> without any arguments and if I<cpanfile>
 exists, carton will scan dependencies from I<cpanfile> and install
-the modules.
+the modules, from the default mirror.
 
 =back
 
@@ -93,3 +93,24 @@ B<NOTE>: C<--without> for the initial installation (without
 cpanfile.snapshot) is not supported at this moment.
 
 =back
+
+=head1 ENVIRONMENT
+
+=over 4
+
+=item PERL_CARTON_MIRROR
+
+Carton::Mirror sets the default mirror to: http://cpan.metacpan.org/.  
+But that can be over ridden using this environmental variable 
+providing an alternative url like so:
+
+PERL_CARTON_MIRROR=file://$PWD/darkpan carton install
+
+PINTO_REPOSITORY_ROOT=http://deploy:password@pinto.example.com:3111
+PERL_CARTON_MIRROR=$PINTO_REPOSITORY_ROOT carton install
+
+permitting one to pull one's dependencies from a local DarkPAN 
+or an internally hosted repository.  
+
+=back
+
