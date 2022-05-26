@@ -80,11 +80,10 @@ sub locate_cpanfile {
         return Path::Tiny->new($path)->absolute;
     }
 
-    my $current  = Path::Tiny->cwd;
+    my $current  = Path::Tiny->new($ENV{PERL_CARTON_CPANFILE}) || Path::Tiny->cwd;
     my $previous = '';
 
-    until ($current eq '/' or $current eq $previous) {
-        # TODO support PERL_CARTON_CPANFILE
+    until ($current eq $previous) {
         my $try = $current->child('cpanfile');
         if ($try->is_file) {
             return $try->absolute;
