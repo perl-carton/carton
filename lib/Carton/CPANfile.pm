@@ -14,6 +14,7 @@ use Class::Tiny {
 
 sub stringify { shift->path->stringify(@_) }
 sub dirname   { shift->path->dirname(@_) }
+sub mirror    { @{shift->_cpanfile->mirrors}[0] }
 sub prereqs   { shift->_cpanfile->prereqs(@_) }
 sub required_modules { shift->requirements->required_modules(@_) }
 sub requirements_for_module { shift->requirements->requirements_for_module(@_) }
