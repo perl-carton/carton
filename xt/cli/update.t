@@ -75,5 +75,21 @@ EOF
     }
 };
 
+subtest 'update dependency distribution' => sub {
+    my $app = cli();
+
+    $app->write_cpanfile(<<EOF);
+requires 'HTML::Parser';
+EOF
+
+    $app->run("install");
+    $app->run("list");
+    like $app->stdout, qr/HTML-Parser-/m;
+    like $app->stdout, qr/HTML-Tagset-/m;
+
+    $app->run("update", "HTML::Tagset");
+    like $app->stdout, qr/HTML::Tagset is up to date/m;
+};
+
 done_testing;
 
