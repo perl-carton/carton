@@ -193,6 +193,7 @@ sub cmd_install {
         mirror  => $self->mirror,
         without => \@without,
         cpanfile => $env->cpanfile,
+        verbose  => $self->verbose,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements

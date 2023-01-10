@@ -6,6 +6,7 @@ use Class::Tiny {
     cascade => sub { 1 },
     without => sub { [] },
     cpanfile => undef,
+    verbose => undef,
 };
 
 sub effective_mirrors {
@@ -115,7 +116,11 @@ sub run_install {
     local $ENV{PERL_CPANM_OPT};
 
     my $cli = Menlo::CLI::Compat->new;
-    $cli->parse_options("--quiet", "--notest", @args);
+
+    my @options = ('--notest');
+    push @options, '--quiet' unless $self->verbose;
+
+    $cli->parse_options(@options, @args);
     $cli->run;
 
     !$cli->status;
