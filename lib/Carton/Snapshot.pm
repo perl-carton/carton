@@ -156,11 +156,11 @@ sub find_installs {
     my $accepts = sub {
         my $module = shift;
 
-        return 0 unless $reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version});
+        return 0 unless $reqs->accepts_module($module->{name}, $module->{provides}{$module->{name}}{version}||$module->{version});
 
         if (my $exist = $installs{$module->{name}}) {
-            my $old_ver = version::->new($exist->{provides}{$module->{name}}{version});
-            my $new_ver = version::->new($module->{provides}{$module->{name}}{version});
+            my $old_ver = version::->new($exist->{provides}{$module->{name}}{version}||$exist->{version});
+            my $new_ver = version::->new($module->{provides}{$module->{name}}{version}||$module->{version});
             return $new_ver >= $old_ver;
         } else {
             return 1;

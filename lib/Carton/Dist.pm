@@ -5,6 +5,7 @@ use Class::Tiny {
     pathname => undef,
     provides => sub { +{} },
     requirements => sub { $_[0]->_build_requirements },
+    version => undef,
 };
 
 use CPAN::Meta;
@@ -31,7 +32,7 @@ sub provides_module {
 
 sub version_for {
     my($self, $module) = @_;
-    $self->provides->{$module}{version};
+    $self->provides->{$module}{version} || $self->version;
 }
 
 1;
