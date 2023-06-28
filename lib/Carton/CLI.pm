@@ -145,7 +145,14 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
-    my $env = Carton::Environment->build;
+    my($cpanfile_path);
+
+    $self->parse_options(
+        \@args,
+        "cpanfile=s"  => \$cpanfile_path,
+    );
+
+    my $env = Carton::Environment->build($cpanfile_path);
     $env->snapshot->load;
 
     $self->print("Bundling modules using @{[$env->cpanfile]}\n");
