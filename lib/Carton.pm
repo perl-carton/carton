@@ -139,6 +139,13 @@ C<--deployment> option, you can avoid querying for a database like
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
 
+Using the option C<--vendor> will allow flexibility in installing the
+modules, since the I<vendor/cache> may be placed along with the cpanfile,
+rather than in the install location,
+
+    > carton install --path local --deployment --cached \
+      --cpanfile path/to/cpanfile --vendor path/to/vendor/cache
+
 As of Carton v1.0.32, the bundle also includes a package index
 allowing you to simply use L<cpanm> (which has a
 L<standalone version|App::cpanminus/"Downloading the standalone executable">)

@@ -170,18 +170,19 @@ sub cmd_fatpack {
 sub cmd_install {
     my($self, @args) = @_;
 
-    my($install_path, $cpanfile_path, @without);
+    my($install_path, $cpanfile_path, @without, $vendor_cache);
 
     $self->parse_options(
         \@args,
         "p|path=s"    => \$install_path,
         "cpanfile=s"  => \$cpanfile_path,
+        "vendor=s"    => \$vendor_cache,
         "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
     );
 
-    my $env = Carton::Environment->build($cpanfile_path, $install_path);
+    my $env = Carton::Environment->build($cpanfile_path, $install_path, $vendor_cache);
     $env->snapshot->load_if_exists;
 
     if ($deployment && !$env->snapshot->loaded) {

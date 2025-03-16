@@ -30,7 +30,11 @@ sub _build_install_path {
 
 sub _build_vendor_cache {
     my $self = shift;
-    Path::Tiny->new($self->install_path->dirname . "/vendor/cache");
+    if ($ENV{PERL_VENDOR_CACHE}) {
+        return Path::Tiny->new($ENV{PERL_VENDOR_CACHE});
+    } else {
+        Path::Tiny->new($self->install_path->dirname . "/vendor/cache");
+    }
 }
 
 sub _build_tree {
@@ -55,7 +59,7 @@ sub build_with {
 }
 
 sub build {
-    my($class, $cpanfile_path, $install_path) = @_;
+    my($class, $cpanfile_path, $install_path, $vendor_cache) = @_;
 
     my $self = $class->new;
 
@@ -69,6 +73,8 @@ sub build {
     }
 
     $self->install_path( Path::Tiny->new($install_path)->absolute ) if $install_path;
+
+    $self->vendor_cache( Path::Tiny->new($vendor_cache)->absolute ) if $vendor_cache;
 
     $self;
 }

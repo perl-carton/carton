@@ -131,6 +131,13 @@ will install modules using this local cache. Combined with
 CPAN Meta DB or downloading files from CPAN mirrors upon deployment
 time.
 
+Using the option `--vendor` will allow flexibility in installing the
+modules, since the _vendor/cache_ may be placed along with the cpanfile,
+rather than in the install location,
+
+    > carton install --path local --deployment --cached \
+      --cpanfile path/to/cpanfile --vendor path/to/vendor/cache
+
 As of Carton v1.0.32, the bundle also includes a package index
 allowing you to simply use [cpanm](https://metacpan.org/pod/cpanm) (which has a
 [standalone version](https://metacpan.org/pod/App%3A%3Acpanminus#Downloading-the-standalone-executable))
