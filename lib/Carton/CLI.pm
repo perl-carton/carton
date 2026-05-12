@@ -15,6 +15,7 @@ use Carton::Snapshot;
 use Carton::Util;
 use Carton::Environment;
 use Carton::Error;
+use CPAN::Meta::Requirements;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
