@@ -93,5 +93,19 @@ subtest 'detect downgrade' => sub {
     like $app->stdout, qr/URI has version .* Needs == 1\.59/;
 };
 
+subtest 'check perl version requirement' => sub {
+    my $app = cli;
+    $app->write_cpanfile(<<EOF);
+requires 'perl', '5.40.0';
+requires 'Try::Tiny';
+EOF
+
+    $app->run("install");
+    $app->run("check");
+
+    like $app->stdout, qr/not satisfied/;
+    like $app->stdout, qr/perl/i;
+};
+
 done_testing;
 
