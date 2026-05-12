@@ -96,7 +96,7 @@ subtest 'detect downgrade' => sub {
 subtest 'check perl version requirement' => sub {
     my $app = cli;
     $app->write_cpanfile(<<EOF);
-requires 'perl', '5.40.0';
+requires 'perl', '5.99.0';
 requires 'Try::Tiny';
 EOF
 
