@@ -15,6 +15,7 @@ use Carton::Snapshot;
 use Carton::Util;
 use Carton::Environment;
 use Carton::Error;
+use CPAN::Meta::Requirements;
 
 use constant { SUCCESS => 0, INFO => 1, WARN => 2, ERROR => 3 };
 
@@ -291,11 +292,23 @@ sub cmd_check {
     $env->snapshot->load;
     $env->cpanfile->load;
 
+    # Check perl version requirement before it gets cleared
+    my $perl_requirement = $env->cpanfile->prereqs->requirements_for('runtime', 'requires')->requirements_for_module('perl');
+
     # TODO remove snapshot
     # TODO pass git spec to Requirements?
     my $merged_reqs = $env->tree->merged_requirements;
 
     my @missing;
+
+    # Check perl version if specified in cpanfile
+    if ($perl_requirement) {
+        my $perl_version = $];
+        unless (CPAN::Meta::Requirements->from_string_hash({ perl => $perl_requirement })->accepts_module('perl', $perl_version)) {
+            push @missing, [ 'perl', 1, $perl_version ];
+        }
+    }
+
     for my $module ($merged_reqs->required_modules) {
         my $install = $env->snapshot->find_or_core($module);
         if ($install) {
@@ -312,8 +325,13 @@ sub cmd_check {
         for my $missing (@missing) {
             my($module, $unsatisfied, $version) = @$missing;
             if ($unsatisfied) {
-                $self->printf("  %s has version %s. Needs %s\n",
-                              $module, $version, $merged_reqs->requirements_for_module($module), INFO);
+                if ($module eq 'perl') {
+                    $self->printf("  %s has version %s. Needs %s\n",
+                                  $module, $version, $perl_requirement, INFO);
+                } else {
+                    $self->printf("  %s has version %s. Needs %s\n",
+                                  $module, $version, $merged_reqs->requirements_for_module($module), INFO);
+                }
             } else {
                 $self->printf("  %s is not installed. Needs %s\n",
                               $module, $merged_reqs->requirements_for_module($module), INFO);
