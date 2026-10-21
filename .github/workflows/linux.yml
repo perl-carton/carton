@@ -28,6 +28,10 @@ jobs:
         TEST_CLEAN: 1
     steps:
       - uses: actions/checkout@v6
+      - name: Remove the image's /tmp/cpanfile
+        # perl-tester leaves its cpanfile in /tmp; the no-cpanfile tests
+        # run in /tmp subdirectories and would find it by searching upward
+        run: rm -f /tmp/cpanfile
       - name: perl -V
         run: perl -V
       - name: Install Dependencies
