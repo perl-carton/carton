@@ -4,30 +4,30 @@ on:
   - push
 
 jobs:
-  perl:
+  perl-versions:
     runs-on: ubuntu-latest
+    outputs:
+      perl-versions: ${{ steps.action.outputs.perl-versions }}
+    steps:
+      - id: action
+        uses: perl-actions/perl-versions@v2
+        with:
+          since-perl: 5.12
+
+  perl:
+    needs: perl-versions
+    runs-on: ubuntu-latest
+    name: "Perl ${{ matrix.perl-version }}"
     strategy:
       fail-fast: false
       matrix:
-        perl-version:
-          - '5.12'
-          - '5.14'
-          - '5.16'
-          - '5.18'
-          - '5.20'
-          - '5.22'
-          - '5.24'
-          - '5.26'
-          - '5.28'
-          - '5.30'
-          - '5.32'
-          - '5.34'
+        perl-version: ${{ fromJson(needs.perl-versions.outputs.perl-versions) }}
     container:
-      image: perl:${{ matrix.perl-version }}
+      image: perldocker/perl-tester:${{ matrix.perl-version }}
       env:
         TEST_CLEAN: 1
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - name: perl -V
         run: perl -V
       - name: Install Dependencies
