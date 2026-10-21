@@ -38,6 +38,7 @@ jobs:
         run: |
           cpanm -nq App::cpanminus && \
           cpanm -nq --dev Menlo && \
+          cpanm -nq LWP::Protocol::https && \
           cpanm -nq --with-develop --installdeps .
       - name: Run Tests
         run: prove -lr xt
