@@ -16,7 +16,7 @@ sub effective_mirrors {
 
     my @mirrors = ($self->mirror);
     push @mirrors, Carton::Mirror->default if $self->custom_mirror;
-    push @mirrors, Carton::Mirror->new('http://backpan.perl.org/');
+    push @mirrors, Carton::Mirror->new('https://backpan.perl.org/');
 
     @mirrors;
 }
